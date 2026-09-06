@@ -52,6 +52,7 @@
   const TOGGLE_GUARD = 300;                      // modes-and-lock.md edge case
   const TAP = { ms: 250, move: 6, gap: 350, apart: 30 }; // tip-double-tap.md rule 1
   const PALM_MS = 1500;                          // pencil-input.md rule 9
+  const RELOCK_MS = 300;                         // modes-and-lock.md rule 11: long enough for the page's tap to land
   const MEDIA_TAGS = new Set(["IMG", "VIDEO", "CANVAS", "SVG", "PICTURE", "IFRAME", "OBJECT", "EMBED"]);
   const TAU = Math.PI * 2;
 
@@ -218,8 +219,7 @@
     }
     ensureDom();
     if (prev === Mode.Draw) { cancelLive(); trail.length = 0; clearShields(); } // trail.md edge case
-    if (next === Mode.View) ui.collapsed = true; // modes-and-lock.md rule 3
-    if (prev === Mode.Off && next === Mode.Draw) ui.collapsed = false;
+    if (prev === Mode.Off) ui.collapsed = false;
     updateToolbar();
     requestRender();
     requestFx();
@@ -230,7 +230,14 @@
     if (now - state.toggleAt < TOGGLE_GUARD) return;
     state.toggleAt = now;
     if (state.mode !== Mode.Off) setMode(Mode.Off);
-    else setMode(state.strokes.length ? Mode.View : Mode.Draw);
+    else setMode(Mode.Draw);
+  }
+
+  let relockTimer = 0;
+
+  function passThrough() { // modes-and-lock.md rule 11: the Pencil goes to the page for one tap, then Draw returns
+    setMode(Mode.View);
+    notice("Pencil goes to the page until its next tap");
   }
 
   // ── Input routing ──────────────────────────────────────────────────────
@@ -263,6 +270,11 @@
   }
 
   function onPointerUp(e) {
+    if (state.mode === Mode.View && isPen(e) && !onToolbar(e) && !state.fullscreen) { // modes-and-lock.md rule 11
+      clearTimeout(relockTimer);
+      relockTimer = setTimeout(() => { if (state.mode === Mode.View) setMode(Mode.Draw); }, RELOCK_MS);
+      return;
+    }
     if (activePointer === null || e.pointerId !== activePointer) return;
     e.preventDefault();
     e.stopImmediatePropagation();
@@ -306,7 +318,7 @@
     const ae = document.activeElement;
     if (ae && ae !== document.body && ae !== document.documentElement && ae !== host) return;
     if (e.key === "Escape") {
-      if (state.mode === Mode.Draw) { e.preventDefault(); setMode(Mode.View); }
+      if (state.mode === Mode.Draw) { e.preventDefault(); passThrough(); }
       return;
     }
     if ((e.metaKey || e.ctrlKey) && !e.altKey && e.key.toLowerCase() === "z") {
@@ -1324,7 +1336,7 @@
     if (btn.dataset.color) { setColor(btn.dataset.color, true); return; }
     if (btn.dataset.pref) { s[btn.dataset.pref] = !s[btn.dataset.pref]; saveSettings(); updateToolbar(); return; } // preferences.md
     switch (btn.dataset.act) {
-      case "lock": setMode(state.mode === Mode.Draw ? Mode.View : Mode.Draw); break; // toolbar.md rule 7
+      case "lock": if (state.mode === Mode.Draw) passThrough(); else setMode(Mode.Draw); break; // toolbar.md rule 7
       case "undo": undo(); break;
       case "redo": redo(); break;
       case "hide": toggleHidden(); break;
@@ -1577,7 +1589,7 @@
     invalidateResolutions();
     state.strokes = await loadInk(key);
     if (state.mode !== Mode.Off) setMode(Mode.Off);
-    if (state.strokes.length) setMode(Mode.View); // modes-and-lock.md rule 8
+    if (state.strokes.length) setMode(Mode.Draw); // modes-and-lock.md rule 8
   }
 
   // ── Wiring ─────────────────────────────────────────────────────────────
@@ -1649,7 +1661,7 @@
       if (msg && msg.type === "inkover:toggle") toggleFromButton();
     });
 
-    if (state.strokes.length) setMode(Mode.View); // modes-and-lock.md rule 8
+    if (state.strokes.length) setMode(Mode.Draw); // modes-and-lock.md rule 8
     if (DEV) window.__inkoverDebug = { state, setMode, placeStroke, resolveAnchor, findAnchor, locatorFor, geoCache, resolveCache, vp, holdCheck, flushSave, renderInk, renderFx, readViewport, trail, undo, redo, clearPage, toggleHidden, checkPageKey, updateToolbar, updateShields, hitStrokes, ui, get live() { return live; } };
   }
 
