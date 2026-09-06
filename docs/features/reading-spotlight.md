@@ -1,10 +1,10 @@
 ---
 type: feature
 id: F12
-status: built
+status: verified
 depends: ["[[modes-and-lock]]", "[[pencil-input]]"]
 decisions: []
-updated: 2026-09-05
+updated: 2026-09-06
 ---
 # Reading spotlight
 
@@ -33,6 +33,6 @@ A focus aid. While the Pencil is down with the Spotlight tool, the page dims exc
 | Trail still fading when Spotlight starts | The trail finishes fading above the dim. |
 
 ## Acceptance
-- [ ] Hold the Pencil on a line: everything but that line and its neighbours darkens.
-- [ ] Move the Pencil down the page: the band follows with no visible lag.
-- [ ] Lift: the page is fully bright at once.
+- [x] Hold the Pencil on a line: everything but that line and its neighbours darkens.
+- [x] Move the Pencil down the page: the band follows with no visible lag.
+- [x] Lift: the page is fully bright at once.

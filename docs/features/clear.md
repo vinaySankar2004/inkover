@@ -1,10 +1,10 @@
 ---
 type: feature
 id: F08
-status: built
+status: verified
 depends: ["[[undo-redo]]", "[[persistence]]"]
 decisions: []
-updated: 2026-09-05
+updated: 2026-09-06
 ---
 # Clear
 
@@ -26,5 +26,5 @@ Ending a reading session. Wipes all ink on the page in one tap.
 | Finger taps Clear while a Pencil stroke is in progress | The stroke in progress ends and is discarded. Then Clear runs. |
 
 ## Acceptance
-- [ ] One tap empties the page and the button greys out.
-- [ ] Undo brings everything back.
+- [x] One tap empties the page and the button greys out.
+- [x] Undo brings everything back.

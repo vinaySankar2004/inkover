@@ -1,7 +1,7 @@
 ---
 type: feature
 id: F01
-status: built
+status: verified
 depends: []
 decisions: ["[[D0015-manual-lock]]"]
 updated: 2026-09-06
@@ -42,11 +42,11 @@ One switch. Unlocked, Inkover shows the ink and the toolbar and captures nothing
 | Page is a PDF opened in Safari | Safari's PDF view is not a web page; the extension does not run. Accepted. |
 
 ## Acceptance
-- [ ] Turn Inkover on: the toolbar shows a closed lock and the Pencil draws at once.
-- [ ] Locked: scroll and tap links with a finger, and scroll with the Pencil: nothing moves.
-- [ ] Locked: rest the palm and write: the page stays still and the strokes are unbroken.
-- [ ] Tap Unlock, lift everything: the Pencil and a finger both scroll and open links. Nothing draws.
-- [ ] Tap Lock: the Pencil draws again.
-- [ ] Reload a page with ink: it opens Unlocked with the ink visible.
-- [ ] Escape on a Magic Keyboard unlocks.
-- [ ] On a page with a YouTube embed: Locked, the Pencil over the embed draws; Unlocked, the embed plays.
+- [x] Turn Inkover on: the toolbar shows a closed lock and the Pencil draws at once.
+- [x] Locked: scroll and tap links with a finger, and scroll with the Pencil: nothing moves.
+- [x] Locked: rest the palm and write: the page stays still and the strokes are unbroken.
+- [x] Tap Unlock, lift everything: the Pencil and a finger both scroll and open links. Nothing draws.
+- [x] Tap Lock: the Pencil draws again.
+- [x] Reload a page with ink: it opens Unlocked with the ink visible.
+- [x] Escape on a Magic Keyboard unlocks.
+- [x] On a page with a YouTube embed: Locked, the Pencil over the embed draws; Unlocked, the embed plays.

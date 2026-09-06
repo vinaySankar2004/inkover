@@ -1,7 +1,7 @@
 ---
 type: feature
 id: F02
-status: built
+status: verified
 depends: ["[[modes-and-lock]]"]
 decisions: ["[[D0001-ipad-only]]", "[[D0007-pencil-double-tap]]"]
 updated: 2026-09-06
@@ -37,6 +37,6 @@ Everything Inkover knows about the Pencil as a device: what is read from it and 
 | Finger scrolls right after a stroke | Nothing, until Unlock is tapped. |
 
 ## Acceptance
-- [ ] Light and hard presses visibly differ in width with the Pen tool.
-- [ ] Locked, the Pencil over a search box does not open the keyboard.
-- [ ] A finger with any tool leaves no ink.
+- [x] Light and hard presses visibly differ in width with the Pen tool.
+- [x] Locked, the Pencil over a search box does not open the keyboard.
+- [x] A finger with any tool leaves no ink.

@@ -1,10 +1,10 @@
 ---
 type: feature
 id: F06
-status: built
+status: verified
 depends: ["[[pencil-input]]"]
 decisions: ["[[D0005-trail-on-contact]]"]
-updated: 2026-09-05
+updated: 2026-09-06
 ---
 # Trail
 
@@ -34,6 +34,6 @@ A fidget. Ink that follows the Pencil and fades away, for tracing along a senten
 | Writing letters quickly, one stroke after another | Each letter has its own tail. No straight line jumps from one letter to the next. |
 
 ## Acceptance
-- [ ] Trace a sentence: the tail visibly follows and is gone within about a second.
-- [ ] Trailing for a full minute does not make scrolling sluggish.
-- [ ] Nothing from the trail survives a reload.
+- [x] Trace a sentence: the tail visibly follows and is gone within about a second.
+- [x] Trailing for a full minute does not make scrolling sluggish.
+- [x] Nothing from the trail survives a reload.

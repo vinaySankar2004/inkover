@@ -1,10 +1,10 @@
 ---
 type: feature
 id: F13
-status: built
+status: verified
 depends: ["[[pen]]", "[[highlighter]]"]
 decisions: ["[[D0006-hold-still-snap]]"]
-updated: 2026-09-05
+updated: 2026-09-06
 ---
 # Shape snap
 
@@ -36,7 +36,7 @@ Circling things is the main use. Holding still at the end of a Pen stroke turns 
 | Stroke of 3 points | Below the travel threshold in practice. Freehand. |
 
 ## Acceptance
-- [ ] Circle a word roughly, pause, lift: a clean ellipse around the word.
-- [ ] Box a paragraph, pause, lift: a clean rectangle.
-- [ ] Underline, pause, lift: a straight line.
-- [ ] Circle a word and lift without pausing: freehand, untouched.
+- [x] Circle a word roughly, pause, lift: a clean ellipse around the word.
+- [x] Box a paragraph, pause, lift: a clean rectangle.
+- [x] Underline, pause, lift: a straight line.
+- [x] Circle a word and lift without pausing: freehand, untouched.

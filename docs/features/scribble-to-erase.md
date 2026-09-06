@@ -1,10 +1,10 @@
 ---
 type: feature
 id: F14
-status: built
+status: verified
 depends: ["[[pen]]", "[[eraser]]", "[[undo-redo]]"]
 decisions: ["[[D0007-pencil-double-tap]]"]
-updated: 2026-09-05
+updated: 2026-09-06
 ---
 # Scribble to erase
 
@@ -34,6 +34,6 @@ A fast zig-zag over existing strokes with the Pen removes them, the Apple Notes 
 | Undo after a scribble erase | All marked strokes return in one step. |
 
 ## Acceptance
-- [ ] Zig-zag over a circle: it dims while scribbling and is gone on lift.
-- [ ] Zig-zag on a blank area: the zig-zag stays as ink.
-- [ ] Undo once: the erased circle returns.
+- [x] Zig-zag over a circle: it dims while scribbling and is gone on lift.
+- [x] Zig-zag on a blank area: the zig-zag stays as ink.
+- [x] Undo once: the erased circle returns.

@@ -1,7 +1,7 @@
 ---
 type: feature
 id: F15
-status: built
+status: verified
 depends: ["[[toolbar]]", "[[persistence]]"]
 decisions: []
 updated: 2026-09-06
@@ -30,5 +30,5 @@ A toolbar toggle that hides all ink on the page without clearing it, for rereadi
 | Hide on a page with no ink | The button is disabled. |
 
 ## Acceptance
-- [ ] Tap Hide: ink disappears and the page stays interactive. Tap again: ink returns.
-- [ ] Hide, then draw: everything appears.
+- [x] Tap Hide: ink disappears and the page stays interactive. Tap again: ink returns.
+- [x] Hide, then draw: everything appears.

@@ -1,10 +1,10 @@
 ---
 type: feature
 id: F03
-status: built
+status: verified
 depends: ["[[pencil-input]]", "[[anchoring]]", "[[undo-redo]]", "[[persistence]]", "[[shape-snap]]", "[[scribble-to-erase]]"]
 decisions: []
-updated: 2026-09-05
+updated: 2026-09-06
 ---
 # Pen
 
@@ -34,6 +34,6 @@ The default tool. Freehand ink for circling, underlining, arrows and doodles.
 | First point scrolled off screen before Pencil-up | The anchor was chosen at Pencil-down, so the stroke still attaches to the element it started on. |
 
 ## Acceptance
-- [ ] Circle a paragraph, scroll away and back: the circle is exactly where it was.
-- [ ] Size S at light pressure is still visible on a white page.
-- [ ] A tap leaves a visible dot.
+- [x] Circle a paragraph, scroll away and back: the circle is exactly where it was.
+- [x] Size S at light pressure is still visible on a white page.
+- [x] A tap leaves a visible dot.

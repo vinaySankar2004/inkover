@@ -1,10 +1,10 @@
 ---
 type: feature
 id: F09
-status: built
+status: verified
 depends: []
 decisions: ["[[D0003-persist-per-url]]", "[[D0010-page-key]]"]
-updated: 2026-09-05
+updated: 2026-09-06
 ---
 # Persistence
 
@@ -30,6 +30,6 @@ Ink survives reload, tab close and Safari restart until the user clears it. Noth
 | Hash changes because the site uses it for tabs | Same page key. Anchoring handles the tab switch. |
 
 ## Acceptance
-- [ ] Draw, reload: ink is present before the page finishes loading.
-- [ ] Draw, force-quit Safari, reopen: ink is present.
-- [ ] Clear one page: another page's ink is untouched.
+- [x] Draw, reload: ink is present before the page finishes loading.
+- [x] Draw, force-quit Safari, reopen: ink is present.
+- [x] Clear one page: another page's ink is untouched.

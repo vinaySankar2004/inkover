@@ -1,7 +1,7 @@
 ---
 type: feature
 id: F11
-status: built
+status: verified
 depends: ["[[modes-and-lock]]"]
 decisions: []
 updated: 2026-09-06
@@ -47,10 +47,10 @@ The only visible UI. A floating pill with every control, operated by finger or P
 | Slider moved while a stroke is in progress | Impossible with one Pencil; a finger on the slider mid-stroke changes the next stroke only. |
 
 ## Acceptance
-- [ ] On claude.ai, which sends a strict policy, the colour swatches show their colours and the toolbar sits bottom right at full width.
+- [x] On claude.ai, which sends a strict policy, the colour swatches show their colours and the toolbar sits bottom right at full width.
 
 ## Acceptance
-- [ ] Drag the toolbar to the left edge, open another site: it is on the left.
-- [ ] Pinch-zoom the page: the toolbar keeps its size and stays on screen.
-- [ ] Every button is comfortably tappable with a finger.
-- [ ] Open the colour picker and slide the hue: the picker stays open and the ink colour follows.
+- [x] Drag the toolbar to the left edge, open another site: it is on the left.
+- [x] Pinch-zoom the page: the toolbar keeps its size and stays on screen.
+- [x] Every button is comfortably tappable with a finger.
+- [x] Open the colour picker and slide the hue: the picker stays open and the ink colour follows.

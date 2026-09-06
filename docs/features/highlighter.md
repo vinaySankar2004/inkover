@@ -1,10 +1,10 @@
 ---
 type: feature
 id: F04
-status: built
+status: verified
 depends: ["[[pen]]"]
 decisions: ["[[D0006-hold-still-snap]]"]
-updated: 2026-09-05
+updated: 2026-09-06
 ---
 # Highlighter
 
@@ -34,6 +34,6 @@ Wide translucent ink for marking lines of text. Text shows through, and a stroke
 | Snap arms, then the finger scrolls the page | Current point is in document coordinates; the preview line follows the content. |
 
 ## Acceptance
-- [ ] Highlight a line, pause half a second, lift: a perfectly straight bar.
-- [ ] Draw a highlighter loop that crosses itself: no darker patch at the crossing.
-- [ ] Switch to Pen and back: the highlighter colour is the one last used for Highlighter.
+- [x] Highlight a line, pause half a second, lift: a perfectly straight bar.
+- [x] Draw a highlighter loop that crosses itself: no darker patch at the crossing.
+- [x] Switch to Pen and back: the highlighter colour is the one last used for Highlighter.

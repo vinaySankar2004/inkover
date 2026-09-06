@@ -1,10 +1,10 @@
 ---
 type: feature
 id: F10
-status: built
+status: verified
 depends: []
 decisions: ["[[D0008-anchor-to-dom]]"]
-updated: 2026-09-05
+updated: 2026-09-06
 ---
 # Anchoring
 
@@ -36,7 +36,7 @@ Ink belongs to content, not to a spot on the page. When a site swaps a tab, expa
 | Page uses random ids on every load | Id lookup fails; text repair finds the element. |
 
 ## Acceptance
-- [ ] On a tabbed page, ink on tab one disappears on tab two and returns on tab one.
-- [ ] Expand a collapsed section above your ink: the ink moves down with its text.
-- [ ] Rotate the iPad: ink stays on its words.
-- [ ] Reload a page with per-load random ids: ink is still attached.
+- [x] On a tabbed page, ink on tab one disappears on tab two and returns on tab one.
+- [x] Expand a collapsed section above your ink: the ink moves down with its text.
+- [x] Rotate the iPad: ink stays on its words.
+- [x] Reload a page with per-load random ids: ink is still attached.

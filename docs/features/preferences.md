@@ -1,7 +1,7 @@
 ---
 type: feature
 id: F17
-status: built
+status: verified
 depends: ["[[toolbar]]", "[[persistence]]"]
 decisions: []
 updated: 2026-09-06
@@ -27,6 +27,6 @@ A small panel on the toolbar for the few things a person wants to set once: whet
 | Reset while Highlighter is active with a custom colour | The highlighter returns to yellow, the pen to black, and both custom swatches show the rainbow again. |
 
 ## Acceptance
-- [ ] Tap More, turn Labels off: words vanish, buttons stay the same size.
-- [ ] Turn Compact on: buttons shrink to 44 pt.
-- [ ] Reset after choosing a custom colour and a wide pen: black, default width, rainbow swatch.
+- [x] Tap More, turn Labels off: words vanish, buttons stay the same size.
+- [x] Turn Compact on: buttons shrink to 44 pt.
+- [x] Reset after choosing a custom colour and a wide pen: black, default width, rainbow swatch.

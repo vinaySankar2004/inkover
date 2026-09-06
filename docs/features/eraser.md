@@ -1,10 +1,10 @@
 ---
 type: feature
 id: F05
-status: built
+status: verified
 depends: ["[[pen]]", "[[highlighter]]", "[[undo-redo]]"]
 decisions: ["[[D0004-stroke-eraser]]"]
-updated: 2026-09-05
+updated: 2026-09-06
 ---
 # Eraser
 
@@ -31,5 +31,5 @@ Remove whole strokes by touching them. There is no partial erasing.
 | 2,000 strokes on the page | Hit test runs against bounding boxes first, then segments. Stays under one frame. |
 
 ## Acceptance
-- [ ] Drag the eraser across three strokes, undo once: all three return.
-- [ ] Erase a size S pen stroke without hitting it exactly.
+- [x] Drag the eraser across three strokes, undo once: all three return.
+- [x] Erase a size S pen stroke without hitting it exactly.

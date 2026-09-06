@@ -1,7 +1,7 @@
 ---
 type: feature
 id: F16
-status: built
+status: verified
 depends: ["[[pencil-input]]", "[[eraser]]"]
 decisions: ["[[D0007-pencil-double-tap]]"]
 updated: 2026-09-06
@@ -29,6 +29,6 @@ Two quick taps of the Pencil tip on the page switch to the Eraser; two more swit
 | Previous tool was the Eraser itself, or none recorded | Switches to the Pen. |
 
 ## Acceptance
-- [ ] Draw with the Pen, double-tap the page: the Eraser is active and no dots remain.
-- [ ] Double-tap again: the Pen is back.
-- [ ] Tap the Eraser on the toolbar while on Highlighter, then double-tap: Highlighter returns.
+- [x] Draw with the Pen, double-tap the page: the Eraser is active and no dots remain.
+- [x] Double-tap again: the Pen is back.
+- [x] Tap the Eraser on the toolbar while on Highlighter, then double-tap: Highlighter returns.

@@ -1,10 +1,10 @@
 ---
 type: feature
 id: F07
-status: built
+status: verified
 depends: ["[[persistence]]"]
 decisions: []
-updated: 2026-09-05
+updated: 2026-09-06
 ---
 # Undo and redo
 
@@ -29,5 +29,5 @@ Every change to ink can be taken back and put back again.
 | 201st entry | The oldest entry is dropped. |
 
 ## Acceptance
-- [ ] Draw three strokes, undo three times, redo three times: identical to the start.
-- [ ] Clear, then undo: everything returns.
+- [x] Draw three strokes, undo three times, redo three times: identical to the start.
+- [x] Clear, then undo: everything returns.
