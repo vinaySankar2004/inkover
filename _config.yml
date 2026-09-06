@@ -1,11 +1,22 @@
 title: Inkover
 description: Draw on any web page in Safari on iPad with Apple Pencil.
-theme: jekyll-theme-primer
+url: https://vinaysankar2004.github.io
+baseurl: /inkover
+markdown: kramdown
+defaults:
+  - scope:
+      path: ""
+    values:
+      layout: default
 exclude:
   - Inkover/
   - extension/
   - dev/
   - scripts/
+  - build/
+  - _meta/
   - CLAUDE.md
   - CONTEXT.md
   - CONTRIBUTING.md
+  - README.md
+  - LICENSE

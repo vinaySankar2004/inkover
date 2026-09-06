@@ -12,6 +12,7 @@ The closed set of document types, the frontmatter they carry, and the naming the
 | decision | `docs/decisions/D<NNNN>-<slug>.md` | Context, Decision, Consequences |
 | store | `docs/store/<slug>.md` | One file per App Store concern: market, listing, release. Sections free, but every value the owner types into App Store Connect lives in listing.md. |
 | legal | `docs/privacy.md` | The published privacy policy. Served by GitHub Pages; the App Store links to it. |
+| site | `index.md`, `support.md` | The public pages at the marketing and support URLs. Layout in `_layouts/`, styles and icons in `assets/`, same theme as the app's onboarding page. |
 | index | `docs/index.md` | Generated. Never hand-edited. |
 
 ## Frontmatter

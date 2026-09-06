@@ -26,7 +26,7 @@ The exact text and settings for App Store Connect. Copy from here; never retype 
 
 | Field | Value |
 |---|---|
-| Support URL | https://github.com/vinaySankar2004/inkover/issues |
+| Support URL | https://vinaysankar2004.github.io/inkover/support |
 | Marketing URL | https://vinaysankar2004.github.io/inkover/ |
 | Privacy policy URL | https://vinaysankar2004.github.io/inkover/docs/privacy |
 

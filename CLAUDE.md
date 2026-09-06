@@ -16,6 +16,7 @@ Built on ICM: the docs are the source of truth, the code implements them, and th
 | `docs/index.md` | GENERATED status board. Rebuild with the script, never edit. |
 | `docs/store/` | App Store: market analysis, the exact listing text, the release procedure. |
 | `docs/privacy.md` | The privacy policy the App Store links to. Published by GitHub Pages. |
+| `index.md`, `support.md`, `_layouts/`, `assets/` | The public site: landing page, support page, shared layout and styles. GitHub Pages builds it from `main`. |
 | `_meta/` | Schema, writing rules, templates. The factory. |
 | `extension/` | The web extension source. The only home for code. |
 | `dev/` | Harness page that runs the content script in a desktop browser, mouse as Pencil. Serve the repo root and open `dev/harness.html`. |
