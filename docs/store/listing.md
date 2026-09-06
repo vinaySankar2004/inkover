@@ -18,7 +18,7 @@ The exact text and settings for App Store Connect. Copy from here; never retype 
 | Primary category | Utilities |
 | Secondary category | Productivity |
 | Age rating | 4+ (answer No to every question) |
-| Price | Free at launch; later $5.99, per [[D0011-paid-up-front]]; all territories |
+| Price | Free, all territories |
 | Copyright | 2026 Vinayak Sankaranarayanan |
 | Version | 1.0.0 |
 

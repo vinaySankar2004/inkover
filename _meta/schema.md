@@ -10,7 +10,7 @@ The closed set of document types, the frontmatter they carry, and the naming the
 | architecture | `docs/architecture.md` | One H2 per shared mechanism. Feature specs link to these by heading. |
 | feature | `docs/features/<slug>.md` | Purpose, Behaviour, Edge cases, Acceptance |
 | decision | `docs/decisions/D<NNNN>-<slug>.md` | Context, Decision, Consequences |
-| store | `docs/store/<slug>.md` | One file per App Store concern: market, listing, release. Sections free, but every value the owner types into App Store Connect lives in listing.md. |
+| store | `docs/store/<slug>.md` | The App Store listing and its screenshots. Every value the owner types into App Store Connect lives in listing.md. Market notes and the release procedure are owner-only, in `private/`, outside the repo. |
 | legal | `docs/privacy.md` | The published privacy policy. Served by GitHub Pages; the App Store links to it. |
 | site | `index.md`, `support.md` | The public pages at the marketing and support URLs. Layout in `_layouts/`, styles and icons in `assets/`, same theme as the app's onboarding page. |
 | index | `docs/index.md` | Generated. Never hand-edited. |

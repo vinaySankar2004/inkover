@@ -56,7 +56,7 @@ The docs are the source of truth and the code implements them. Every feature has
 
 ## App Store
 
-Inkover is headed for the App Store as a free download, with a one-time price planned later. The listing text, the market notes and the release procedure live in [docs/store](docs/store/). The privacy policy is [docs/privacy.md](docs/privacy.md): the app collects nothing.
+Inkover is a free download on the App Store. The listing text and screenshots live in [docs/store](docs/store/). The privacy policy is [docs/privacy.md](docs/privacy.md): the app collects nothing.
 
 ## Contributing
 

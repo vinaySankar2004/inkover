@@ -7,3 +7,6 @@ build/
 
 # macOS
 .DS_Store
+
+# Owner-only plan, pricing and release logistics. Local to the owner's Mac; see CLAUDE.md.
+private/
