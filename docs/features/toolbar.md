@@ -20,10 +20,10 @@ The only visible UI. A floating pill with every control, operated by finger or P
 6. Two states. Collapsed: one circle showing the current tool and colour. Expanded: the full pill. Tap toggles. Turning Inkover on expands it; Lock and Unlock leave it as it is.
 7. Expanded contents, in groups: the grip; Lock, Pen, Highlight; Eraser, Trail, Spotlight; the colour swatches; the width slider; Undo, Redo; Hide, Clear; More. On a side edge each group is its own row of up to three, centred, so the column has no orphan cells.
 8. Colour swatches: six pen colours for Pen and Trail, four highlighter colours for Highlighter, none for Eraser and Spotlight. Pen colours: black, white, red, orange, blue, green. Highlighter colours: yellow, green, pink, blue.
-9. After the presets come up to three remembered custom colours, most recent first, then a rainbow swatch that opens the system colour picker. A picked colour applies at once and, on confirming, is remembered for that tool. Pen and Highlighter each remember their own three. A preset colour is never added to the remembered list.
+9. After the presets comes one custom swatch. With no colour picked yet it shows a rainbow and a tap opens the system colour picker. Once a colour is picked the swatch shows it: a tap selects it, a second tap opens the picker. Every colour picked replaces the swatch's colour, live while the picker is open. Pen and Highlighter each keep their own.
 10. Width slider, with a dot showing the width in the current colour: Pen 1 to 12 px in half steps, default 3; Highlighter 8 to 40 px, default 20; Spotlight band 40 to 200 px in steps of 4, default 80. Hidden for Eraser and Trail. Moving it redraws the stroke in progress.
-11. Tool, both colours, remembered colours, all three widths, preferences and position persist globally across pages.
-12. Notices appear beside the toolbar for 3 s. Only [[persistence]] raises them in v1.
+11. Tool, both colours, both custom colours, all three widths, preferences and position persist globally across pages.
+12. Notices appear beside the toolbar for 3 s: lock changes, the tool switched by a tip double-tap, a reset, and storage problems.
 13. Every tap target is 54 × 54 pt, or 44 × 44 pt with Compact on in [[preferences]]. Tool and action buttons carry a one-word label under the icon: Lock or Unlock, Pen, Highlight, Eraser, Trail, Spotlight, Undo, Redo, Hide or Show, Clear, More. Labels can be turned off there too.
 14. The pill is a row when snapped to the top or bottom edge and wraps to a second row when the screen is too narrow for one, as on an 11-inch iPad in portrait. On the left or right edge it is two columns wide so it fits a landscape iPad.
 15. Undo, Redo, Hide and Clear are disabled when they have nothing to act on.
@@ -41,8 +41,9 @@ The only visible UI. A floating pill with every control, operated by finger or P
 | Split View or Slide Over makes the page narrower than the pill | The row wraps again as needed. Every button stays on screen. |
 | Page sends a Content-Security-Policy that forbids inline styles | The toolbar, colours and sizes render anyway. Styles are applied through the CSSOM, which the policy does not govern. |
 | Page stylesheet has rules like `body > div { width: 280px }` | The toolbar keeps its size and position. Every property on the host is declared important. |
-| Colour picker dismissed without choosing | Colour unchanged, nothing remembered. |
-| Fourth custom colour picked | The oldest remembered colour drops off. |
+| Colour picker dismissed without touching it | Colour unchanged, swatch unchanged. |
+| Colour picker slid across many colours | Ink colour and the swatch follow live. The picker stays open until dismissed; nothing the toolbar does closes it. |
+| Custom swatch tapped while a preset is current | The custom colour is selected. The picker does not open. |
 | Slider moved while a stroke is in progress | Impossible with one Pencil; a finger on the slider mid-stroke changes the next stroke only. |
 
 ## Acceptance
@@ -52,3 +53,4 @@ The only visible UI. A floating pill with every control, operated by finger or P
 - [ ] Drag the toolbar to the left edge, open another site: it is on the left.
 - [ ] Pinch-zoom the page: the toolbar keeps its size and stays on screen.
 - [ ] Every button is comfortably tappable with a finger.
+- [ ] Open the colour picker and slide the hue: the picker stays open and the ink colour follows.

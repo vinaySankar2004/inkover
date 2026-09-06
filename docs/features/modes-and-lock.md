@@ -18,7 +18,7 @@ Reading and writing alternate without a switch. The hand browses until the Penci
 4. Unlocked: the Pencil is captured. Its first contact with the page switches to Locked, and that contact is the start of a stroke with the active tool.
 5. Locked: the Pencil is captured and every contact goes to the active tool. Nothing the Pencil does reaches the page or Safari's own gestures.
 6. Locked: finger and palm touches on the page do nothing. No scroll, pinch, tap, long press or text selection. The toolbar still answers to both.
-7. Unlock, on the toolbar, switches Locked to Unlocked. Lock, the same button, switches Unlocked to Locked without a Pencil contact.
+7. Unlock, on the toolbar, switches Locked to Unlocked. Lock, the same button, switches Unlocked to Locked without a Pencil contact. A notice names each change; after Unlock, while anything still touches the page, it says to lift the hand first.
 8. The Safari toolbar button toggles between Off and Unlocked.
 9. On page load, a page with stored ink opens Unlocked. A page without ink opens in Off.
 10. With a hardware keyboard, Escape unlocks. It does nothing while Unlocked.
@@ -33,6 +33,7 @@ Reading and writing alternate without a switch. The hand browses until the Penci
 | Palm lands beside the Pencil while Locked | Ignored. |
 | Palm lands and drifts before the Pencil touches, while Unlocked | The page may scroll until the Pencil lands, then it locks. iPadOS drops most palm touches once the Pencil is near. |
 | Finger is mid-scroll when the Pencil lands | The scroll already under way finishes. No new finger gesture starts until Unlock. |
+| Unlock tapped while the palm still rests on the page | Safari settles scrolling once per touch sequence, and that sequence was cancelled while Locked. Nothing scrolls until every finger and the palm lift; then the next touch scrolls. The Unlock notice says so. |
 | Pencil is drawing when a finger taps Unlock on the toolbar | The stroke continues and ends normally. The mode is Unlocked from then on. |
 | Pencil touches inside an iframe | Captured; ink is drawn. While Unlocked a finger on that iframe scrolls the outer page, not the iframe. |
 | Site has its own Pencil handling, for example a drawing canvas | Inkover wins while it is on. Turn Inkover off from Safari's button to use the site's canvas. |
@@ -48,7 +49,7 @@ Reading and writing alternate without a switch. The hand browses until the Penci
 - [ ] Touch the page with the Pencil: ink appears from that first contact and the lock closes.
 - [ ] While Locked, scroll and tap links with a finger: nothing happens.
 - [ ] While Locked, rest the palm and write: the page stays still and the strokes are unbroken.
-- [ ] Tap Unlock: a finger scrolls and taps again. Touch with the Pencil: it locks and draws.
+- [ ] Tap Unlock, lift everything off the glass: a finger scrolls and taps again. Touch with the Pencil: it locks and draws.
 - [ ] Drag the Pencil while Unlocked: it draws and nothing scrolls.
 - [ ] Reload a page with ink: it opens Unlocked with the ink visible.
 - [ ] Escape on a Magic Keyboard unlocks.

@@ -70,7 +70,7 @@ The anchor element for a stroke is chosen at Pencil-down, not Pencil-up, so a st
 
 ## Storage
 
-`browser.storage.local`, key `ink:<page key>`, value `{ v: 1, strokes: [...] }`. Global settings live under key `settings`: tool, previous tool, pen and highlighter colours, remembered custom colours per tool, pen width, highlighter width, spotlight band, label and compact preferences, toolbar edge and position. Saves are debounced 500 ms and flushed on `pagehide`. Rules for limits and versions are in [[persistence]].
+`browser.storage.local`, key `ink:<page key>`, value `{ v: 1, strokes: [...] }`. Global settings live under key `settings`: tool, previous tool, pen and highlighter colours, one custom colour per tool, pen width, highlighter width, spotlight band, label and compact preferences, toolbar edge and position. Saves are debounced 500 ms and flushed on `pagehide`. Rules for limits and versions are in [[persistence]].
 
 ## Stroke model
 

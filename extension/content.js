@@ -28,7 +28,6 @@
   const HL_WIDTH = { s: 12, m: 20, l: 32 };
   const SPOT_BAND = { s: 48, m: 80, l: 140 };
   const HL_ALPHA = 0.35;                         // highlighter.md rule 3
-  const CUSTOM_MAX = 3;                          // toolbar.md rule 9: remembered custom colours per tool
   const HEX = /^#[0-9a-f]{6}$/i;
 
   // A colour is a palette key or a hex string from the picker. Pen and Highlighter palettes reuse names.
@@ -60,7 +59,7 @@
     tool: Tool.Pen, prevTool: Tool.Pen,
     penColor: "black", hlColor: "yellow",
     penWidth: WIDTH.pen.def, hlWidth: WIDTH.highlighter.def, spotBand: WIDTH.spotlight.def,
-    customPen: [], customHl: [],
+    customPen: null, customHl: null,   // toolbar.md rule 9: one custom colour per tool, hex or null
     labels: true, compact: false,
     toolbar: { edge: "bottom", along: 1 },
   });
@@ -214,6 +213,7 @@
     if (next === Mode.Off) {
       cancelLive();
       trail.length = 0;
+      pageTouches.clear();
       removeDom();
       return;
     }
@@ -235,9 +235,12 @@
     if (!isOn()) return;
     if (state.mode === Mode.Locked) {
       setMode(Mode.Unlocked);
-      notice("Unlocked. The Pencil locks again on contact.");
+      // Safari settles scrolling once per touch sequence. A palm still resting was cancelled while
+      // Locked, so nothing scrolls until everything lifts. modes-and-lock.md edge case.
+      notice(pageTouches.size ? "Unlocked. Lift your hand, then scroll." : "Unlocked. The Pencil locks again on contact.");
     } else {
       setMode(Mode.Locked);
+      notice("Locked. Tap Unlock to scroll.");
     }
   }
 
@@ -262,7 +265,7 @@
     swallow(e);
     suppressClickUntil = performance.now() + 1500;
     if (activePointer !== null) return; // pen.md edge case: first pointer only
-    if (state.mode === Mode.Unlocked) setMode(Mode.Locked); // modes-and-lock.md rule 4: the contact is the lock
+    if (state.mode === Mode.Unlocked) { setMode(Mode.Locked); notice("Locked. Tap Unlock to scroll."); } // modes-and-lock.md rule 4: the contact is the lock
     activePointer = e.pointerId;
     beginStroke(e);
   }
@@ -298,9 +301,12 @@
     if (isPen(e) || state.mode === Mode.Locked || performance.now() < suppressClickUntil) swallow(e);
   }
 
+  const pageTouches = new Set(); // identifiers of touches currently on the page, toolbar excluded
+
   function onTouch(e) { // pencil-input.md rules 8 and 9
     if (!isOn() || state.fullscreen) return;
     if (host && e.composedPath().includes(host)) return;
+    for (const t of e.changedTouches) { if (e.type === "touchstart") pageTouches.add(t.identifier); else if (e.type !== "touchmove") pageTouches.delete(t.identifier); }
     if (state.mode === Mode.Locked) { swallow(e); return; } // a palm is a touch; while Locked no touch scrolls, and page scripts see none
     for (const t of e.changedTouches) {
       if (t.touchType === "stylus") { e.preventDefault(); return; }
@@ -1163,7 +1169,7 @@
   // ── Toolbar host ───────────────────────────────────────────────────────
   // toolbar.md. Markup and styles live in the shadow root.
 
-  const ui = { root: null, pill: null, dot: null, noticeEl: null, colors: null, widths: null, wrange: null, wdot: null, panel: null, buttons: {}, collapsed: true, panelOpen: false, dragging: false, posKey: "", version: 0 };
+  const ui = { root: null, pill: null, dot: null, noticeEl: null, colors: null, widths: null, wrange: null, wdot: null, panel: null, picker: null, pickerInput: null, pickerDot: null, buttons: {}, collapsed: true, panelOpen: false, dragging: false, posKey: "", version: 0 };
   let noticeTimer = 0;
 
   const ICONS = {
@@ -1207,8 +1213,11 @@
     .vertical .sep { width: 60%; height: 1px; margin: 4px 0; }
     .swatch span { display: block; width: 26px; height: 26px; border-radius: 50%; box-shadow: 0 0 0 1px rgba(255,255,255,0.25); }
     .swatch.active span { box-shadow: 0 0 0 3px #fff; }
-    .swatch.picker span { background: conic-gradient(#ff3b30, #ff9500, #ffd60a, #34c759, #007aff, #af52de, #ff3b30); }
-    .swatch.picker input { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; margin: 0; padding: 0; border: 0; cursor: pointer; }
+    .swatch.picker span { position: relative; background: conic-gradient(#ff3b30, #ff9500, #ffd60a, #34c759, #007aff, #af52de, #ff3b30); }
+    .swatch.picker i { display: none; position: absolute; inset: 4px; border-radius: 50%; }
+    .swatch.picker.custom i { display: block; }
+    .swatch.picker input { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; margin: 0; padding: 0; border: 0; cursor: pointer; pointer-events: none; }
+    .swatch.picker.pick input { pointer-events: auto; }
     .width { display: flex; align-items: center; gap: 8px; height: 54px; padding: 0 10px; }
     .compact .width { height: 44px; }
     .width .preview { width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; flex: none; }
@@ -1305,19 +1314,24 @@
     ui.buttons = {};
     for (const b of root.querySelectorAll("[data-act], [data-tool]")) ui.buttons[b.dataset.act || b.dataset.tool] = b;
 
+    // The custom swatch is built once and never rebuilt: on iPadOS the colour input fires change on
+    // every movement, and detaching the input closes the system picker. D0013.
+    ui.picker = document.createElement("button");
+    ui.picker.className = "btn swatch picker";
+    ui.picker.setAttribute("aria-label", "Custom colour");
+    const ring = document.createElement("span");
+    ui.pickerDot = document.createElement("i");
+    ring.appendChild(ui.pickerDot);
+    ui.picker.appendChild(ring);
+    ui.pickerInput = document.createElement("input");
+    ui.pickerInput.type = "color";
+    ui.picker.appendChild(ui.pickerInput);
+
     root.addEventListener("click", onToolbarClick);
     ui.wrange.addEventListener("input", () => { setCurrentWidth(+ui.wrange.value); previewWidth(); requestFx(); }); // toolbar.md rule 10
     ui.wrange.addEventListener("change", () => { saveSettings(); });
-    ui.colors.addEventListener("input", (e) => { // toolbar.md rule 9: the system colour picker
-      if (e.target.type !== "color") return;
-      setColor(e.target.value, false);
-      previewWidth();
-    });
-    ui.colors.addEventListener("change", (e) => {
-      if (e.target.type !== "color") return;
-      rememberCustom(e.target.value);
-      setColor(e.target.value, true);
-    });
+    ui.pickerInput.addEventListener("input", () => pickColor(ui.pickerInput.value, false)); // toolbar.md rule 9
+    ui.pickerInput.addEventListener("change", () => pickColor(ui.pickerInput.value, true));
     installDrag(ui.buttons.collapse, () => { ui.collapsed = true; ui.panelOpen = false; updateToolbar(); });
     installDrag(ui.dot, () => { ui.collapsed = false; updateToolbar(); });
     updateToolbar();
@@ -1329,6 +1343,11 @@
     const s = state.settings;
     if (btn.dataset.tool) { selectTool(btn.dataset.tool); return; }
     if (btn.dataset.color) { setColor(btn.dataset.color, true); return; }
+    if (btn === ui.picker) { // toolbar.md rule 9: first tap selects the custom colour; when it is current the input is live and opens the picker
+      const custom = s[customKey()];
+      if (custom && custom !== currentColor()) setColor(custom, true);
+      return;
+    }
     if (btn.dataset.pref) { s[btn.dataset.pref] = !s[btn.dataset.pref]; saveSettings(); updateToolbar(); return; } // preferences.md
     switch (btn.dataset.act) {
       case "lock": toggleLock(); break; // toolbar.md rule 7
@@ -1341,18 +1360,36 @@
     }
   }
 
+  function currentColor() { const s = state.settings; return s.tool === Tool.Highlighter ? s.hlColor : s.penColor; }
+  function customKey() { return state.settings.tool === Tool.Highlighter ? "customHl" : "customPen"; }
+
   function setColor(c, rebuild) {
     const s = state.settings;
     if (s.tool === Tool.Highlighter) s.hlColor = c; else s.penColor = c;
     if (rebuild) { saveSettings(); updateToolbar(); }
   }
 
-  function rememberCustom(hex) { // toolbar.md rule 9
+  function pickColor(hex, save) { // toolbar.md rule 9: every colour picked replaces the custom swatch, live, without touching the input
+    if (!HEX.test(hex)) return;
+    state.settings[customKey()] = hex;
+    setColor(hex, false);
+    paintColors();
+    previewWidth();
+    if (save) saveSettings();
+  }
+
+  function paintColors() { // active rings and the custom swatch, updated in place
     const s = state.settings;
-    const pal = s.tool === Tool.Highlighter ? HL_COLORS : PEN_COLORS;
-    if (Object.values(pal).includes(hex.toLowerCase())) return;
-    const key = s.tool === Tool.Highlighter ? "customHl" : "customPen";
-    s[key] = [hex, ...s[key].filter((c) => c !== hex)].slice(0, CUSTOM_MAX);
+    const current = currentColor();
+    const custom = s[customKey()];
+    for (const b of ui.colors.querySelectorAll(".swatch[data-color]")) b.classList.toggle("active", b.dataset.color === current);
+    ui.picker.classList.toggle("custom", !!custom);
+    ui.picker.classList.toggle("active", !!custom && custom === current);
+    ui.picker.classList.toggle("pick", !custom || custom === current);
+    ui.picker.setAttribute("aria-label", custom ? (custom === current ? "Custom colour " + custom + ". Tap to change it." : "Custom colour " + custom) : "Choose a colour");
+    if (custom) ui.pickerDot.style.background = custom;
+    const want = colorHex(s.tool, current);
+    if (ui.pickerInput.value !== want) ui.pickerInput.value = want;
   }
 
   function currentWidthSpec() {
@@ -1390,7 +1427,7 @@
 
   function resetPreferences() {
     const s = state.settings, d = defaultSettings();
-    Object.assign(s, { penColor: d.penColor, hlColor: d.hlColor, penWidth: d.penWidth, hlWidth: d.hlWidth, spotBand: d.spotBand, customPen: [], customHl: [] });
+    Object.assign(s, { penColor: d.penColor, hlColor: d.hlColor, penWidth: d.penWidth, hlWidth: d.hlWidth, spotBand: d.spotBand, customPen: null, customHl: null });
     saveSettings();
     updateToolbar();
     notice("Colours and widths reset");
@@ -1504,33 +1541,25 @@
     ui.buttons.prefs.classList.toggle("active", ui.panelOpen);
 
     const palette = s.tool === Tool.Highlighter ? HL_COLORS : (s.tool === Tool.Pen || s.tool === Tool.Trail) ? PEN_COLORS : null; // toolbar.md rule 8
-    const current = s.tool === Tool.Highlighter ? s.hlColor : s.penColor;
-    const customs = s.tool === Tool.Highlighter ? s.customHl : s.customPen;
-    ui.colors.innerHTML = "";
+    for (const b of Array.from(ui.colors.children)) if (b !== ui.picker) b.remove(); // the custom swatch stays put, see D0013
+    if (ui.picker.parentNode !== ui.colors) ui.colors.appendChild(ui.picker);
+    ui.picker.hidden = !palette;
     if (palette) {
       // Colours and sizes are set through the CSSOM, never as style attributes: a page's
       // Content-Security-Policy can block inline style attributes, and did on claude.ai.
-      const swatch = (value, hex, label) => {
+      const frag = document.createDocumentFragment();
+      for (const [name, hex] of Object.entries(palette)) {
         const b = document.createElement("button");
-        b.className = "btn swatch" + (value === current ? " active" : "");
-        b.dataset.color = value;
-        b.setAttribute("aria-label", label);
+        b.className = "btn swatch";
+        b.dataset.color = name;
+        b.setAttribute("aria-label", name);
         const dot = document.createElement("span");
         dot.style.background = hex;
         b.appendChild(dot);
-        ui.colors.appendChild(b);
-      };
-      for (const [name, hex] of Object.entries(palette)) swatch(name, hex, name);
-      for (const hex of customs) swatch(hex, hex, "Custom colour " + hex);   // toolbar.md rule 9
-      const picker = document.createElement("button");
-      picker.className = "btn swatch picker";
-      picker.setAttribute("aria-label", "Choose a colour");
-      picker.appendChild(document.createElement("span"));
-      const input = document.createElement("input");
-      input.type = "color";
-      input.value = colorHex(s.tool, current);
-      picker.appendChild(input);
-      ui.colors.appendChild(picker);
+        frag.appendChild(b);
+      }
+      ui.colors.insertBefore(frag, ui.picker);
+      paintColors();
     }
     const spec = currentWidthSpec(); // toolbar.md rule 10
     ui.widths.hidden = !spec;
@@ -1607,7 +1636,7 @@
       const d = defaultSettings();
       const s = stored.settings;
       const num = (v, spec, legacy) => { const n = typeof v === "number" ? v : legacy; return n >= spec.min && n <= spec.max ? n : spec.def; };
-      const hexes = (list) => Array.isArray(list) ? list.filter((c) => HEX.test(c)).slice(0, CUSTOM_MAX) : [];
+      const hex1 = (v) => typeof v === "string" && HEX.test(v) ? v : (Array.isArray(v) && HEX.test(v[0] || "") ? v[0] : null); // settings saved with a list keep its newest
       const color = (c, pal, fallback) => (pal[c] || HEX.test(c || "")) ? c : fallback;
       state.settings = {
         tool: Object.values(Tool).includes(s.tool) ? s.tool : d.tool,
@@ -1617,8 +1646,8 @@
         penWidth: num(s.penWidth, WIDTH.pen, PEN_BASE[s.size]),
         hlWidth: num(s.hlWidth, WIDTH.highlighter, HL_WIDTH[s.size]),
         spotBand: num(s.spotBand, WIDTH.spotlight, SPOT_BAND[s.size]),
-        customPen: hexes(s.customPen),
-        customHl: hexes(s.customHl),
+        customPen: hex1(s.customPen),
+        customHl: hex1(s.customHl),
         labels: s.labels !== false,
         compact: s.compact === true,
         toolbar: s.toolbar && ["top", "bottom", "left", "right"].includes(s.toolbar.edge) ? { edge: s.toolbar.edge, along: Math.min(1, Math.max(0, +s.toolbar.along || 0)) } : d.toolbar,
@@ -1634,7 +1663,7 @@
     window.addEventListener("pointerup", onPointerUp, cap);
     window.addEventListener("pointercancel", onPointerCancel, cap);
     window.addEventListener("click", onClick, cap);
-    for (const t of ["touchstart", "touchmove", "touchend"]) window.addEventListener(t, onTouch, { capture: true, passive: false });
+    for (const t of ["touchstart", "touchmove", "touchend", "touchcancel"]) window.addEventListener(t, onTouch, { capture: true, passive: false });
     window.addEventListener("keydown", onKey, cap);
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("scrollend", () => { bumpEpoch(); requestRender(); }, { passive: true });
