@@ -1,7 +1,7 @@
 ---
 type: feature
 id: F18
-status: built
+status: verified
 depends: ["[[modes-and-lock]]", "[[persistence]]", "[[anchoring]]", "[[undo-redo]]", "[[clear]]", "[[hide-ink]]", "[[toolbar]]"]
 decisions: ["[[D0016-every-frame]]"]
 updated: 2026-09-06
@@ -41,11 +41,11 @@ Pages that show their content inside an iframe, claude.ai artifacts and embedded
 | Page removes a frame while it holds ink | Its ink stays in storage under its key. It returns when a frame of that origin returns. |
 
 ## Acceptance
-- [ ] On a claude.ai artifact: Lock, circle a phrase, Unlock, scroll the artifact: the circle stays on the phrase.
-- [ ] Reload the artifact page: it opens Unlocked with the ink in place.
-- [ ] Draw in the artifact and on the surrounding page, Undo twice: both strokes go, newest first.
-- [ ] Clear: the page and the artifact are both empty. Undo restores both.
-- [ ] Hide: ink in the artifact hides too. Draw in the artifact: everything shows.
-- [ ] Locked, rest the palm on the artifact and write: nothing scrolls inside it.
-- [ ] On a page with a YouTube embed: Locked, the Pencil over the embed draws inside it; Unlocked, the embed plays.
-- [ ] With a Magic Keyboard and focus inside the artifact, Escape unlocks.
+- [x] On a claude.ai artifact: Lock, circle a phrase, Unlock, scroll the artifact: the circle stays on the phrase.
+- [x] Reload the artifact page: it opens Unlocked with the ink in place.
+- [x] Draw in the artifact and on the surrounding page, Undo twice: both strokes go, newest first.
+- [x] Clear: the page and the artifact are both empty. Undo restores both.
+- [x] Hide: ink in the artifact hides too. Draw in the artifact: everything shows.
+- [x] Locked, rest the palm on the artifact and write: nothing scrolls inside it.
+- [x] On a page with a YouTube embed: Locked, the Pencil over the embed draws inside it; Unlocked, the embed plays.
+- [x] With a Magic Keyboard and focus inside the artifact, Escape unlocks.
