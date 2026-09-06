@@ -2,46 +2,55 @@
    Toolbar styles are inside its shadow root in content.js.
 
    Every rule is !important on purpose. These elements sit in the page's own DOM, so any
-   page stylesheet with a selector like "body > div" would otherwise style them. */
+   page stylesheet with a selector like "body > div" would otherwise style them.
+   No "all: initial" here: it would also wipe the transforms and sizes the script sets. */
 
 .inkover-canvas {
-  all: initial !important;
-  position: fixed !important;
-  top: 0 !important;
-  left: 0 !important;
-  display: block !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  border: 0 !important;
-  max-width: none !important;
-  max-height: none !important;
-  opacity: 1 !important;
-  visibility: visible !important;
-  pointer-events: none !important; /* architecture: Input routing. The canvas never blocks. */
-  z-index: 2147483646 !important;
-}
-
-.inkover-shield {
-  /* Placed over iframes in Draw mode. architecture: Input routing. */
-  all: initial !important;
-  position: fixed !important;
-  display: block !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  border: 0 !important;
-  pointer-events: auto !important;
-  background: transparent !important;
-  z-index: 2147483645 !important;
-}
-
-.inkover-host {
-  all: initial !important;
   position: fixed !important;
   top: 0 !important;
   left: 0 !important;
   right: auto !important;
   bottom: auto !important;
   display: block !important;
+  box-sizing: content-box !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  max-width: none !important;
+  max-height: none !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  background: transparent !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform-origin: 0 0 !important;
+  pointer-events: none !important; /* architecture: Input routing. The canvas never blocks. */
+  z-index: 2147483646 !important;
+}
+
+.inkover-shield {
+  /* Placed over iframes in Draw mode. architecture: Input routing. */
+  position: fixed !important;
+  display: block !important;
+  box-sizing: border-box !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  max-width: none !important;
+  max-height: none !important;
+  pointer-events: auto !important;
+  background: transparent !important;
+  z-index: 2147483645 !important;
+}
+
+.inkover-host {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: auto !important;
+  bottom: auto !important;
+  display: block !important;
+  box-sizing: content-box !important;
   width: max-content !important;
   height: max-content !important;
   max-width: none !important;
@@ -51,6 +60,7 @@
   margin: 0 !important;
   padding: 0 !important;
   border: 0 !important;
+  background: transparent !important;
   opacity: 1 !important;
   visibility: visible !important;
   pointer-events: auto !important;

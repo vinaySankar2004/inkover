@@ -95,5 +95,7 @@ One `div` appended last in `body`, `position: fixed`, maximum z-index, holding a
 
 Two things about the page can break an overlay, and both were met on claude.ai:
 
-- The page's Content-Security-Policy applies to style attributes and `<style>` elements the extension inserts. So the toolbar stylesheet is a constructed `CSSStyleSheet` adopted by the shadow root, and colours and sizes are set through `element.style`, both of which are CSSOM and outside the policy's reach. A `<style>` element is the fallback only where constructed sheets do not exist.
-- The host, the canvases and the shields are elements in the page's DOM, so page selectors like `body > div` match them. Every property in `content.css` is `!important`, and the transforms and sizes set from script use `setProperty` with the important flag.
+- The page's Content-Security-Policy applies to style attributes the extension sets. Colours and sizes are therefore set through `element.style`, which is CSSOM and outside the policy's reach. The toolbar stylesheet is installed twice: as a constructed `CSSStyleSheet` adopted by the shadow root, and as a `<style>` element. Safari honours the element for content scripts even under a strict policy; the constructed sheet covers a page that blocks the element. Whichever applies, the toolbar is styled.
+- The host, the canvases and the shields are elements in the page's DOM, so page selectors like `body > div` match them. Every property in `content.css` is `!important`, and the transforms and sizes set from script use `setProperty` with the important flag. `content.css` never uses `all: initial`, because that would also wipe what the script sets and, if Safari ever served a stale script beside a fresh stylesheet, collapse the overlay.
+
+Safari on iPad caches an extension's scripts across app reinstalls until Safari is force-quit. After installing a new build, quit Safari from the app switcher and reopen it, or the previous script keeps running.

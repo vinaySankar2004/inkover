@@ -32,6 +32,8 @@ Deliberately not included: export, print, sync, Mac, finger drawing. The reasons
 4. On the iPad, open Settings, then Safari, then Extensions, and turn Inkover on. Allow it on all websites.
 5. In Safari, tap the extensions button in the address bar and choose Inkover to start drawing.
 
+After installing a newer build over an old one, force-quit Safari from the app switcher and open it again. Safari keeps an extension's scripts cached until then, so the old version can keep running under the new one.
+
 The web extension itself is the `extension/` folder. The Xcode project references it in place; there is no build step and no dependencies.
 
 To try the mechanics on a Mac without an iPad, serve the repository root and open the harness page. The mouse stands in for the Pencil there. It cannot show pressure or palm rejection.

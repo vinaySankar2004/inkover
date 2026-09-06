@@ -1179,20 +1179,18 @@
     host = document.createElement("div");
     host.className = "inkover-host";
     const shadow = host.attachShadow({ mode: "open" });
-    // A constructed stylesheet is CSSOM, so a page's Content-Security-Policy cannot block it.
-    // A <style> element could be. Fall back to one only where constructed sheets do not exist.
-    let styled = false;
+    // Two copies of the same stylesheet, on purpose. A constructed sheet is CSSOM, which a page's
+    // Content-Security-Policy cannot block, but Safari's isolated script world may not apply it to
+    // the page's shadow root. A <style> element is what Safari has always honoured for content
+    // scripts, but a policy could in principle block it. Whichever one takes, the toolbar is styled.
     try {
       const sheet = new CSSStyleSheet();
       sheet.replaceSync(TOOLBAR_CSS);
       shadow.adoptedStyleSheets = [sheet];
-      styled = true;
-    } catch (_) { styled = false; }
-    if (!styled) {
-      const style = document.createElement("style");
-      style.textContent = TOOLBAR_CSS;
-      shadow.appendChild(style);
-    }
+    } catch (_) { /* no constructed sheets here */ }
+    const style = document.createElement("style");
+    style.textContent = TOOLBAR_CSS;
+    shadow.appendChild(style);
     const root = document.createElement("div");
     root.id = "root";
     root.innerHTML = `
