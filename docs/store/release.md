@@ -1,6 +1,6 @@
 ---
 type: store
-updated: 2026-09-05
+updated: 2026-09-06
 ---
 # Release
 
@@ -61,7 +61,7 @@ Each step is one screen. Do not skip ahead; later screens depend on earlier ones
 6. Open **App Privacy**.
    - Press **Get Started**. Answer **No, we do not collect data from this app**. Press **Publish**.
 7. Open the **1.0 Prepare for Submission** page under iOS App.
-   - Screenshots: drag the five 13-inch iPad images from [[listing]] into the iPad slot, in order.
+   - Screenshots: drag the six PNGs from `docs/store/screenshots/` into the 13-inch iPad slot, in file-name order. The table in [[listing]] says what each one is. Leave the iPhone slots empty; the app is iPad only.
    - Promotional Text, Description, Keywords, Support URL, Marketing URL: copy each from [[listing]].
    - Version: **1.0.0**. Copyright: from [[listing]].
    - Build: press **Add Build** or the **+** next to Build and choose the uploaded build. If none is listed, wait for processing.

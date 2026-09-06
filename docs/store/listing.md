@@ -1,6 +1,6 @@
 ---
 type: store
-updated: 2026-09-05
+updated: 2026-09-06
 ---
 # App Store listing
 
@@ -87,14 +87,17 @@ Drawing requires an Apple Pencil. By design a finger never draws. While Locked t
 
 ## Screenshots
 
-iPad 13-inch display, 2064 × 2752 pixels portrait. Apple scales these to the smaller iPads. Five screenshots, captured on a real iPad with the Pencil, each with a short caption rendered above the image in the same typeface as the toolbar.
+iPad 13-inch display, 2064 × 2752 pixels portrait. Apple scales these to the smaller iPads. The app is iPad only, so no iPhone set is needed. Six screenshots, each with a short caption above the image in the same typeface as the toolbar.
 
-| Order | Shows | Caption |
-|---|---|---|
-| 1 | An article with a circled paragraph, an underline and a highlighted sentence, toolbar visible | Draw on any page. Lock to draw, unlock to browse. |
-| 2 | Spotlight held on one line, the rest dimmed | Hold the Pencil on a line. Everything else fades. |
-| 3 | Side by side: same page on tab one with ink and tab two without | Ink stays with its words, even when the page changes. |
-| 4 | A trail fading behind the Pencil along a sentence | Trace as you read. It disappears on its own. |
-| 5 | A rough circle and its snapped ellipse | Hold still, and rough becomes clean. |
+The files live in `docs/store/screenshots/`, numbered in upload order. They are generated, not captured: `scripts/screenshots.js` renders `dev/screenshots/article.html` with the real content script in WebKit at the iPad geometry, draws with the mouse standing in for the Pencil, and frames each capture under its caption. Edit this table first, then rerun the script; never retouch the PNGs by hand.
+
+| Order | File | Shows | Caption |
+|---|---|---|---|
+| 1 | `1-draw.png` | An article with a highlighted phrase, a circled phrase and an underlined sentence, toolbar docked right, Locked | Draw on any page. Lock to draw, unlock to browse. |
+| 2 | `2-spotlight.png` | Spotlight held on one line, the rest dimmed | Hold the Pencil on a line. Everything else fades. |
+| 3 | `3-anchored.png` | Side by side: the same page on tab one with ink and tab two without | Ink stays with its words, even when the page changes. |
+| 4 | `4-trail.png` | A blue trail fading behind the Pencil along a sentence | Trace as you read. It disappears on its own. |
+| 5 | `5-snap.png` | A rough circle, and a second one snapped to a clean ellipse | Hold still, and rough becomes clean. |
+| 6 | `6-colours.png` | Highlights in four palette colours and one custom colour, the highlighter palette and width slider showing | Four highlighters, six pens, and a colour of your own. |
 
 App icon: 1024 × 1024, from `extension/icons/icon-1024.png`, already in the asset catalog.

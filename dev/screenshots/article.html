@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The case for reading with a pen</title>
+<!-- The stage for App Store screenshots. A plain reading page with the content script loaded the
+     harness way, so the mouse acts as the Pencil. Driven by scripts/screenshots.js. Never shipped.
+     The text is original, written for this page. -->
+<link rel="stylesheet" href="../../extension/content.css">
+<style>
+  :root { --text: #1c1c1e; --muted: #6e6e73; --rule: rgba(60,60,67,0.16); --accent: #ff9500; }
+  html, body { margin: 0; background: #fff; color: var(--text); }
+  body { font: 20px/1.6 ui-serif, "New York", Georgia, "Times New Roman", serif; -webkit-font-smoothing: antialiased; }
+  .site { display: flex; align-items: center; justify-content: space-between; height: 60px; padding: 0 32px; border-bottom: 1px solid var(--rule); font: 600 15px/1 -apple-system, system-ui, sans-serif; letter-spacing: 0.08em; text-transform: uppercase; }
+  .site nav { display: flex; gap: 28px; color: var(--muted); font-weight: 500; letter-spacing: 0.06em; }
+  main { max-width: 660px; margin: 0 auto; padding: 44px 24px 160px; }
+  @media (min-width: 900px) { main { margin-left: 64px; } } /* room for the toolbar on the right edge */
+  .kicker { font: 600 13px/1 -apple-system, system-ui, sans-serif; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin: 0 0 18px; }
+  h1 { font: 700 46px/1.1 ui-serif, "New York", Georgia, serif; letter-spacing: -0.01em; margin: 0 0 18px; }
+  .dek { font-size: 23px; line-height: 1.4; color: var(--muted); margin: 0 0 24px; }
+  .byline { font: 500 14px/1 -apple-system, system-ui, sans-serif; color: var(--muted); margin: 0 0 34px; padding-bottom: 22px; border-bottom: 1px solid var(--rule); }
+  .byline b { color: var(--text); font-weight: 600; }
+  h2 { font: 700 27px/1.25 ui-serif, "New York", Georgia, serif; margin: 44px 0 14px; }
+  p { margin: 0 0 22px; }
+  blockquote { margin: 36px 0; padding: 4px 0 4px 26px; border-left: 3px solid var(--accent); font-size: 26px; line-height: 1.35; font-style: italic; color: #3a3a3c; }
+  .tabs { display: flex; gap: 4px; margin: 0 0 0; border-bottom: 1px solid var(--rule); font: 600 14px/1 -apple-system, system-ui, sans-serif; }
+  .tabs button { font: inherit; background: none; border: 0; padding: 12px 14px; color: var(--muted); border-bottom: 2px solid transparent; margin-bottom: -1px; }
+  .tabs button[aria-selected="true"] { color: var(--text); border-bottom-color: var(--text); }
+  .panel { padding: 22px 0 8px; }
+  .panel[hidden] { display: none; }
+  .panel p { font-size: 18px; line-height: 1.6; }
+  .panel dl { margin: 0; font-size: 18px; }
+  .panel dt { font: 600 15px/1 -apple-system, system-ui, sans-serif; margin: 0 0 6px; }
+  .panel dd { margin: 0 0 18px; }
+  .panel ol { margin: 0; padding-left: 22px; font-size: 18px; }
+  .panel li { margin: 0 0 10px; }
+  .tabs + .panels { margin-bottom: 28px; }
+  figure { margin: 34px 0; }
+  figcaption { font: 500 13px/1.5 -apple-system, system-ui, sans-serif; color: var(--muted); margin-top: 10px; }
+  .figure-block { height: 220px; border-radius: 14px; background: linear-gradient(135deg, #f2f2f7, #e5e5ea); display: flex; align-items: center; justify-content: center; color: var(--muted); font: 500 14px/1 -apple-system, system-ui, sans-serif; }
+</style>
+</head>
+<body>
+<header class="site">
+  <span>Marginalia</span>
+  <nav><span>Essays</span><span>Letters</span><span>Archive</span></nav>
+</header>
+<main>
+  <p class="kicker">On reading</p>
+  <h1>The case for reading with a pen in your hand</h1>
+  <p class="dek">Paper taught us to argue with a text. The screen took the argument away. It is worth taking it back.</p>
+  <p class="byline">By <b>Ada Merriweather</b> · 6 September 2026 · 9 min read</p>
+
+  <div class="tabs" role="tablist">
+    <button role="tab" aria-selected="true" data-tab="0">Summary</button>
+    <button role="tab" aria-selected="false" data-tab="1">Key terms</button>
+    <button role="tab" aria-selected="false" data-tab="2">Sources</button>
+  </div>
+  <div class="panels">
+    <section class="panel" data-tab="0">
+      <p>A reader who holds a pen reads differently. The pen is a promise to respond, and <span id="hl1">the promise changes how closely the eye attends</span>. This essay argues that the habit survived paper and can survive the screen, if the screen lets it.</p>
+      <p>Three habits are worth keeping: <span id="circ1">circling what puzzles</span>, underlining what persuades, and tracing a line to keep a tired eye moving.</p>
+    </section>
+    <section class="panel" data-tab="1" hidden>
+      <dl>
+        <dt>Marginalia</dt><dd>Notes, marks and drawings a reader leaves in the margins of a text.</dd>
+        <dt>Active reading</dt><dd>Reading that answers the page: questioning, marking, summarising as you go.</dd>
+        <dt>Tracking</dt><dd>Following a line with a finger or a pen so the eye does not lose its place.</dd>
+      </dl>
+    </section>
+    <section class="panel" data-tab="2" hidden>
+      <ol>
+        <li>Field notes from a reading group, spring 2026.</li>
+        <li>Interviews with eleven teachers of first-year composition.</li>
+        <li>The author's own margins, 1998 to the present.</li>
+      </ol>
+    </section>
+  </div>
+
+  <p>My grandmother's books are unreadable. Not because the print has faded but because she answered every page. Pencil brackets march down the margins. Question marks stand beside claims she doubted. A whole paragraph of a novel is crossed out with a single stroke and the word <em>no</em>. <span id="ul1">She was not defacing the books. She was reading them.</span></p>
+
+  <p>I inherited the habit without the books. On paper I still circle, underline and scribble. On a screen I do none of it, and I noticed only recently that <span id="snap1">I also remember less</span> of what I read there. The two facts are related, and the relation is the subject of this essay.</p>
+
+  <h2>What the pen does for the eye</h2>
+
+  <p>A pen slows the hand, and a slow hand slows the eye to the speed of understanding. Reading is not a single act but a negotiation between the speed at which we can recognise words and the speed at which we can hold their meaning. Left alone, recognition wins. <span id="snap2">The eye skates</span>. <span id="trail">A pen resting on the line is a small weight that keeps the eye from skating, and a mark at the end of a sentence is <span id="hl5">a receipt for having understood it</span>.</span></p>
+
+  <p>There is a second, humbler service. Tired eyes lose their place. On a dense page the same line gets read twice and the next one not at all. <span id="spot">A finger under the line, or a pen drawn along it, is <span id="hl2">the oldest reading aid there is</span>,</span> and no one has improved on it. Children are taught to stop doing it, which is a pity, because the readers who kept the habit are the ones who can still read a dense page at midnight.</p>
+
+  <blockquote>The margin is where the reader stops being an audience and becomes a correspondent.</blockquote>
+
+  <h2>What the screen took away</h2>
+
+  <p>The screen did not take the pen away on purpose. It simply never had one. Text on a screen is <span id="hl3">a picture of text</span>, redrawn sixty times a second, and a mark on a picture has nowhere to live. When the page scrolls, the mark must scroll. When a paragraph moves because an advert loaded above it, the mark must move too. These are hard problems, and for a long time the easiest answer was to offer a highlighter that turned words a dull yellow and called it annotation.</p>
+
+  <p>The result is a generation of readers who read a great deal and mark nothing. The reading is not worse in every way. It is faster, wider and more searchable. But it is shallower, and <span id="hl4">the shallowness is not a moral failing</span>. It is what happens when the hand has nothing to do.</p>
+
+  <figure>
+    <div class="figure-block">Figure 1. Three margins from one library, 1961 to 2026</div>
+    <figcaption>The brackets, the question marks and the single crossing stroke are the same across sixty years of one reader's books.</figcaption>
+  </figure>
+
+  <h2>Taking it back</h2>
+
+  <p>The pen is back, more or less. A stylus on a tablet is a good pen, better than most pencils. What is missing is permission: a page that lets the pen draw wherever it lands and keeps the drawing where it was made. That is a smaller ask than it sounds. It is one layer over the page, one rule that the pen draws and the hand does not, and a memory that ties each mark to the words beneath it.</p>
+
+  <p>Given that layer, the old habits return on their own. I circle what puzzles me. I underline what persuades me. Late at night I draw the pen along the line and let it fade behind me, because the point was never the mark. The point was the attention the mark required.</p>
+
+  <p>My grandmother would have understood the tablet immediately. She would have asked for a pen and started arguing with it.</p>
+</main>
+<script>
+  for (const b of document.querySelectorAll('[role="tab"]')) b.addEventListener("click", () => {
+    const i = +b.dataset.tab;
+    document.querySelectorAll('[role="tab"]').forEach((t) => t.setAttribute("aria-selected", +t.dataset.tab === i ? "true" : "false"));
+    document.querySelectorAll(".panel").forEach((p) => { p.hidden = +p.dataset.tab !== i; });
+  });
+</script>
+<script src="../shim.js"></script>
+<script src="../../extension/content.js"></script>
+</body>
+</html>
