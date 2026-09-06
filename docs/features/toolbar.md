@@ -35,7 +35,7 @@ The only visible UI. A floating pill with every control, operated by finger or P
 | Page uses the maximum z-index on something | Ties resolve by DOM order. The host is last in body, so the toolbar wins. |
 | Page re-renders body and drops the host | The host is re-appended on the next mutation batch. |
 | Safari Reader view | A different document. The extension does not run there. Accepted. |
-| Pencil taps a toolbar button with Pen active | The button acts. No ink, and the mode does not change. |
+| Pencil taps a toolbar button with Pen active | The button acts. No ink. |
 | Finger taps a toolbar button while Locked | The button acts. The lock applies to the page, not the toolbar. |
 | Toolbar dragged half off-screen | Snaps back fully inside on release. |
 | Split View or Slide Over makes the page narrower than the pill | The row wraps again as needed. Every button stays on screen. |

@@ -1,6 +1,6 @@
 # Inkover
 
-Safari Web Extension for iPadOS. Apple Pencil draws over any web page; a finger keeps browsing. A personal reading aid for one user.
+Safari Web Extension for iPadOS. Apple Pencil draws over any web page: lock to draw, unlock to browse. A personal reading aid for one user.
 
 Built on ICM: the docs are the source of truth, the code implements them, and the folder structure routes you. Anything learned goes into a file, never into memory alone.
 
@@ -32,7 +32,7 @@ Built on ICM: the docs are the source of truth, the code implements them, and th
 | Making a call | `_meta/decision-template.md` | Write `docs/decisions/DNNNN-slug.md`, link it from the affected spec. |
 | Implementing a feature | Its spec, `docs/architecture.md`, `CONTEXT.md` | Code in `extension/`, then set `status: built`. |
 | Verifying a feature | The spec's Acceptance list | Run it on the iPad, tick the boxes, set `status: verified`. |
-| Changing behaviour | The spec first | Edit the spec, then the code, in the same commit. |
+| Changing behaviour | The spec first | Edit the spec, run `python3 scripts/build-index.py --blast <slug> <words>` and fix every file it lists, then the code. One commit. |
 | Asked for status | Run `python3 scripts/build-index.py` | Read `docs/index.md` and report. |
 | Shipping a release | `docs/store/release.md` | Follow it top to bottom. Listing text comes from `docs/store/listing.md`, never retyped. |
 | Changing price or store copy | `docs/store/listing.md` first | Then App Store Connect, same day. |
@@ -42,5 +42,6 @@ Built on ICM: the docs are the source of truth, the code implements them, and th
 
 - One home per fact. Why lives in a decision, what in a feature spec, how in architecture. Link, never copy.
 - A spec that disagrees with the code is a bug. Fix one of them the same day.
+- Every behaviour change has a blast radius: the files that link to the spec and the prose that restates it (README, site, onboarding page, store listing). The script lists them; the commit touches all of them or says why not.
 - Nothing reaches `status: built` until a human has read the spec at `status: specified`.
 - Do not load the whole `docs/` tree for a task. Load product, the one spec, and what it links to.

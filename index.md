@@ -1,13 +1,13 @@
 ---
 title: Inkover
-description: Draw on any web page in Safari on iPad with Apple Pencil. Your finger keeps browsing, and the ink stays on the words it was drawn on.
+description: Draw on any web page in Safari on iPad with Apple Pencil. Lock to draw, unlock to browse. The ink stays on the words it was drawn on.
 class: landing
 ---
 <div class="hero">
 <div>
 <img class="icon" src="{{ '/assets/icon.png' | relative_url }}" alt="">
 <h1>A pen for the page you are reading.</h1>
-<p class="lead">Inkover puts Apple Pencil on top of Safari. Circle, underline and highlight any web page while your finger keeps scrolling. The ink stays attached to the words, survives reload, and never leaves your iPad.</p>
+<p class="lead">Inkover puts Apple Pencil on top of Safari. Lock the page, then circle, underline and highlight it with your hand resting on the glass. The ink stays attached to the words, survives reload, and never leaves your iPad.</p>
 <div class="actions">
 <span class="button soon">Coming to the App Store</span>
 <a class="button secondary" href="https://github.com/vinaySankar2004/inkover">View the source</a>
@@ -16,15 +16,15 @@ class: landing
 <div class="demo" aria-hidden="true">
 <p>Reading on a screen has <span class="circle">no margins</span>. If you circle things, underline them and trace along a line to keep your place, this is for you.</p>
 <p><span class="mark">Ink is attached to the text it was drawn on.</span> Switch a tab, expand a section, rotate the iPad, reload: it moves with its content.</p>
-<p>The Pencil draws. <span class="under">Your finger browses.</span></p>
+<p>Lock to draw. <span class="under">Unlock to browse.</span></p>
 <div class="toolbar"><span style="background:#1c1c1e" class="active"></span><span style="background:#fff"></span><span style="background:#ff3b30"></span><span style="background:#ff9500"></span><span style="background:#007aff"></span><span style="background:#34c759"></span></div>
 </div>
 </div>
 
 <div class="grid" markdown="1">
 <section markdown="1">
-## Pencil draws, finger browses
-Turn Inkover on and the Pencil is a pen from that moment. It never taps a link or scrolls by accident. Your finger browses until the Pencil touches the page; that touch locks the page so you can rest your hand and write. One tap on Unlock and your finger browses again.
+## Lock to draw, Unlock to browse
+Locked, the Pencil is a pen. It never taps a link or scrolls by accident, and your resting hand cannot move the page under it. Unlocked, the Pencil and your finger both browse as normal. One switch, nothing automatic.
 </section>
 <section markdown="1">
 ## Ink that stays put

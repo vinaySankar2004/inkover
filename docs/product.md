@@ -5,7 +5,7 @@ updated: 2026-09-06
 # Inkover
 
 ## Purpose
-Draw over any web page in Safari on iPad with Apple Pencil. A finger keeps scrolling, tapping and pinching as normal. Ink stays attached to the content it was drawn on and survives reload until it is cleared.
+Draw over any web page in Safari on iPad with Apple Pencil. Lock the page to draw with the hand resting on it; unlock to browse with Pencil or finger. Ink stays attached to the content it was drawn on and survives reload until it is cleared.
 
 ## Who it is for
 One person, reading. It exists so that reading a web page can involve circling, underlining, highlighting and doodling, the way paper does.
@@ -30,7 +30,7 @@ Use these words exactly, in docs and in code identifiers.
 | Stroke | One continuous Pencil-down to Pencil-up path with its tool, colour, size and points. |
 | Trail | Transient ink that fades in under a second and is never stored. |
 | Mode | Off, Unlocked or Locked. See [[modes-and-lock]]. |
-| Lock | The page takes no finger input; only the Pencil, and only as ink. Entered by the Pencil's first contact; left by tapping Unlock. |
+| Lock | Locked, the Pencil draws and the page ignores the hand. Unlocked, nothing is captured. The Lock button switches; nothing switches on its own. |
 | Tool | Pen, Highlighter, Eraser, Trail or Spotlight. Exactly one is active. |
 | Anchor | The DOM element a stroke is attached to, so it moves and hides with its content. See [[anchoring]]. |
 | Page key | The URL without its fragment. Ink is stored per page key. See [[D0010-page-key]]. |

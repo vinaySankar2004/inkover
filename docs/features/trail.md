@@ -12,7 +12,7 @@ updated: 2026-09-05
 A fidget. Ink that follows the Pencil and fades away, for tracing along a sentence while reading it without leaving a mark.
 
 ## Behaviour
-1. Trail is a tool. It is active only while Inkover is on and only while selected, so the Pencil is captured like any other tool.
+1. Trail is a tool. It is active only while Locked and only while selected, so the Pencil is captured like any other tool.
 2. While the Pencil is down, every new point adds a segment that fades from full opacity to zero over 800 ms and is then removed.
 3. Width tapers from twice the pen size base at the head to zero at the oldest visible point.
 4. Colour is the current pen colour.

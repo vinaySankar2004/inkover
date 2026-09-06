@@ -228,19 +228,19 @@
     const now = performance.now();
     if (now - state.toggleAt < TOGGLE_GUARD) return;
     state.toggleAt = now;
-    setMode(isOn() ? Mode.Off : Mode.Unlocked);
+    setMode(isOn() ? Mode.Off : Mode.Locked); // modes-and-lock.md rule 7
   }
 
-  function toggleLock() { // modes-and-lock.md rule 7
+  function toggleLock() { // modes-and-lock.md rule 6
     if (!isOn()) return;
     if (state.mode === Mode.Locked) {
       setMode(Mode.Unlocked);
       // Safari settles scrolling once per touch sequence. A palm still resting was cancelled while
       // Locked, so nothing scrolls until everything lifts. modes-and-lock.md edge case.
-      notice(pageTouches.size ? "Unlocked. Lift your hand, then scroll." : "Unlocked. The Pencil locks again on contact.");
+      notice(pageTouches.size ? "Unlocked. Lift your hand, then scroll." : "Unlocked. Pencil and finger browse.");
     } else {
       setMode(Mode.Locked);
-      notice("Locked. Tap Unlock to scroll.");
+      notice("Locked. The Pencil draws.");
     }
   }
 
@@ -257,21 +257,23 @@
     e.stopImmediatePropagation();
   }
 
+  // Nothing below captures anything unless the mode is Locked. modes-and-lock.md rules 3 to 5.
+  const locked = () => state.mode === Mode.Locked && !state.fullscreen;
+
   function onPointerDown(e) {
-    if (!isOn() || onToolbar(e) || state.fullscreen) return;
-    if (state.mode === Mode.Locked && isHand(e)) { swallow(e); return; } // modes-and-lock.md rule 6
+    if (!locked() || onToolbar(e)) return;
+    if (isHand(e)) { swallow(e); return; }
     if (!isPen(e)) return;
     if (DEV && e.button !== 0) return;
     swallow(e);
     suppressClickUntil = performance.now() + 1500;
     if (activePointer !== null) return; // pen.md edge case: first pointer only
-    if (state.mode === Mode.Unlocked) { setMode(Mode.Locked); notice("Locked. Tap Unlock to scroll."); } // modes-and-lock.md rule 4: the contact is the lock
     activePointer = e.pointerId;
     beginStroke(e);
   }
 
   function onPointerMove(e) {
-    if (state.mode === Mode.Locked && isHand(e) && !onToolbar(e)) { swallow(e); return; }
+    if (locked() && isHand(e) && !onToolbar(e)) { swallow(e); return; }
     if (activePointer === null || e.pointerId !== activePointer) return;
     swallow(e);
     if (onToolbar(e)) { activePointer = null; endStroke(e, false); return; }
@@ -281,7 +283,7 @@
   }
 
   function onPointerUp(e) {
-    if (state.mode === Mode.Locked && isHand(e) && !onToolbar(e)) { swallow(e); return; }
+    if (locked() && isHand(e) && !onToolbar(e)) { swallow(e); return; }
     if (activePointer === null || e.pointerId !== activePointer) return;
     swallow(e);
     activePointer = null;
@@ -296,28 +298,25 @@
 
   let suppressClickUntil = 0;
 
-  function onClick(e) { // modes-and-lock.md rules 5 and 6: nothing captured ever reaches the page
-    if (!isOn() || onToolbar(e)) return;
-    if (isPen(e) || state.mode === Mode.Locked || performance.now() < suppressClickUntil) swallow(e);
+  function onClick(e) { // modes-and-lock.md rules 4 and 5: nothing captured ever reaches the page
+    if (!locked() || onToolbar(e)) return;
+    if (isPen(e) || isHand(e) || performance.now() < suppressClickUntil) swallow(e);
   }
 
   const pageTouches = new Set(); // identifiers of touches currently on the page, toolbar excluded
 
-  function onTouch(e) { // pencil-input.md rules 8 and 9
+  function onTouch(e) { // pencil-input.md rules 8 and 9: while Locked, no touch scrolls and page scripts see none
     if (!isOn() || state.fullscreen) return;
     if (host && e.composedPath().includes(host)) return;
     for (const t of e.changedTouches) { if (e.type === "touchstart") pageTouches.add(t.identifier); else if (e.type !== "touchmove") pageTouches.delete(t.identifier); }
-    if (state.mode === Mode.Locked) { swallow(e); return; } // a palm is a touch; while Locked no touch scrolls, and page scripts see none
-    for (const t of e.changedTouches) {
-      if (t.touchType === "stylus") { e.preventDefault(); return; }
-    }
+    if (locked()) swallow(e);
   }
 
-  function onKey(e) { // modes-and-lock.md rule 10, undo-redo.md rule 2
+  function onKey(e) { // undo-redo.md rule 2
     if (!isOn()) return;
     const ae = document.activeElement;
     if (ae && ae !== document.body && ae !== document.documentElement && ae !== host) return;
-    if (e.key === "Escape") {
+    if (e.key === "Escape") { // modes-and-lock.md rule 9
       if (state.mode === Mode.Locked) { e.preventDefault(); toggleLock(); }
       return;
     }
@@ -336,7 +335,7 @@
   // ── Iframe shields ─────────────────────────────────────────────────────
 
   function updateShields() {
-    if (!isOn() || state.fullscreen) { clearShields(); return; }
+    if (!locked()) { clearShields(); return; } // Unlocked, iframes are native
     let i = 0;
     for (const f of document.querySelectorAll("iframe, embed, object")) {
       const r = f.getBoundingClientRect();
@@ -1528,15 +1527,15 @@
   function updateToolbar() {
     if (!ui.root) return;
     const s = state.settings;
-    const locked = state.mode === Mode.Locked;
+    const isLocked = state.mode === Mode.Locked;
     ui.pill.hidden = ui.collapsed;
     ui.dot.hidden = !ui.collapsed;
     ui.panel.hidden = !ui.panelOpen || ui.collapsed;
     ui.root.classList.toggle("nolabels", !s.labels);   // preferences.md rule 2
     ui.root.classList.toggle("compact", !!s.compact);   // preferences.md rule 3
-    ui.buttons.lock.innerHTML = svg(locked ? "lock" : "unlock") + "<small>" + (locked ? "Unlock" : "Lock") + "</small>"; // modes-and-lock.md rule 7: icon shows the state, label the action
-    ui.buttons.lock.classList.toggle("active", locked);
-    ui.buttons.lock.setAttribute("aria-label", locked ? "Locked. Unlock to browse by hand." : "Unlocked. Lock the page for the Pencil.");
+    ui.buttons.lock.innerHTML = svg(isLocked ? "lock" : "unlock") + "<small>" + (isLocked ? "Unlock" : "Lock") + "</small>"; // modes-and-lock.md rule 6: icon shows the state, label the action
+    ui.buttons.lock.classList.toggle("active", isLocked);
+    ui.buttons.lock.setAttribute("aria-label", isLocked ? "Locked. Unlock to browse." : "Unlocked. Lock to draw.");
     for (const t of Object.values(Tool)) ui.buttons[t].classList.toggle("active", s.tool === t);
     ui.buttons.prefs.classList.toggle("active", ui.panelOpen);
 
@@ -1613,7 +1612,7 @@
     invalidateResolutions();
     state.strokes = await loadInk(key);
     if (isOn()) setMode(Mode.Off);
-    if (state.strokes.length) setMode(Mode.Unlocked); // modes-and-lock.md rule 9
+    if (state.strokes.length) setMode(Mode.Unlocked); // modes-and-lock.md rule 8
   }
 
   // ── Wiring ─────────────────────────────────────────────────────────────
@@ -1685,7 +1684,7 @@
       if (msg && msg.type === "inkover:toggle") toggleFromButton();
     });
 
-    if (state.strokes.length) setMode(Mode.Unlocked); // modes-and-lock.md rule 9
+    if (state.strokes.length) setMode(Mode.Unlocked); // modes-and-lock.md rule 8
     if (DEV) window.__inkoverDebug = { state, Mode, setMode, toggleLock, placeStroke, resolveAnchor, findAnchor, locatorFor, geoCache, resolveCache, vp, holdCheck, flushSave, renderInk, renderFx, readViewport, trail, undo, redo, clearPage, toggleHidden, checkPageKey, updateToolbar, updateShields, hitStrokes, ui, get live() { return live; } };
   }
 

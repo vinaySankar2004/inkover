@@ -1,8 +1,15 @@
 #!/usr/bin/env python3
 """Rebuild docs/index.md from frontmatter and report broken wikilinks.
 
-Usage: python3 scripts/build-index.py
-Exit code 1 if any wikilink does not resolve, so it can gate a commit.
+Usage:
+  python3 scripts/build-index.py                 rebuild the index, fail on broken links
+  python3 scripts/build-index.py --blast <slug>  list every file a spec or decision reaches
+  python3 scripts/build-index.py --blast <slug> <word>...  also every prose line using those words
+
+The blast radius of a change is the set of files that must be re-read before the
+change lands: everything that links to the spec, and every piece of prose that
+describes the behaviour in its own words. Exit code 1 if any wikilink does not
+resolve, so it can gate a commit.
 """
 import re
 import sys
@@ -14,6 +21,12 @@ DOCS = ROOT / "docs"
 FEATURES = DOCS / "features"
 DECISIONS = DOCS / "decisions"
 INDEX = DOCS / "index.md"
+
+# Prose that restates behaviour outside docs/. Anything here can go stale when a spec changes.
+PROSE = [
+    "README.md", "CONTRIBUTING.md", "CLAUDE.md", "index.md", "support.md",
+    "Inkover/Inkover/Resources/Base.lproj/Main.html", "extension/manifest.json", "dev/harness.html",
+]
 
 FM_RE = re.compile(r"^---\n(.*?)\n---\n", re.S)
 LINK_RE = re.compile(r"\[\[([^\]|#]+)")
@@ -72,6 +85,48 @@ def broken_links():
     return problems
 
 
+def blast(slug, words):
+    """Print what a change to `slug` can reach. Exit 1 if the slug does not exist."""
+    if slug not in all_slugs():
+        print(f"no document named {slug}")
+        return 1
+    print(f"Blast radius of {slug}")
+    print("\nLinks to it (re-read each; frontmatter depends/decisions/affects and body links):")
+    hits = 0
+    for path in sorted(list(DOCS.rglob("*.md")) + list((ROOT / "_meta").glob("*.md"))):
+        if path == INDEX or path.stem == slug:
+            continue
+        if slug in LINK_RE.findall(CODE_RE.sub("", path.read_text())):
+            print(f"  {path.relative_to(ROOT)}")
+            hits += 1
+    if not hits:
+        print("  none")
+    print("\nCode that cites it:")
+    hits = 0
+    for path in sorted((ROOT / "extension").glob("*.js")):
+        for n, line in enumerate(path.read_text().splitlines(), 1):
+            if f"{slug}.md" in line:
+                print(f"  {path.relative_to(ROOT)}:{n}")
+                hits += 1
+    if not hits:
+        print("  none")
+    if words:
+        pat = re.compile("|".join(re.escape(w) for w in words), re.I)
+        print(f"\nProse using {', '.join(words)} (check each still tells the truth):")
+        hits = 0
+        for rel in PROSE + [str(p.relative_to(ROOT)) for p in sorted(DOCS.rglob("*.md")) if p != INDEX]:
+            path = ROOT / rel
+            if not path.exists():
+                continue
+            for n, line in enumerate(path.read_text().splitlines(), 1):
+                if pat.search(line) and not line.startswith(("depends:", "decisions:", "affects:", "supersedes:")):
+                    print(f"  {rel}:{n}: {line.strip()[:110]}")
+                    hits += 1
+        if not hits:
+            print("  none")
+    return 0
+
+
 def table(rows, kind):
     out = [f"| {kind} | Id | Status | Updated |", "|---|---|---|---|"]
     for r in rows:
@@ -117,4 +172,6 @@ def main():
 
 
 if __name__ == "__main__":
+    if len(sys.argv) >= 3 and sys.argv[1] == "--blast":
+        sys.exit(blast(sys.argv[2], sys.argv[3:]))
     sys.exit(main())

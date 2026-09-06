@@ -1,12 +1,12 @@
 # Inkover
 
-Draw over any web page in Safari on iPad with Apple Pencil. The Pencil draws, a finger keeps scrolling and tapping, and the ink stays attached to the content it was drawn on until you clear it.
+Draw over any web page in Safari on iPad with Apple Pencil. Lock the page to draw, unlock to browse, and the ink stays attached to the content it was drawn on until you clear it.
 
 Inkover exists because reading on a screen has no margins. Circling a sentence, underlining a phrase, tracing along a line while you read: those are the things that keep a distracted reader reading, and no Safari extension did them well.
 
 ## Status
 
-Pre-alpha. Every v1 feature is specified and implemented, and the mechanics pass in a desktop harness. None has been verified on an iPad with a Pencil yet. The live list is in [docs/index.md](docs/index.md).
+Pre-release. Every v1 feature is specified, implemented and in daily use on an iPad; the formal acceptance lists are being run before the first App Store build. The live list is in [docs/index.md](docs/index.md).
 
 ## What it does
 
@@ -14,7 +14,7 @@ Pre-alpha. Every v1 feature is specified and implemented, and the mechanics pass
 - Trail: ink that follows the Pencil and fades in under a second, for tracing while reading.
 - Ink is anchored to the element it was drawn on, so it moves with the content and hides when a tab or section hides.
 - Ink persists per page until cleared. Nothing leaves the device.
-- A finger browses until the Pencil touches the page. That touch locks the page for writing; Unlock hands it back to the finger. The Pencil never scrolls.
+- One lock. Locked, the Pencil draws and the page ignores the hand. Unlocked, Pencil and finger both browse. Nothing switches on its own.
 - Undo, redo, clear.
 
 Deliberately not included: export, print, sync, Mac, finger drawing. The reasons are in [docs/decisions](docs/decisions/D0009-non-goals.md).

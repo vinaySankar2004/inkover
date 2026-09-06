@@ -32,11 +32,11 @@ The exact text and settings for App Store Connect. Copy from here; never retype 
 
 ## Promotional text (170)
 
-Circle, underline and highlight web pages with Apple Pencil while your finger keeps scrolling. Ink stays on the words it was drawn on, even when the page changes.
+Circle, underline and highlight web pages with Apple Pencil. Lock to draw, unlock to browse. Ink stays on the words it was drawn on, even when the page changes.
 
 ## Description (4000)
 
-Inkover puts a pen on top of Safari. Pick up your Apple Pencil, draw on the page you are reading, and put it down. Your finger keeps scrolling, tapping and pinching the whole time.
+Inkover puts a pen on top of Safari. Lock the page, draw on what you are reading with your hand resting on the glass, unlock and read on. The ink stays where you put it.
 
 It exists because reading on a screen has no margins. If you circle things, underline them and trace along a line to keep your place, this is for you.
 
@@ -52,7 +52,7 @@ INK THAT STAYS PUT
 Most drawing extensions paint on a spot on the screen. Inkover attaches every stroke to the text or image it was drawn on. Switch a tab on the page, expand a section, rotate the iPad, reload: the ink moves with its content and hides while that content is hidden.
 
 THE PENCIL IS THE ONLY PEN
-Turn Inkover on and the Pencil is a pen from that moment. It never taps a link or scrolls by accident. Your finger browses as normal until the Pencil touches the page; that touch locks the page, so you can rest your hand and write without anything moving under it. One tap on Unlock and your finger browses again.
+Tap Lock and the Pencil is a pen: it never taps a link or scrolls by accident, and your resting hand cannot move the page under it. Tap Unlock and both the Pencil and your finger browse as normal. One switch, nothing automatic.
 
 PRIVATE BY DESIGN
 Ink is saved on your iPad, per page, until you clear it. There is no account, no sync, no server and no analytics. Inkover collects nothing.
@@ -83,7 +83,7 @@ Notes for the reviewer:
 
 Inkover is a Safari web extension for iPad. To test it: install the app, open Settings, then Apps, Safari, Extensions, Inkover, and turn on Allow Extension. Under Permissions set All Websites to Allow. Open any article in Safari and tap the Inkover button in the address bar. The toolbar appears at the bottom of the page.
 
-Drawing requires an Apple Pencil. By design a finger never draws; it scrolls and taps the page while the Pencil draws. Without a Pencil you can still exercise the toolbar, the lock, hide, and clear. The app collects no data and makes no network requests.
+Drawing requires an Apple Pencil. By design a finger never draws. While Locked the Pencil draws and the page ignores the hand; tap Unlock and both browse as usual. Without a Pencil you can still exercise the toolbar, the lock, hide, and clear. The app collects no data and makes no network requests.
 
 ## Screenshots
 
@@ -91,7 +91,7 @@ iPad 13-inch display, 2064 × 2752 pixels portrait. Apple scales these to the sm
 
 | Order | Shows | Caption |
 |---|---|---|
-| 1 | An article with a circled paragraph, an underline and a highlighted sentence, toolbar visible | Draw on any page. Your finger keeps browsing. |
+| 1 | An article with a circled paragraph, an underline and a highlighted sentence, toolbar visible | Draw on any page. Lock to draw, unlock to browse. |
 | 2 | Spotlight held on one line, the rest dimmed | Hold the Pencil on a line. Everything else fades. |
 | 3 | Side by side: same page on tab one with ink and tab two without | Ink stays with its words, even when the page changes. |
 | 4 | A trail fading behind the Pencil along a sentence | Trace as you read. It disappears on its own. |

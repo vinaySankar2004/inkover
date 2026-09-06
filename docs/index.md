@@ -47,4 +47,5 @@ Features: 17 built.
 | [D0011: Free at launch, then paid up front at $5.99](decisions/D0011-paid-up-front.md) | D0011 | `accepted` | 2026-09-05 |
 | [D0012: Keep the name Inkover](decisions/D0012-keep-the-name.md) | D0012 | `accepted` | 2026-09-05 |
 | [D0013: The system colour picker, not a custom one](decisions/D0013-system-colour-picker.md) | D0013 | `accepted` | 2026-09-06 |
-| [D0014: Pencil locks on contact, Unlock frees the hand](decisions/D0014-pencil-locks-on-contact.md) | D0014 | `accepted` | 2026-09-06 |
+| [D0014: Pencil locks on contact, Unlock frees the hand](decisions/D0014-pencil-locks-on-contact.md) | D0014 | `superseded` | 2026-09-06 |
+| [D0015: A manual lock, nothing automatic](decisions/D0015-manual-lock.md) | D0015 | `accepted` | 2026-09-06 |

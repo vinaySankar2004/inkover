@@ -19,15 +19,16 @@ Everything Inkover knows about the Pencil as a device: what is read from it and 
 5. Tilt, azimuth, barrel roll and hover are ignored.
 6. Pencil double-tap does nothing. Safari does not expose it to web content. See [[D0007-pencil-double-tap]].
 7. A stroke ends on pointerup or pointercancel. A stroke with a single point is kept as a dot.
-8. While Inkover is on, stylus touch events are cancelled at capture, so Safari does not scroll, select text or start Scribble from a Pencil contact.
-9. While Locked, every finger and palm touch on the page is cancelled at capture. A resting palm that drifts would otherwise start a scroll, and Safari cancels the Pencil stroke when a scroll starts. See [[modes-and-lock]] rule 6.
+8. While Locked, stylus touch events are cancelled at capture, so Safari does not scroll, select text or start Scribble from a Pencil contact.
+9. While Locked, every finger and palm touch on the page is cancelled at capture. A resting palm that drifts would otherwise start a scroll, and Safari cancels the Pencil stroke when a scroll starts. See [[modes-and-lock]] rule 5.
+10. While Unlocked, nothing is captured. The Pencil is a native pointer and draws nothing.
 
 ## Edge cases
 | Situation | Expected |
 |---|---|
 | First-generation Pencil | Works identically. Hover is unused on every Pencil. |
 | Pencil battery dies mid-stroke | pointercancel; the stroke is kept as drawn. |
-| Pencil down on a text field | No keyboard, no Scribble. Ink is drawn. A finger opens the field while Unlocked. |
+| Pencil down on a text field while Locked | No keyboard, no Scribble. Ink is drawn. Unlocked, the field opens as usual. |
 | Pressure reported as 0 for a whole stroke | Stroke drawn at mid pressure per rule 3. |
 | Very fast flick | No visible gaps per rule 4. |
 | Two strokes in quick succession | Two separate strokes. There is no join threshold. |
@@ -37,5 +38,5 @@ Everything Inkover knows about the Pencil as a device: what is read from it and 
 
 ## Acceptance
 - [ ] Light and hard presses visibly differ in width with the Pen tool.
-- [ ] Pencil over a search box does not open the keyboard.
+- [ ] Locked, the Pencil over a search box does not open the keyboard.
 - [ ] A finger with any tool leaves no ink.

@@ -12,7 +12,7 @@ updated: 2026-09-05
 A focus aid. While the Pencil is down with the Spotlight tool, the page dims except a horizontal band around the tip, so one or two lines stand out. Lifting restores the page. Nothing is stored.
 
 ## Behaviour
-1. Spotlight is a tool, active only while Inkover is on. The Pencil is captured like any other tool.
+1. Spotlight is a tool, active only while Locked. The Pencil is captured like any other tool.
 2. Pencil-down dims the whole visual viewport with black at 0.7 opacity, except a band centred on the Pencil's vertical position.
 3. Band height is the slider's value, 40 to 200 visual pixels, default 80. The band spans the full width. See [[toolbar]] rule 10.
 4. Band edges are soft: a 16 px gradient on each side.

@@ -1,7 +1,7 @@
 ---
 type: decision
 id: D0014
-status: accepted
+status: superseded
 date: 2026-09-06
 affects: ["[[modes-and-lock]]", "[[pencil-input]]"]
 supersedes: ["D0002"]
@@ -20,3 +20,4 @@ Three modes. Unlocked: the hand browses, the Pencil is captured, and the Pencil'
 - Reading again costs one tap on Unlock.
 - The Pencil never taps links, fields or buttons. The hand does that while Unlocked.
 - Touch is intercepted in exactly one mode, Locked, and only outside the toolbar.
+- Superseded the same day by [[D0015-manual-lock]]: after Unlock the finger stayed dead until every touch lifted, and the automatic hand-off was hard to predict.

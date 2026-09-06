@@ -18,12 +18,12 @@ Tap the same button again to turn Inkover off on that page.
 </section>
 
 <section markdown="1">
-## Pencil draws, finger browses
-- **Unlocked.** Your finger scrolls, taps and pinches as normal. The Pencil cannot scroll.
-- **The Pencil touches the page.** That touch locks the page and starts a stroke. While locked, your hand does nothing on the page, so you can rest your palm and write.
-- **Unlock.** Tap Unlock on the toolbar, lift your hand, and your finger browses again until the next Pencil contact.
+## Lock to draw, Unlock to browse
+- **Locked.** The Pencil draws. Your hand does nothing on the page, so you can rest your palm and write. The Pencil never taps a link or scrolls.
+- **Unlocked.** The Pencil and your finger both scroll, tap and pinch as normal. Nothing draws.
+- **The lock button** on the toolbar switches between the two. Nothing switches on its own. Turning Inkover on from Safari's button starts Locked.
 
-The Pencil never taps a link, opens a field or selects text while Inkover is on. Use a finger for that.
+After Unlock, lift your whole hand before scrolling: a palm that was already resting is ignored until it lifts.
 </section>
 
 <section markdown="1">
@@ -45,8 +45,8 @@ Ink is saved on this iPad per page address, until you clear it. It reappears whe
 <section markdown="1">
 ## If something is wrong
 - **The toolbar does not appear.** Check that the extension is allowed in Settings and that the site is allowed. Then force-quit Safari from the app switcher and open it again: Safari keeps an old copy of an extension running until then.
-- **The Pencil scrolls the page.** Inkover is off on this page. Tap its button in the address bar.
-- **A finger does nothing.** The page is locked. Tap Unlock, then lift your whole hand before scrolling.
+- **The Pencil scrolls instead of drawing.** Inkover is off or Unlocked. Tap its button in the address bar, or tap Lock on the toolbar.
+- **A finger does nothing.** The page is Locked. Tap Unlock, then lift your whole hand before scrolling.
 - **Ink is in the wrong place after the page changed.** The text it was drawn on moved in a way Inkover could not follow. Undo and redraw; it is the exception, not the rule.
 - **Inkover does not run.** It cannot run in Reader view, on PDFs, or on pages Safari itself restricts.
 </section>

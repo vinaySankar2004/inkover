@@ -26,7 +26,7 @@ A toolbar toggle that hides all ink on the page without clearing it, for rereadi
 |---|---|
 | Hide, then Clear, then show | Nothing to show. Undo restores the ink. |
 | Hide, close the tab, reopen | Ink shows. Hidden is not stored. |
-| Hide, then Unlock and browse by hand | Ink stays hidden. The next Pencil stroke shows it, per rule 4. |
+| Hide, then Unlock and browse | Ink stays hidden. The next stroke after Lock shows it, per rule 4. |
 | Hide on a page with no ink | The button is disabled. |
 
 ## Acceptance

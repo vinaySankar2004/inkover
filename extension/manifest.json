@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Inkover",
   "version": "1.0.0",
-  "description": "Draw over any web page with Apple Pencil. Finger keeps browsing.",
+  "description": "Draw over any web page with Apple Pencil. Lock to draw, unlock to browse.",
   "icons": {
     "48": "icons/icon-48.png",
     "96": "icons/icon-96.png",
