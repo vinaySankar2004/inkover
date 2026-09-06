@@ -14,7 +14,7 @@ Inkover must never get in the way of reading, and it must never need to be locke
 ## Behaviour
 1. Modes are Off, View and Draw. Exactly one is active per tab at any time.
 2. Off: no overlay, no toolbar, no ink drawn. The page behaves as if Inkover were not installed.
-3. View: ink is drawn over the page and the Pencil behaves natively, so it can tap a link, place a cursor or use Scribble. View lasts for one Pencil tap; see rule 11.
+3. View: ink is drawn over the page and a Pencil tap reaches the page, so it can open a link, press a button or place a cursor. A Pencil drag does nothing in View: it neither scrolls the page nor draws. View lasts for one Pencil contact; see rule 11.
 4. Draw: the Pencil is captured. Every Pencil contact goes to the active tool and never reaches the page.
 5. In Draw, finger input is untouched: scroll, pinch, tap, long press all work exactly as without Inkover. The one exception is while the Pencil is down and for 1.5 s after, per [[pencil-input]] rule 9.
 6. The Safari toolbar button toggles Off and on. Turning on always enters Draw.
@@ -37,8 +37,9 @@ Inkover must never get in the way of reading, and it must never need to be locke
 | Two toggles within 300 ms | The second is ignored. |
 | Unlock, then tap a link with the Pencil | The link opens. On the new page, rule 8 applies. On the same page, Draw returns 300 ms later. |
 | Unlock, then scroll with a finger for a minute | View stays until the Pencil touches the page. |
-| Unlock, then a Pencil drag on the page, for example to select text | The drag is the page's. Draw returns when the Pencil lifts. |
-| Unlock to type in a field with the Pencil and Scribble | Each Scribble stroke is a Pencil-up, so Draw returns after the first stroke. Tap Unlock again for the next word, or use a finger to focus the field and the keyboard to type. |
+| Unlock, then a Pencil drag on the page | Nothing scrolls and nothing is drawn. Draw returns when the Pencil lifts. |
+| Unlock to write into a field with Scribble | Scribble needs Pencil drags, which View swallows. Tap the field with the Pencil to focus it, then type with the keyboard, or use a finger for Scribble. |
+| Unlock, then select text by dragging the Pencil | Not possible; use a finger. The Pencil in View is for taps. |
 | Page is a PDF opened in Safari | Safari's PDF view is not a web page; the extension does not run. Accepted. |
 
 ## Acceptance

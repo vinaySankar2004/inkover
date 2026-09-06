@@ -303,8 +303,18 @@
   let lastPenContact = -Infinity;
 
   function onTouch(e) { // pencil-input.md rules 8 and 9
-    if (state.mode !== Mode.Draw || state.fullscreen) return;
+    if (state.fullscreen) return;
     if (host && e.composedPath().includes(host)) return;
+    if (state.mode === Mode.View) {
+      // modes-and-lock.md rule 3: an unlocked Pencil may tap the page but never scroll it.
+      // Only the move is cancelled, so a tap still becomes the page's click.
+      if (e.type !== "touchmove") return;
+      for (const t of e.changedTouches) {
+        if (t.touchType === "stylus") { e.preventDefault(); return; }
+      }
+      return;
+    }
+    if (state.mode !== Mode.Draw) return;
     for (const t of e.changedTouches) {
       if (t.touchType === "stylus") { e.preventDefault(); return; }
     }
