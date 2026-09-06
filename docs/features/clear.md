@@ -12,10 +12,10 @@ updated: 2026-09-06
 Ending a reading session. Wipes all ink on the page in one tap.
 
 ## Behaviour
-1. Clear removes every stroke for the current page key and saves the empty ink immediately.
+1. Clear removes every stroke on the page, in the top frame and in every frame, and saves the empty ink immediately. See [[frames]] rule 7.
 2. There is no confirmation dialog. Clear is one undo entry.
 3. After Clear the page stays in its current mode.
-4. Clear affects only the current page key.
+4. Clear affects only the current page and its frames. Other pages keep their ink.
 5. When ink is already empty the button is disabled.
 
 ## Edge cases

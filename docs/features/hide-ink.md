@@ -13,7 +13,7 @@ A toolbar toggle that hides all ink on the page without clearing it, for rereadi
 
 ## Behaviour
 1. Hide is a toolbar button. It toggles hidden on and off.
-2. While hidden the ink canvas draws nothing. Strokes stay in memory and in storage.
+2. While hidden the ink canvas draws nothing, in every frame. Strokes stay in memory and in storage.
 3. Hidden is per tab session. A reload shows ink again.
 4. Drawing a new stroke while hidden turns hidden off first, so the new stroke and the old ink appear together.
 5. The Eraser and scribble to erase find no strokes while hidden.

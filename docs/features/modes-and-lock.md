@@ -19,7 +19,7 @@ One switch. Unlocked, Inkover shows the ink and the toolbar and captures nothing
 5. Locked: finger and palm touches on the page do nothing. No scroll, pinch, tap, long press or text selection. The toolbar still answers to both.
 6. The Lock button toggles Unlocked and Locked. Its icon shows the state, its label names the action. A notice names each change; after Unlock, while anything still touches the page, it says to lift the hand first.
 7. The Safari toolbar button toggles between Off and Locked.
-8. On page load, a page with stored ink opens Unlocked. A page without ink opens in Off.
+8. On page load, a page with stored ink in the top frame or in any frame opens Unlocked. A page without ink opens in Off.
 9. With a hardware keyboard, Escape unlocks. It does nothing while Unlocked.
 10. Mode is not remembered across navigation. Rule 8 applies to every load.
 
@@ -33,7 +33,7 @@ One switch. Unlocked, Inkover shows the ink and the toolbar and captures nothing
 | Unlock tapped while the palm still rests on the page | Safari settles scrolling once per touch sequence, and that sequence was cancelled while Locked. Nothing scrolls until every finger and the palm lift; then the next touch scrolls. The Unlock notice says so. |
 | Finger is mid-scroll when Lock is tapped | The scroll already under way finishes. No new finger gesture starts until Unlock. |
 | Pencil is drawing when a finger taps Unlock | The stroke continues and ends normally. The mode is Unlocked from then on. |
-| Pencil touches inside an iframe while Locked | Captured; ink is drawn. Unlocked, the iframe is native for both. |
+| Pencil touches inside an iframe while Locked | Captured. A frame running Inkover draws inside itself; any other frame is shielded and the parent draws over it. See [[frames]]. Unlocked, the frame is native for both. |
 | Site has its own Pencil handling, for example a drawing canvas | Locked, Inkover wins. Unlock to use the site's canvas. |
 | Trackpad or mouse on a Magic Keyboard while Locked | Not a hand. Unaffected. |
 | Page enters fullscreen video | Overlay and toolbar hide until fullscreen exits. Mode is preserved. |

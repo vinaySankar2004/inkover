@@ -33,6 +33,7 @@ Use these words exactly, in docs and in code identifiers.
 | Lock | Locked, the Pencil draws and the page ignores the hand. Unlocked, nothing is captured. The Lock button switches; nothing switches on its own. |
 | Tool | Pen, Highlighter, Eraser, Trail or Spotlight. Exactly one is active. |
 | Anchor | The DOM element a stroke is attached to, so it moves and hides with its content. See [[anchoring]]. |
+| Frame | An iframe on the page. One that runs Inkover has its own overlay and ink. See [[frames]]. |
 | Page key | The URL without its fragment. Ink is stored per page key. See [[D0010-page-key]]. |
 | Toolbar | The floating control pill Inkover adds to the page. See [[toolbar]]. |
 | Notice | A short line of text shown beside the toolbar for a few seconds. |

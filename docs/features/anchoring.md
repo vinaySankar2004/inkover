@@ -33,6 +33,7 @@ Ink belongs to content, not to a spot on the page. When a site swaps a tab, expa
 | Site re-renders on every keystroke | Each mutation batch is one frame. Repair scans get 3 ms per 100 ms window; strokes that miss the budget retry in the next window. |
 | Element under the first point is a 1 px spacer or invisible overlay | Skipped. Candidates need 16 px of height and text or media. |
 | Dark-mode toggle changes classes on every element | One re-render. Nothing moves. |
+| Content lives inside an iframe | Ink drawn in a frame that runs Inkover anchors to elements inside it. Over any other frame, the frame element is the anchor. See [[frames]]. |
 | Page uses random ids on every load | Id lookup fails; text repair finds the element. |
 
 ## Acceptance

@@ -10,7 +10,7 @@ The mechanisms shared by every feature. Feature specs say what happens; this fil
 
 | Piece | File | Job |
 |---|---|---|
-| Content script | `extension/content.js` | Everything: modes, input, rendering, anchoring, storage, toolbar. Top frame only. |
+| Content script | `extension/content.js` | Everything: modes, input, rendering, anchoring, storage, toolbar. Runs in every frame; see Frames. |
 | Content styles | `extension/content.css` | The overlay canvases and the shadow host. Nothing else. |
 | Background | `extension/background.js` | Relays the Safari toolbar button tap to the content script. |
 | Manifest | `extension/manifest.json` | Manifest v3. Permissions: storage, activeTab, host `<all_urls>`. |
@@ -37,7 +37,30 @@ The overlay canvases always have `pointer-events: none`. Nothing is ever blocked
 
 Use `getCoalescedEvents()` on `pointermove` when present. Pressure comes from `event.pressure`.
 
-Iframes do not bubble events to the parent, so while Locked a shield `div` with `pointer-events: auto` is placed over the bounding rect of every visible iframe, re-measured on every render. Unlocked, there are no shields and the iframe is native.
+Iframes do not bubble events to the parent, so while Locked a shield `div` with `pointer-events: auto` is placed over the bounding rect of every visible `iframe`, `embed` and `object` that has not announced itself as running Inkover (see Frames), re-measured on every render. Unlocked, there are no shields and the frame is native.
+
+## Frames
+
+Behaviour is in [[frames]]; the key rule is in [[D0016-every-frame]]. The manifest sets `all_frames: true`, so the same script runs in the top frame and in every http or https iframe. A frame's role is `window.top === window` for top, otherwise child. Every section of the script runs in both roles except the toolbar, which the top alone builds; a child calls into the same functions and reports instead of rendering buttons.
+
+Frames never share DOM, so they talk with `postMessage`. Every message is `{ inkover: 1, type, ... }` and anything else is ignored.
+
+| Direction | Message | Meaning |
+|---|---|---|
+| child to parent | `live` | Sent on init and every 500 ms until answered. The parent matches `event.source` to an `iframe.contentWindow`, marks that element live so shields skip it, and answers. |
+| parent to child | `welcome` | Carries the parent's page key, the mode, hidden, and settings. The child derives its key, loads its ink, then sends `state`. Also sent again whenever the parent's key changes. |
+| top to all frames | `mode`, `hidden`, `settings` | Broadcast on every change. Each frame applies it and forwards it to its own live iframes. |
+| top to one frame | `undo`, `redo`, `clear` | The command runs in that frame as if the button were local. |
+| child to top | `state` | `{ strokes, undoAt, redoAt, hidden }` after every change to its ink. `undoAt` is the time of its newest undo entry, `redoAt` of its newest redo entry, 0 when empty. |
+| child to top | `activity` | `unhide`, `toggle-eraser`, `unlock`, `undo`, `redo`, or a `notice` kind. The top runs the matching top-level action. |
+
+Child to top messages go straight to `window.top`; the top does not verify their source, and they can only change what the toolbar could. Notices from children are kinds, never free text: `full`, `saveFailed`, `newer`.
+
+The top keeps one `state` record per known frame, its own included. Undo goes to the frame with the greatest `undoAt`, Redo to the greatest `redoAt`, and the buttons are enabled when any frame has an entry. Clear and Hide are sent to every frame. A child that receives a stroke while hidden clears its own hidden flag and sends `unhide`, and the top broadcasts `hidden: false`. The Safari button message arrives in every frame; children ignore it.
+
+A child's page key is `parentKey + " | " + location.origin`. A child never loads ink before its first `welcome`, so a frame whose parent has no Inkover stays Off forever. A child with stored ink reports `strokes > 0`, and a top frame in Off then moves to Unlocked, which is [[modes-and-lock]] rule 8 for the whole page.
+
+Under the dev harness, `dev/frame.html` is a same-origin frame that loads the shim and the script, so the live path is testable with a mouse; the srcdoc frame in the harness stays a shielded one.
 
 ## Coordinates and rendering
 
@@ -70,7 +93,7 @@ The anchor element for a stroke is chosen at Pencil-down, not Pencil-up, so a st
 
 ## Storage
 
-`browser.storage.local`, key `ink:<page key>`, value `{ v: 1, strokes: [...] }`. Global settings live under key `settings`: tool, previous tool, pen and highlighter colours, one custom colour per tool, pen width, highlighter width, spotlight band, label and compact preferences, toolbar edge and position. Saves are debounced 500 ms and flushed on `pagehide`. Rules for limits and versions are in [[persistence]].
+`browser.storage.local`, key `ink:<page key>`, value `{ v: 1, strokes: [...] }`. The top frame's page key is [[D0010-page-key]]; a frame's is derived from its parent's, see Frames. Global settings live under key `settings`: tool, previous tool, pen and highlighter colours, one custom colour per tool, pen width, highlighter width, spotlight band, label and compact preferences, toolbar edge and position. Saves are debounced 500 ms and flushed on `pagehide`. Rules for limits and versions are in [[persistence]].
 
 ## Stroke model
 
@@ -87,7 +110,7 @@ The anchor element for a stroke is chosen at Pencil-down, not Pencil-up, so a st
 }
 ```
 
-Undo entries are `{ type: "add" | "remove" | "clear", strokes: [...] }`. The eraser and Clear produce `remove` and `clear`; they never store anything themselves.
+Undo entries are `{ type: "add" | "remove" | "clear", strokes: [...], at: 1757030400000 }`. The eraser and Clear produce `remove` and `clear`; they never store anything themselves. `at` is set when the entry is pushed and again when it is undone, so the top frame can order entries across frames.
 
 ## Toolbar host
 

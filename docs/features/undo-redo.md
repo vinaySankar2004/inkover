@@ -12,7 +12,7 @@ updated: 2026-09-06
 Every change to ink can be taken back and put back again.
 
 ## Behaviour
-1. Undo entries are: add a stroke, remove strokes, clear the page. One gesture is one entry.
+1. Undo entries are: add a stroke, remove strokes, clear the page. One gesture is one entry. Entries from every frame form one order, per [[frames]] rule 6.
 2. Undo and Redo are toolbar buttons. Cmd+Z and Shift+Cmd+Z work with a hardware keyboard whenever Inkover is on.
 3. A new entry after an undo discards the redo stack.
 4. The stack holds the last 200 entries per page per tab session. It is not persisted. Reload empties it.
