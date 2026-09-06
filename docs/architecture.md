@@ -70,7 +70,7 @@ The anchor element for a stroke is chosen at Pencil-down, not Pencil-up, so a st
 
 ## Storage
 
-`browser.storage.local`, key `ink:<page key>`, value `{ v: 1, strokes: [...] }`. Global settings live under key `settings`: tool, pen colour, highlighter colour, size, toolbar position, toolbar edge. Saves are debounced 500 ms and flushed on `pagehide`. Rules for limits and versions are in [[persistence]].
+`browser.storage.local`, key `ink:<page key>`, value `{ v: 1, strokes: [...] }`. Global settings live under key `settings`: tool, previous tool, pen and highlighter colours, remembered custom colours per tool, pen width, highlighter width, spotlight band, label and compact preferences, toolbar edge and position. Saves are debounced 500 ms and flushed on `pagehide`. Rules for limits and versions are in [[persistence]].
 
 ## Stroke model
 
@@ -78,8 +78,8 @@ The anchor element for a stroke is chosen at Pencil-down, not Pencil-up, so a st
 {
   id: "uuid",
   tool: "pen" | "highlighter",
-  color: "black",              // palette key, see toolbar spec
-  size: "s" | "m" | "l",
+  color: "black" | "#8e44ad",  // a palette key from the toolbar spec, or a hex colour from the picker
+  width: 3,                    // pen base or highlighter width in CSS px; ink saved with an old size key is converted on load
   straight: false,             // highlighter snap applied
   anchor: { kind: "id" | "path" | "root", value: "...", text: "...", width: 612 },
   points: [[dx, dy, pressure], ...],   // CSS px relative to anchor top-left
@@ -97,5 +97,7 @@ Two things about the page can break an overlay, and both were met on claude.ai:
 
 - The page's Content-Security-Policy applies to style attributes the extension sets. Colours and sizes are therefore set through `element.style`, which is CSSOM and outside the policy's reach. The toolbar stylesheet is installed twice: as a constructed `CSSStyleSheet` adopted by the shadow root, and as a `<style>` element. Safari honours the element for content scripts even under a strict policy; the constructed sheet covers a page that blocks the element. Whichever applies, the toolbar is styled.
 - The host, the canvases and the shields are elements in the page's DOM, so page selectors like `body > div` match them. Every property in `content.css` is `!important`, and the transforms and sizes set from script use `setProperty` with the important flag. `content.css` never uses `all: initial`, because that would also wipe what the script sets and, if Safari ever served a stale script beside a fresh stylesheet, collapse the overlay.
+
+Under the dev harness's strict policy, Chrome reports the shadow `<style>` element as a blocked inline style and applies the constructed sheet instead. That console line is expected there and is not a bug.
 
 Safari on iPad caches an extension's scripts across app reinstalls until Safari is force-quit. After installing a new build, quit Safari from the app switcher and reopen it, or the previous script keeps running.

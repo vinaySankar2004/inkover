@@ -14,7 +14,7 @@ The default tool. Freehand ink for circling, underlining, arrows and doodles.
 ## Behaviour
 1. A stroke is a continuous path from Pencil-down to Pencil-up, drawn live as it happens.
 2. Width is the size base scaled by pressure: `base × (0.55 + 1.0 × pressure)`. A hard press is about three times a light one, and the lightest touch still leaves a visible line.
-3. Size bases in CSS pixels: S 1.5, M 3, L 6.
+3. The base is the width slider's value, 1 to 12 CSS pixels, default 3. See [[toolbar]] rule 10.
 4. Raw points are stored. Smoothing happens at render only. See architecture, Coordinates and rendering.
 5. Opacity is 1. Colour is one of the six pen colours in [[toolbar]].
 6. Caps and joins are round.

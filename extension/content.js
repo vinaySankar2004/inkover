@@ -19,10 +19,25 @@
 
   const PEN_COLORS = { black: "#1c1c1e", white: "#ffffff", red: "#ff3b30", orange: "#ff9500", blue: "#007aff", green: "#34c759" }; // toolbar.md rule 9
   const HL_COLORS = { yellow: "#ffd60a", green: "#30d158", pink: "#ff2d55", blue: "#0a84ff" };
-  const PEN_BASE = { s: 1.5, m: 3, l: 6 };      // pen.md rule 3
-  const HL_WIDTH = { s: 12, m: 20, l: 32 };      // highlighter.md rule 2
+  const WIDTH = { // pen.md rule 3, highlighter.md rule 2, reading-spotlight.md rule 3
+    pen: { min: 1, max: 12, step: 0.5, def: 3 },
+    highlighter: { min: 8, max: 40, step: 1, def: 20 },
+    spotlight: { min: 40, max: 200, step: 4, def: 80 },
+  };
+  const PEN_BASE = { s: 1.5, m: 3, l: 6 };      // legacy size keys, for ink and settings saved before widths were numbers
+  const HL_WIDTH = { s: 12, m: 20, l: 32 };
+  const SPOT_BAND = { s: 48, m: 80, l: 140 };
   const HL_ALPHA = 0.35;                         // highlighter.md rule 3
-  const SPOT_BAND = { s: 48, m: 80, l: 140 };    // reading-spotlight.md rule 3
+  const CUSTOM_MAX = 3;                          // toolbar.md rule 9: remembered custom colours per tool
+  const HEX = /^#[0-9a-f]{6}$/i;
+
+  // A colour is a palette key or a hex string from the picker. Pen and Highlighter palettes reuse names.
+  function colorHex(tool, c) {
+    const pal = tool === Tool.Highlighter ? HL_COLORS : PEN_COLORS;
+    if (pal[c]) return pal[c];
+    if (HEX.test(c || "")) return c;
+    return tool === Tool.Highlighter ? HL_COLORS.yellow : PEN_COLORS.black;
+  }
   const SPOT_DIM = 0.7;                          // reading-spotlight.md rule 2
   const SPOT_FEATHER = 16;                       // reading-spotlight.md rule 4
   const LIMITS = { strokes: 2000, points: 5000, undo: 200 };
@@ -42,7 +57,14 @@
 
   // ── State ──────────────────────────────────────────────────────────────
 
-  const defaultSettings = () => ({ tool: Tool.Pen, prevTool: Tool.Pen, penColor: "black", hlColor: "yellow", size: "m", toolbar: { edge: "bottom", along: 1 } });
+  const defaultSettings = () => ({
+    tool: Tool.Pen, prevTool: Tool.Pen,
+    penColor: "black", hlColor: "yellow",
+    penWidth: WIDTH.pen.def, hlWidth: WIDTH.highlighter.def, spotBand: WIDTH.spotlight.def,
+    customPen: [], customHl: [],
+    labels: true, compact: false,
+    toolbar: { edge: "bottom", along: 1 },
+  });
 
   const state = {
     mode: Mode.Off,
@@ -92,11 +114,20 @@
       notice("Ink on this page was saved by a newer Inkover.");
       return [];
     }
-    return Array.isArray(data.strokes) ? data.strokes.filter(validStroke) : [];
+    return Array.isArray(data.strokes) ? data.strokes.filter(validStroke).map(normalizeStroke) : [];
   }
 
   function validStroke(s) {
     return s && typeof s.id === "string" && Array.isArray(s.points) && s.points.length > 0 && s.anchor && typeof s.anchor.kind === "string";
+  }
+
+  // Ink saved before widths were numbers carries a size key. Give it the width that key meant.
+  function normalizeStroke(s) {
+    if (typeof s.width !== "number" || !(s.width > 0)) {
+      s.width = s.tool === Tool.Highlighter ? (HL_WIDTH[s.size] || WIDTH.highlighter.def) : (PEN_BASE[s.size] || WIDTH.pen.def);
+    }
+    delete s.size;
+    return s;
   }
 
   // ── Viewport ───────────────────────────────────────────────────────────
@@ -323,13 +354,13 @@
 
   // ── Stroke geometry ────────────────────────────────────────────────────
 
-  function penWidth(size, p) { return PEN_BASE[size] * (0.55 + 1.0 * p); } // pen.md rule 2
+  function penWidth(base, p) { return base * (0.55 + 1.0 * p); } // pen.md rule 2
 
   function strokeWidth(s) {
-    if (s.tool === Tool.Highlighter) return HL_WIDTH[s.size];
+    if (s.tool === Tool.Highlighter) return s.width;
     let max = 0;
     for (const p of s.points) if (p[2] > max) max = p[2];
-    return penWidth(s.size, max);
+    return penWidth(s.width, max);
   }
 
   function bbox(pts) {
@@ -347,7 +378,7 @@
   function intersects(a, b) { return a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y; }
 
   // Path2D in the coordinate space of pts. pts: [x, y, pressure].
-  function buildPath(tool, size, pts, straight) {
+  function buildPath(tool, width, pts, straight) {
     const path = new Path2D();
     if (!pts.length) return path;
     if (tool === Tool.Highlighter) {
@@ -364,11 +395,11 @@
       path.lineTo(last[0], last[1]);
       return path;
     }
-    return outlinePath(pts, size);
+    return outlinePath(pts, width);
   }
 
   // Filled outline with per-point width and round caps. pen.md rules 2, 4, 6.
-  function outlinePath(pts, size) {
+  function outlinePath(pts, base) {
     const path = new Path2D();
     const P = [pts[0]];
     for (let i = 1; i < pts.length; i++) {
@@ -377,7 +408,7 @@
     }
     const m = P.length;
     if (m === 1 || (m === 2 && Math.hypot(P[1][0] - P[0][0], P[1][1] - P[0][1]) < 0.5)) {
-      path.arc(P[0][0], P[0][1], penWidth(size, P[0][2]) / 2, 0, TAU);
+      path.arc(P[0][0], P[0][1], penWidth(base, P[0][2]) / 2, 0, TAU);
       return path;
     }
     const left = new Array(m), right = new Array(m), tan = new Array(m);
@@ -387,7 +418,7 @@
       const len = Math.hypot(tx, ty) || 1;
       tx /= len; ty /= len;
       tan[i] = [tx, ty];
-      const r = penWidth(size, P[i][2]) / 2;
+      const r = penWidth(base, P[i][2]) / 2;
       left[i] = [P[i][0] - ty * r, P[i][1] + tx * r];
       right[i] = [P[i][0] + ty * r, P[i][1] - tx * r];
     }
@@ -687,7 +718,7 @@
     if (!g || g.key !== key) {
       const sx = s.anchor.width > 0 ? rect.width / s.anchor.width : 1;
       const pts = s.points.map((p) => [rect.left + p[0] * sx, rect.top + p[1], p[2]]);
-      g = { key, pts, path: buildPath(s.tool, s.size, pts, s.straight), box: padBox(bbox(pts), strokeWidth(s) + 1) };
+      g = { key, pts, path: buildPath(s.tool, s.width, pts, s.straight), box: padBox(bbox(pts), strokeWidth(s) + 1) };
       geoCache.set(s.id, g);
     }
     return g;
@@ -967,7 +998,7 @@
       id: uuid(),
       tool: L.tool,
       color: L.tool === Tool.Highlighter ? state.settings.hlColor : state.settings.penColor,
-      size: state.settings.size,
+      width: L.tool === Tool.Highlighter ? state.settings.hlWidth : state.settings.penWidth,
       straight,
       shape: shape || undefined,
       anchor: placed.anchor,
@@ -1024,16 +1055,16 @@
     ctx.setTransform(k, 0, 0, k, -(vp.sx + vp.ox) * k, -(vp.sy + vp.oy) * k);
   }
 
-  function paintStroke(ctx, tool, size, color, path, alpha) {
+  function paintStroke(ctx, tool, width, color, path, alpha) {
     ctx.globalAlpha = alpha;
     if (tool === Tool.Highlighter) {
-      ctx.strokeStyle = HL_COLORS[color] || color;
-      ctx.lineWidth = HL_WIDTH[size];
+      ctx.strokeStyle = colorHex(tool, color);
+      ctx.lineWidth = width;
       ctx.lineCap = "square"; // highlighter.md rule 6
       ctx.lineJoin = "round";
       ctx.stroke(path);
     } else {
-      ctx.fillStyle = PEN_COLORS[color] || color;
+      ctx.fillStyle = colorHex(tool, color);
       ctx.fill(path);
     }
     ctx.globalAlpha = 1;
@@ -1051,7 +1082,7 @@
       const g = placeStroke(s);
       if (!g || !intersects(g.box, view)) continue;
       const alpha = (s.tool === Tool.Highlighter ? HL_ALPHA : 1) * (marked && marked.has(s.id) ? MARK_ALPHA : 1);
-      paintStroke(ctx, s.tool, s.size, s.color, g.path, alpha);
+      paintStroke(ctx, s.tool, s.width, s.color, g.path, alpha);
     }
   }
 
@@ -1065,7 +1096,7 @@
     if (live && live.tool === Tool.Spotlight) { // reading-spotlight.md rules 2 to 4
       ctx.fillStyle = "rgba(0,0,0," + SPOT_DIM + ")";
       ctx.fillRect(0, 0, W, H);
-      const band = SPOT_BAND[state.settings.size] * dpr, feather = SPOT_FEATHER * dpr;
+      const band = state.settings.spotBand * dpr, feather = SPOT_FEATHER * dpr;
       const y = live.spotY * dpr;
       const grad = ctx.createLinearGradient(0, y - band / 2 - feather, 0, y + band / 2 + feather);
       const inner0 = feather / (band + feather * 2), inner1 = 1 - inner0;
@@ -1084,7 +1115,8 @@
       const pts = live.snapped ? live.snapped.points : live.points;
       const straight = !!live.snapped && live.snapped.kind === "line";
       const color = live.tool === Tool.Highlighter ? state.settings.hlColor : state.settings.penColor;
-      paintStroke(ctx, live.tool, state.settings.size, color, buildPath(live.tool, state.settings.size, pts, straight), live.tool === Tool.Highlighter ? HL_ALPHA : 1);
+      const width = live.tool === Tool.Highlighter ? state.settings.hlWidth : state.settings.penWidth;
+      paintStroke(ctx, live.tool, width, color, buildPath(live.tool, width, pts, straight), live.tool === Tool.Highlighter ? HL_ALPHA : 1);
       ctx.setTransform(1, 0, 0, 1, 0, 0);
     }
 
@@ -1101,10 +1133,10 @@
     if (trail.length) { // trail.md rules 2, 3
       const now = performance.now();
       while (trail.length && now - trail[0].t > TRAIL_TTL) trail.shift();
-      const base = PEN_BASE[state.settings.size] * 2;
+      const base = state.settings.penWidth * 2;
       ctx.lineCap = "round";
       ctx.lineJoin = "round";
-      ctx.strokeStyle = PEN_COLORS[state.settings.penColor];
+      ctx.strokeStyle = colorHex(Tool.Pen, state.settings.penColor);
       for (let i = 1; i < trail.length; i++) {
         const a = trail[i - 1], b = trail[i];
         if (b.start) continue; // a new stroke; nothing connects it to the previous one
@@ -1124,7 +1156,7 @@
   // ── Toolbar host ───────────────────────────────────────────────────────
   // toolbar.md. Markup and styles live in the shadow root.
 
-  const ui = { root: null, pill: null, dot: null, noticeEl: null, colors: null, sizes: null, buttons: {}, collapsed: true, dragging: false, posKey: "", version: 0 };
+  const ui = { root: null, pill: null, dot: null, noticeEl: null, colors: null, widths: null, wrange: null, wdot: null, panel: null, buttons: {}, collapsed: true, panelOpen: false, dragging: false, posKey: "", version: 0 };
   let noticeTimer = 0;
 
   const ICONS = {
@@ -1140,6 +1172,7 @@
     eye: '<path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
     eyeOff: '<path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/><path d="M4 4l16 16"/>',
     trash: '<path d="M4 7h16"/><path d="M10 11v6M14 11v6"/><path d="M6 7l1 13h10l1-13"/><path d="M9 7V4h6v3"/>',
+    gear: '<circle cx="12" cy="12" r="3.2"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1"/>',
     grip: '<circle cx="9" cy="6" r="1.4" fill="currentColor" stroke="none"/><circle cx="15" cy="6" r="1.4" fill="currentColor" stroke="none"/><circle cx="9" cy="12" r="1.4" fill="currentColor" stroke="none"/><circle cx="15" cy="12" r="1.4" fill="currentColor" stroke="none"/><circle cx="9" cy="18" r="1.4" fill="currentColor" stroke="none"/><circle cx="15" cy="18" r="1.4" fill="currentColor" stroke="none"/>',
   };
 
@@ -1149,29 +1182,50 @@
     :host { all: initial; }
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
     #root { position: relative; font: 13px/1 -apple-system, system-ui, sans-serif; color: #fff; -webkit-user-select: none; user-select: none; }
-    .pill, .dot { background: rgba(28,28,30,0.86); -webkit-backdrop-filter: blur(24px); backdrop-filter: blur(24px); box-shadow: 0 8px 28px rgba(0,0,0,0.30), 0 0 0 0.5px rgba(255,255,255,0.12) inset; }
-    .pill { display: flex; flex-direction: row; flex-wrap: wrap; justify-content: center; align-items: center; gap: 0; padding: 4px; border-radius: 30px; box-sizing: border-box; }
-    .pill.vertical { display: grid; grid-template-columns: 54px 54px; justify-items: center; max-width: none; }
-    .btn { width: 54px; height: 54px; border: 0; margin: 0; padding: 0; background: transparent; color: #fff; border-radius: 14px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; cursor: pointer; touch-action: none; font: 600 9.5px/1 -apple-system, system-ui, sans-serif; }
+    .pill, .dot, .panel { background: rgba(28,28,30,0.88); -webkit-backdrop-filter: blur(24px); backdrop-filter: blur(24px); box-shadow: 0 8px 28px rgba(0,0,0,0.30), 0 0 0 0.5px rgba(255,255,255,0.12) inset; }
+    .pill { display: flex; flex-direction: row; flex-wrap: wrap; justify-content: center; align-items: center; padding: 4px; border-radius: 30px; }
+    .group { display: contents; }
+    .pill.vertical { flex-direction: column; flex-wrap: nowrap; width: 178px; max-width: none; border-radius: 28px; padding: 6px 4px; }
+    .vertical .group { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; width: 100%; }
+    .btn { position: relative; width: 54px; height: 54px; border: 0; margin: 0; padding: 0; background: transparent; color: #fff; border-radius: 14px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; cursor: pointer; touch-action: none; font: 600 9.5px/1 -apple-system, system-ui, sans-serif; }
     .btn small { font-size: 9.5px; font-weight: 600; opacity: 0.8; white-space: nowrap; }
     .btn.active { background: rgba(255,255,255,0.22); }
     .btn.active small { opacity: 1; }
     .btn:disabled { opacity: 0.32; cursor: default; }
+    .compact .btn { width: 44px; height: 44px; border-radius: 12px; }
+    .compact .btn small, .nolabels .btn small { display: none; }
     .btn.grip { width: 28px; color: rgba(255,255,255,0.55); cursor: grab; }
-    .vertical .btn.grip { width: 54px; height: 28px; grid-column: 1 / -1; }
+    .vertical .btn.grip { width: 100%; height: 26px; }
     .sep { width: 1px; height: 34px; background: rgba(255,255,255,0.16); margin: 0 3px; flex: none; }
-    .vertical .sep { grid-column: 1 / -1; width: 70px; height: 1px; margin: 3px 0; }
-    .row { display: contents; }
+    .vertical .sep { width: 60%; height: 1px; margin: 4px 0; }
     .swatch span { display: block; width: 26px; height: 26px; border-radius: 50%; box-shadow: 0 0 0 1px rgba(255,255,255,0.25); }
     .swatch.active span { box-shadow: 0 0 0 3px #fff; }
-    .size span { display: block; border-radius: 50%; background: #fff; }
-    .size.active { background: rgba(255,255,255,0.22); }
-    .dot { width: 56px; height: 56px; border: 0; margin: 0; padding: 0; border-radius: 28px; display: flex; align-items: center; justify-content: center; color: #fff; cursor: pointer; touch-action: none; }
+    .swatch.picker span { background: conic-gradient(#ff3b30, #ff9500, #ffd60a, #34c759, #007aff, #af52de, #ff3b30); }
+    .swatch.picker input { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; margin: 0; padding: 0; border: 0; cursor: pointer; }
+    .width { display: flex; align-items: center; gap: 8px; height: 54px; padding: 0 10px; }
+    .compact .width { height: 44px; }
+    .width .preview { width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; flex: none; }
+    .width .preview span { display: block; border-radius: 50%; background: #fff; box-shadow: 0 0 0 1px rgba(255,255,255,0.2); }
+    .width input[type=range] { -webkit-appearance: none; appearance: none; width: 120px; height: 4px; margin: 0; background: rgba(255,255,255,0.28); border-radius: 2px; outline: none; }
+    .width input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 26px; height: 26px; border-radius: 50%; background: #fff; box-shadow: 0 1px 4px rgba(0,0,0,0.45); cursor: pointer; }
+    .vertical .width { flex-direction: column; height: auto; padding: 6px 0 4px; }
+    .vertical .width input[type=range] { width: 140px; }
+    .dot { position: relative; width: 56px; height: 56px; border: 0; margin: 0; padding: 0; border-radius: 28px; display: flex; align-items: center; justify-content: center; color: #fff; cursor: pointer; touch-action: none; }
     .dot .tint { position: absolute; width: 12px; height: 12px; border-radius: 50%; right: 4px; bottom: 4px; box-shadow: 0 0 0 1.5px rgba(28,28,30,0.9); }
-    .dot { position: relative; }
     .notice { position: absolute; left: 50%; transform: translateX(-50%); bottom: calc(100% + 10px); white-space: nowrap; background: rgba(28,28,30,0.92); color: #fff; padding: 8px 12px; border-radius: 10px; font-size: 13px; opacity: 0; transition: opacity 160ms ease; pointer-events: none; }
     #root[data-edge="top"] .notice { bottom: auto; top: calc(100% + 10px); }
     .notice.show { opacity: 1; }
+    .panel { position: absolute; right: 0; bottom: calc(100% + 10px); width: 250px; padding: 12px 14px 14px; border-radius: 18px; }
+    #root[data-edge="top"] .panel { bottom: auto; top: calc(100% + 10px); }
+    #root[data-edge="right"] .panel { right: calc(100% + 10px); bottom: 0; }
+    #root[data-edge="left"] .panel { right: auto; left: calc(100% + 10px); bottom: 0; }
+    .panel h3 { margin: 0 0 4px; font-size: 12px; font-weight: 600; letter-spacing: 0.4px; text-transform: uppercase; opacity: 0.6; }
+    .pref { display: flex; justify-content: space-between; align-items: center; min-height: 44px; font-size: 15px; }
+    .switch { position: relative; width: 48px; height: 30px; border: 0; margin: 0; padding: 0; border-radius: 15px; background: rgba(255,255,255,0.28); cursor: pointer; }
+    .switch.on { background: #34c759; }
+    .switch::after { content: ""; position: absolute; top: 2px; left: 2px; width: 26px; height: 26px; border-radius: 50%; background: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.3); transition: transform 150ms ease; }
+    .switch.on::after { transform: translateX(18px); }
+    .panel .text { display: block; width: 100%; margin-top: 10px; padding: 11px; border: 0; border-radius: 12px; background: rgba(255,255,255,0.12); color: #fff; font: inherit; font-size: 15px; cursor: pointer; }
     [hidden] { display: none !important; }
   `;
 
@@ -1196,23 +1250,37 @@
     root.innerHTML = `
       <div class="pill" id="pill">
         <button class="btn grip" data-act="collapse" aria-label="Collapse toolbar">${svg("grip")}</button>
-        <button class="btn" data-act="lock" aria-label="Lock">${svg("unlock")}<small>Lock</small></button>
-        <div class="sep"></div>
-        <button class="btn" data-tool="pen" aria-label="Pen">${svg("pen")}<small>Pen</small></button>
-        <button class="btn" data-tool="highlighter" aria-label="Highlighter">${svg("highlighter")}<small>Highlight</small></button>
-        <button class="btn" data-tool="eraser" aria-label="Eraser">${svg("eraser")}<small>Eraser</small></button>
-        <button class="btn" data-tool="trail" aria-label="Trail">${svg("trail")}<small>Trail</small></button>
-        <button class="btn" data-tool="spotlight" aria-label="Reading spotlight">${svg("spotlight")}<small>Spotlight</small></button>
+        <div class="group">
+          <button class="btn" data-act="lock" aria-label="Lock">${svg("unlock")}<small>Lock</small></button>
+          <button class="btn" data-tool="pen" aria-label="Pen">${svg("pen")}<small>Pen</small></button>
+          <button class="btn" data-tool="highlighter" aria-label="Highlighter">${svg("highlighter")}<small>Highlight</small></button>
+        </div>
+        <div class="group">
+          <button class="btn" data-tool="eraser" aria-label="Eraser">${svg("eraser")}<small>Eraser</small></button>
+          <button class="btn" data-tool="trail" aria-label="Trail">${svg("trail")}<small>Trail</small></button>
+          <button class="btn" data-tool="spotlight" aria-label="Reading spotlight">${svg("spotlight")}<small>Spotlight</small></button>
+        </div>
         <div class="sep" id="sepColors"></div>
-        <div class="row" id="colors"></div>
-        <div class="row" id="sizes"></div>
+        <div class="group" id="colors"></div>
+        <div class="group" id="widths"><div class="width"><span class="preview"><span id="wdot"></span></span><input type="range" id="wrange" aria-label="Width"></div></div>
         <div class="sep"></div>
-        <button class="btn" data-act="undo" aria-label="Undo">${svg("undo")}<small>Undo</small></button>
-        <button class="btn" data-act="redo" aria-label="Redo">${svg("redo")}<small>Redo</small></button>
-        <button class="btn" data-act="hide" aria-label="Hide ink">${svg("eye")}<small>Hide</small></button>
-        <button class="btn" data-act="clear" aria-label="Clear page">${svg("trash")}<small>Clear</small></button>
+        <div class="group">
+          <button class="btn" data-act="undo" aria-label="Undo">${svg("undo")}<small>Undo</small></button>
+          <button class="btn" data-act="redo" aria-label="Redo">${svg("redo")}<small>Redo</small></button>
+        </div>
+        <div class="group">
+          <button class="btn" data-act="hide" aria-label="Hide ink">${svg("eye")}<small>Hide</small></button>
+          <button class="btn" data-act="clear" aria-label="Clear page">${svg("trash")}<small>Clear</small></button>
+        </div>
+        <div class="group"><button class="btn" data-act="prefs" aria-label="Preferences">${svg("gear")}<small>More</small></button></div>
       </div>
       <button class="dot" id="dot" aria-label="Expand Inkover toolbar">${svg("pen")}<span class="tint"></span></button>
+      <div class="panel" id="panel" hidden>
+        <h3>Toolbar</h3>
+        <div class="pref"><span>Labels</span><button class="switch" data-pref="labels" role="switch" aria-label="Labels"></button></div>
+        <div class="pref"><span>Compact buttons</span><button class="switch" data-pref="compact" role="switch" aria-label="Compact buttons"></button></div>
+        <button class="text" data-act="reset" type="button">Reset colours and widths</button>
+      </div>
       <div class="notice" id="notice"></div>
     `;
     shadow.appendChild(root);
@@ -1223,12 +1291,27 @@
     ui.dot = root.querySelector("#dot");
     ui.noticeEl = root.querySelector("#notice");
     ui.colors = root.querySelector("#colors");
-    ui.sizes = root.querySelector("#sizes");
+    ui.widths = root.querySelector("#widths");
+    ui.wrange = root.querySelector("#wrange");
+    ui.wdot = root.querySelector("#wdot");
+    ui.panel = root.querySelector("#panel");
     ui.buttons = {};
     for (const b of root.querySelectorAll("[data-act], [data-tool]")) ui.buttons[b.dataset.act || b.dataset.tool] = b;
 
     root.addEventListener("click", onToolbarClick);
-    installDrag(ui.buttons.collapse, () => { ui.collapsed = true; updateToolbar(); });
+    ui.wrange.addEventListener("input", () => { setCurrentWidth(+ui.wrange.value); previewWidth(); requestFx(); }); // toolbar.md rule 10
+    ui.wrange.addEventListener("change", () => { saveSettings(); });
+    ui.colors.addEventListener("input", (e) => { // toolbar.md rule 9: the system colour picker
+      if (e.target.type !== "color") return;
+      setColor(e.target.value, false);
+      previewWidth();
+    });
+    ui.colors.addEventListener("change", (e) => {
+      if (e.target.type !== "color") return;
+      rememberCustom(e.target.value);
+      setColor(e.target.value, true);
+    });
+    installDrag(ui.buttons.collapse, () => { ui.collapsed = true; ui.panelOpen = false; updateToolbar(); });
     installDrag(ui.dot, () => { ui.collapsed = false; updateToolbar(); });
     updateToolbar();
   }
@@ -1238,18 +1321,72 @@
     if (!btn || btn.disabled) return;
     const s = state.settings;
     if (btn.dataset.tool) { selectTool(btn.dataset.tool); return; }
-    if (btn.dataset.color) {
-      if (s.tool === Tool.Highlighter) s.hlColor = btn.dataset.color; else s.penColor = btn.dataset.color;
-      saveSettings(); updateToolbar(); return;
-    }
-    if (btn.dataset.size) { s.size = btn.dataset.size; saveSettings(); updateToolbar(); return; }
+    if (btn.dataset.color) { setColor(btn.dataset.color, true); return; }
+    if (btn.dataset.pref) { s[btn.dataset.pref] = !s[btn.dataset.pref]; saveSettings(); updateToolbar(); return; } // preferences.md
     switch (btn.dataset.act) {
       case "lock": setMode(state.mode === Mode.Draw ? Mode.View : Mode.Draw); break; // toolbar.md rule 7
       case "undo": undo(); break;
       case "redo": redo(); break;
       case "hide": toggleHidden(); break;
       case "clear": clearPage(); break;
+      case "prefs": ui.panelOpen = !ui.panelOpen; updateToolbar(); break;
+      case "reset": resetPreferences(); break;
     }
+  }
+
+  function setColor(c, rebuild) {
+    const s = state.settings;
+    if (s.tool === Tool.Highlighter) s.hlColor = c; else s.penColor = c;
+    if (rebuild) { saveSettings(); updateToolbar(); }
+  }
+
+  function rememberCustom(hex) { // toolbar.md rule 9
+    const s = state.settings;
+    const pal = s.tool === Tool.Highlighter ? HL_COLORS : PEN_COLORS;
+    if (Object.values(pal).includes(hex.toLowerCase())) return;
+    const key = s.tool === Tool.Highlighter ? "customHl" : "customPen";
+    s[key] = [hex, ...s[key].filter((c) => c !== hex)].slice(0, CUSTOM_MAX);
+  }
+
+  function currentWidthSpec() {
+    const t = state.settings.tool;
+    return t === Tool.Pen ? WIDTH.pen : t === Tool.Highlighter ? WIDTH.highlighter : t === Tool.Spotlight ? WIDTH.spotlight : null;
+  }
+
+  function currentWidth() {
+    const s = state.settings;
+    return s.tool === Tool.Highlighter ? s.hlWidth : s.tool === Tool.Spotlight ? s.spotBand : s.penWidth;
+  }
+
+  function setCurrentWidth(v) {
+    const s = state.settings;
+    const spec = currentWidthSpec();
+    if (!spec) return;
+    const n = Math.min(spec.max, Math.max(spec.min, v));
+    if (s.tool === Tool.Highlighter) s.hlWidth = n; else if (s.tool === Tool.Spotlight) s.spotBand = n; else s.penWidth = n;
+  }
+
+  function previewWidth() { // the dot beside the slider shows the width at full pressure, in the current colour
+    const s = state.settings;
+    const v = currentWidth();
+    let px;
+    if (s.tool === Tool.Highlighter) px = v * 0.6;
+    else if (s.tool === Tool.Spotlight) px = 6 + (v - WIDTH.spotlight.min) / 8;
+    else px = penWidth(v, 1) * 1.6;
+    px = Math.round(Math.min(26, Math.max(4, px)));
+    ui.wdot.style.width = px + "px";
+    ui.wdot.style.height = px + "px";
+    ui.wdot.style.background = s.tool === Tool.Spotlight ? "#fff" : colorHex(s.tool, s.tool === Tool.Highlighter ? s.hlColor : s.penColor);
+    const tint = ui.dot.querySelector(".tint");
+    if (tint) tint.style.background = s.tool === Tool.Eraser || s.tool === Tool.Spotlight ? "transparent" : colorHex(s.tool, s.tool === Tool.Highlighter ? s.hlColor : s.penColor);
+  }
+
+  function resetPreferences() {
+    const s = state.settings, d = defaultSettings();
+    Object.assign(s, { penColor: d.penColor, hlColor: d.hlColor, penWidth: d.penWidth, hlWidth: d.hlWidth, spotBand: d.spotBand, customPen: [], customHl: [] });
+    saveSettings();
+    updateToolbar();
+    notice("Colours and widths reset");
   }
 
   const TOOL_LABEL = { pen: "Pen", highlighter: "Highlighter", eraser: "Eraser", trail: "Trail", spotlight: "Spotlight" };
@@ -1350,44 +1487,54 @@
     const draw = state.mode === Mode.Draw;
     ui.pill.hidden = ui.collapsed;
     ui.dot.hidden = !ui.collapsed;
+    ui.panel.hidden = !ui.panelOpen || ui.collapsed;
+    ui.root.classList.toggle("nolabels", !s.labels);   // preferences.md rule 2
+    ui.root.classList.toggle("compact", !!s.compact);   // preferences.md rule 3
     ui.buttons.lock.innerHTML = svg(draw ? "lock" : "unlock") + "<small>" + (draw ? "Unlock" : "Lock") + "</small>";
     ui.buttons.lock.classList.toggle("active", draw);
     ui.buttons.lock.setAttribute("aria-label", draw ? "Unlock: hand the Pencil back to the page" : "Lock: capture the Pencil for drawing");
     for (const t of Object.values(Tool)) ui.buttons[t].classList.toggle("active", s.tool === t);
+    ui.buttons.prefs.classList.toggle("active", ui.panelOpen);
 
     const palette = s.tool === Tool.Highlighter ? HL_COLORS : (s.tool === Tool.Pen || s.tool === Tool.Trail) ? PEN_COLORS : null; // toolbar.md rule 8
     const current = s.tool === Tool.Highlighter ? s.hlColor : s.penColor;
+    const customs = s.tool === Tool.Highlighter ? s.customHl : s.customPen;
     ui.colors.innerHTML = "";
     if (palette) {
       // Colours and sizes are set through the CSSOM, never as style attributes: a page's
       // Content-Security-Policy can block inline style attributes, and did on claude.ai.
-      for (const [name, hex] of Object.entries(palette)) {
+      const swatch = (value, hex, label) => {
         const b = document.createElement("button");
-        b.className = "btn swatch" + (name === current ? " active" : "");
-        b.dataset.color = name;
-        b.setAttribute("aria-label", name);
+        b.className = "btn swatch" + (value === current ? " active" : "");
+        b.dataset.color = value;
+        b.setAttribute("aria-label", label);
         const dot = document.createElement("span");
         dot.style.background = hex;
         b.appendChild(dot);
         ui.colors.appendChild(b);
-      }
+      };
+      for (const [name, hex] of Object.entries(palette)) swatch(name, hex, name);
+      for (const hex of customs) swatch(hex, hex, "Custom colour " + hex);   // toolbar.md rule 9
+      const picker = document.createElement("button");
+      picker.className = "btn swatch picker";
+      picker.setAttribute("aria-label", "Choose a colour");
+      picker.appendChild(document.createElement("span"));
+      const input = document.createElement("input");
+      input.type = "color";
+      input.value = colorHex(s.tool, current);
+      picker.appendChild(input);
+      ui.colors.appendChild(picker);
     }
-    const showSizes = s.tool === Tool.Pen || s.tool === Tool.Highlighter || s.tool === Tool.Spotlight; // toolbar.md rule 10
-    ui.sizes.innerHTML = "";
-    if (showSizes) {
-      for (const [name, px] of Object.entries({ s: 7, m: 12, l: 19 })) {
-        const b = document.createElement("button");
-        b.className = "btn size" + (name === s.size ? " active" : "");
-        b.dataset.size = name;
-        b.setAttribute("aria-label", "Size " + name.toUpperCase());
-        const dot = document.createElement("span");
-        dot.style.width = px + "px";
-        dot.style.height = px + "px";
-        b.appendChild(dot);
-        ui.sizes.appendChild(b);
-      }
+    const spec = currentWidthSpec(); // toolbar.md rule 10
+    ui.widths.hidden = !spec;
+    if (spec) {
+      ui.wrange.min = spec.min;
+      ui.wrange.max = spec.max;
+      ui.wrange.step = spec.step;
+      ui.wrange.value = currentWidth();
+      ui.wrange.setAttribute("aria-label", s.tool === Tool.Spotlight ? "Band height" : "Stroke width");
     }
-    ui.root.querySelector("#sepColors").hidden = !palette && !showSizes;
+    ui.root.querySelector("#sepColors").hidden = !palette && !spec;
 
     ui.buttons.undo.disabled = !state.undo.length; // toolbar.md rule 15
     ui.buttons.redo.disabled = !state.redo.length;
@@ -1396,9 +1543,14 @@
     ui.buttons.hide.innerHTML = svg(state.hidden ? "eyeOff" : "eye") + "<small>" + (state.hidden ? "Show" : "Hide") + "</small>"; // hide-ink.md rule 7
     ui.buttons.hide.classList.toggle("active", state.hidden);
 
-    const dotTint = ui.dot.querySelector(".tint");
+    for (const sw of ui.panel.querySelectorAll(".switch")) {
+      const on = !!s[sw.dataset.pref];
+      sw.classList.toggle("on", on);
+      sw.setAttribute("aria-checked", on ? "true" : "false");
+    }
+
     ui.dot.firstElementChild.outerHTML = svg(s.tool);
-    dotTint.style.background = palette ? palette[current] : "transparent";
+    previewWidth();
     ui.version++;
     positionToolbar();
   }
@@ -1447,17 +1599,26 @@
     if (stored.settings && typeof stored.settings === "object") {
       const d = defaultSettings();
       const s = stored.settings;
+      const num = (v, spec, legacy) => { const n = typeof v === "number" ? v : legacy; return n >= spec.min && n <= spec.max ? n : spec.def; };
+      const hexes = (list) => Array.isArray(list) ? list.filter((c) => HEX.test(c)).slice(0, CUSTOM_MAX) : [];
+      const color = (c, pal, fallback) => (pal[c] || HEX.test(c || "")) ? c : fallback;
       state.settings = {
         tool: Object.values(Tool).includes(s.tool) ? s.tool : d.tool,
         prevTool: Object.values(Tool).includes(s.prevTool) && s.prevTool !== Tool.Eraser ? s.prevTool : d.prevTool,
-        penColor: PEN_COLORS[s.penColor] ? s.penColor : d.penColor,
-        hlColor: HL_COLORS[s.hlColor] ? s.hlColor : d.hlColor,
-        size: PEN_BASE[s.size] ? s.size : d.size,
+        penColor: color(s.penColor, PEN_COLORS, d.penColor),
+        hlColor: color(s.hlColor, HL_COLORS, d.hlColor),
+        penWidth: num(s.penWidth, WIDTH.pen, PEN_BASE[s.size]),
+        hlWidth: num(s.hlWidth, WIDTH.highlighter, HL_WIDTH[s.size]),
+        spotBand: num(s.spotBand, WIDTH.spotlight, SPOT_BAND[s.size]),
+        customPen: hexes(s.customPen),
+        customHl: hexes(s.customHl),
+        labels: s.labels !== false,
+        compact: s.compact === true,
         toolbar: s.toolbar && ["top", "bottom", "left", "right"].includes(s.toolbar.edge) ? { edge: s.toolbar.edge, along: Math.min(1, Math.max(0, +s.toolbar.along || 0)) } : d.toolbar,
       };
     }
     const data = stored[inkKey(state.pageKey)];
-    if (data && data.v === STORAGE_VERSION && Array.isArray(data.strokes)) state.strokes = data.strokes.filter(validStroke);
+    if (data && data.v === STORAGE_VERSION && Array.isArray(data.strokes)) state.strokes = data.strokes.filter(validStroke).map(normalizeStroke);
     else if (data && data.v !== STORAGE_VERSION) setTimeout(() => notice("Ink on this page was saved by a newer Inkover."), 0);
 
     const cap = { capture: true };

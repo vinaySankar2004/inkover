@@ -14,7 +14,7 @@ A focus aid. While the Pencil is down with the Spotlight tool, the page dims exc
 ## Behaviour
 1. Spotlight is a tool, active only in Draw. The Pencil is captured like any other tool.
 2. Pencil-down dims the whole visual viewport with black at 0.7 opacity, except a band centred on the Pencil's vertical position.
-3. Band height by size, in visual pixels: S 48, M 80, L 140. The band spans the full width.
+3. Band height is the slider's value, 40 to 200 visual pixels, default 80. The band spans the full width. See [[toolbar]] rule 10.
 4. Band edges are soft: a 16 px gradient on each side.
 5. The band follows the Pencil's vertical position on every move, in the same frame.
 6. Pencil-up removes the dim at once. There is no fade.

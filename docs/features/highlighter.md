@@ -13,7 +13,7 @@ Wide translucent ink for marking lines of text. Text shows through, and a stroke
 
 ## Behaviour
 1. Same input, anchoring, undo and save as [[pen]]. Only the differences are listed here.
-2. Width is fixed per size and ignores pressure: S 12 px, M 20 px, L 32 px.
+2. Width is the slider's value, 8 to 40 px, default 20, and ignores pressure. See [[toolbar]] rule 10.
 3. Opacity is 0.35, applied to the whole stroke as one path, so self-crossings do not darken.
 4. Two different highlighter strokes that overlap do stack darker. Matches paper.
 5. Colours are the four highlighter colours in [[toolbar]]. The highlighter colour is remembered separately from the pen colour.
