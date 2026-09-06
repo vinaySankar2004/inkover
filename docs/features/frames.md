@@ -1,7 +1,7 @@
 ---
 type: feature
 id: F18
-status: specified
+status: built
 depends: ["[[modes-and-lock]]", "[[persistence]]", "[[anchoring]]", "[[undo-redo]]", "[[clear]]", "[[hide-ink]]", "[[toolbar]]"]
 decisions: ["[[D0016-every-frame]]"]
 updated: 2026-09-06

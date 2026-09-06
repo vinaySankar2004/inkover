@@ -72,8 +72,11 @@
 
   <div class="dark"><p>A dark block. White ink and a light highlighter should be visible here.</p></div>
 
-  <h2>An iframe</h2>
-  <iframe srcdoc="<p>Inside an iframe. Locked, the Pencil over here draws. Unlocked, the iframe is native.</p><p>Second line inside the iframe.</p>"></iframe>
+  <h2>An iframe without Inkover</h2>
+  <iframe srcdoc="<p>Inside a srcdoc iframe. No script runs here, so it is shielded: Locked, the Pencil over here draws on the parent, anchored to the frame. Unlocked, the iframe is native.</p><p>Second line inside the iframe.</p>"></iframe>
+
+  <h2>An iframe that runs Inkover</h2>
+  <iframe src="frame.html" style="height: 260px"></iframe>
 
   <h2 id="section">Long content for scrolling</h2>
   <div id="long"></div>

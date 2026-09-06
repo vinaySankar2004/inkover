@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Inkover dev harness, a frame that runs Inkover</title>
+<!-- Loaded by harness.html in an iframe. Same shim, same script, so this frame is a live one:
+     it draws its own ink and follows the top frame's mode. frames.md. -->
+<link rel="stylesheet" href="../extension/content.css">
+<style>
+  body { font: 16px/1.55 -apple-system, system-ui, sans-serif; margin: 0; padding: 16px 20px 40px; color: #1c1c1e; background: #fbfbf7; }
+  h1 { font-size: 18px; margin: 0 0 10px; }
+  p { margin: 0 0 12px; max-width: 60ch; }
+</style>
+</head>
+<body>
+<h1>A frame that runs Inkover</h1>
+<p>Locked, the mouse draws in here and the ink anchors to these paragraphs, not to the frame. Scroll this frame with the wheel: the ink moves with the words.</p>
+<p>Undo in the top toolbar takes back the newest stroke wherever it is, here or outside. Clear empties both. Hide hides both.</p>
+<p>Paragraph three. The quick brown fox jumps over the lazy dog. Pack my box with five dozen liquor jugs.</p>
+<p>Paragraph four. Sphinx of black quartz, judge my vow. The five boxing wizards jump quickly.</p>
+<p>Paragraph five. How vexingly quick daft zebras jump. Bright vixens jump; dozy fowl quack.</p>
+<p>Paragraph six. Jackdaws love my big sphinx of quartz. The jay, pig, fox, zebra and my wolves quack.</p>
+<p>Paragraph seven. Crazy Frederick bought many very exquisite opal jewels. Sixty zippers were quickly picked.</p>
+<p>Paragraph eight. Two driven jocks help fax my big quiz. Five quacking zephyrs jolt my wax bed.</p>
+<script src="shim.js"></script>
+<script src="../extension/content.js"></script>
+</body>
+</html>

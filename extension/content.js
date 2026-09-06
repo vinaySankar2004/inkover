@@ -3,12 +3,12 @@
 
 (() => {
   "use strict";
-  if (window.top !== window) return; // top frame only (architecture: Pieces)
   if (window.__inkover) return;
   window.__inkover = true;
   if (!document.body) return;
 
   const DEV = window.__inkoverDev === true; // dev harness: mouse acts as the Pencil
+  const IS_TOP = (() => { try { return window.top === window; } catch (_) { return true; } })(); // frames.md rule 2: the top frame owns toolbar, mode, hidden and settings
   const api = typeof browser !== "undefined" ? browser : (typeof chrome !== "undefined" ? chrome : null);
   if (!api || !api.storage || !api.runtime) return;
 
@@ -64,6 +64,8 @@
     toolbar: { edge: "bottom", along: 1 },
   });
 
+  let parentKey = null; // child frame only: the parent's page key, set by welcome. Declared here because pageKey() runs in the state initialiser.
+
   const state = {
     mode: Mode.Off,
     hidden: false,          // hide-ink.md
@@ -76,8 +78,118 @@
     toggleAt: 0,
   };
 
-  function pageKey() { return location.origin + location.pathname + location.search; } // D0010
+  function pageKey() { // D0010 for the top frame; D0016 for a frame, which has no key until its parent welcomes it
+    if (IS_TOP) return location.origin + location.pathname + location.search;
+    return parentKey === null ? null : parentKey + " | " + location.origin;
+  }
   const inkKey = (key) => "ink:" + key;
+
+  // ── Frames ─────────────────────────────────────────────────────────────
+  // frames.md. Every frame runs this script. Frames talk with postMessage; the protocol is
+  // architecture.md, Frames. A child announces to its parent, the top broadcasts down the tree.
+
+  const FRAME_MSG = 1;
+  const liveFrameEls = new WeakSet();   // iframes in this document that run Inkover; never shielded
+  const frameStates = new Map();        // top only: descendant Window, then { strokes, undoAt, redoAt }
+  let announceTimer = 0;
+
+  function post(win, msg) { try { win.postMessage(Object.assign({ inkover: FRAME_MSG }, msg), "*"); } catch (_) { /* gone */ } }
+  function toTop(msg) { if (!IS_TOP) post(window.top, msg); }
+  function toLiveFrames(msg) { for (const f of document.querySelectorAll("iframe")) if (liveFrameEls.has(f)) post(f.contentWindow, msg); }
+  function frameElementFor(win) { for (const f of document.querySelectorAll("iframe")) if (f.contentWindow === win) return f; return null; }
+  function welcomeMsg() { return { type: "welcome", pageKey: state.pageKey, mode: state.mode, hidden: state.hidden, settings: state.settings }; }
+  function welcomeAll() { toLiveFrames(welcomeMsg()); }
+  function broadcastSettings() { toLiveFrames({ type: "settings", settings: state.settings }); }
+
+  function announce() { // frames.md edge case: a frame that loads before its parent keeps announcing
+    if (IS_TOP) return;
+    let tries = 0;
+    const tick = () => {
+      post(window.parent, { type: "live" });
+      if (++tries === 20) { clearInterval(announceTimer); announceTimer = setInterval(tick, 2000); }
+    };
+    tick();
+    announceTimer = setInterval(tick, 500);
+  }
+
+  function reportState() { // child only, after every change to its ink
+    if (IS_TOP) return;
+    const u = state.undo[state.undo.length - 1], r = state.redo[state.redo.length - 1];
+    toTop({ type: "state", strokes: state.strokes.length, undoAt: u ? u.at : 0, redoAt: r ? r.at : 0 });
+  }
+
+  // A child never sends notice text, only a kind. The top turns it back into the one line it means.
+  const NOTICE_KIND = { "Page is full. Clear to continue.": "full", "Could not save ink on this page.": "saveFailed", "Ink on this page was saved by a newer Inkover.": "newer" };
+  const NOTICE_TEXT = Object.fromEntries(Object.entries(NOTICE_KIND).map(([t, k]) => [k, t]));
+
+  function applySettings(s) { if (s && typeof s === "object") Object.assign(state.settings, s); }
+
+  async function onWelcome(m) {
+    clearInterval(announceTimer);
+    parentKey = String(m.pageKey);
+    applySettings(m.settings);
+    state.hidden = !!m.hidden;
+    const key = pageKey();
+    if (key !== state.pageKey) await switchPageKey(key);
+    if (Object.values(Mode).includes(m.mode)) setMode(m.mode);
+    requestRender();
+    reportState();
+  }
+
+  // Top only. Which frame holds the newest entry; a null win means this frame. frames.md rule 6.
+  function newestFrame(field) {
+    const own = field === "undoAt" ? state.undo : state.redo;
+    let win = null, at = own.length ? own[own.length - 1].at : 0;
+    for (const [w, s] of frameStates) if (s[field] > at) { win = w; at = s[field]; }
+    return at ? { win } : null;
+  }
+  function undoAny() { const t = newestFrame("undoAt"); if (!t) return; if (t.win) post(t.win, { type: "undo" }); else undo(); }
+  function redoAny() { const t = newestFrame("redoAt"); if (!t) return; if (t.win) post(t.win, { type: "redo" }); else redo(); }
+  function clearAll() { clearPage(); toLiveFrames({ type: "clear" }); } // frames.md rule 7
+  function anyFrame(pred) { for (const s of frameStates.values()) if (pred(s)) return true; return false; }
+  function pruneFrames() { for (const win of frameStates.keys()) { let closed = true; try { closed = win.closed; } catch (_) { /* treat as gone */ } if (closed) frameStates.delete(win); } }
+
+  function onFrameMessage(e) {
+    const m = e.data, src = e.source;
+    if (!m || m.inkover !== FRAME_MSG || typeof m.type !== "string" || !src) return;
+    if (m.type === "live") { // a frame in this document
+      const el = frameElementFor(src);
+      if (!el) return;
+      liveFrameEls.add(el);
+      post(src, welcomeMsg());
+      requestRender(); // its shield goes on the next frame
+      return;
+    }
+    if (IS_TOP) { // reports from any descendant
+      if (m.type === "state") {
+        const first = !frameStates.has(src);
+        const s = { strokes: +m.strokes || 0, undoAt: +m.undoAt || 0, redoAt: +m.redoAt || 0 };
+        frameStates.set(src, s);
+        if (first && s.strokes && state.mode === Mode.Off && !state.toggleAt) setMode(Mode.Unlocked); // modes-and-lock.md rule 8 for the whole page
+        updateToolbar();
+      } else if (m.type === "activity") {
+        switch (m.what) {
+          case "unhide": if (state.hidden) setHidden(false); break;
+          case "toggle-eraser": toggleEraser(); break;
+          case "unlock": if (state.mode === Mode.Locked) toggleLock(); break;
+          case "undo": undoAny(); break;
+          case "redo": redoAny(); break;
+          case "notice": if (NOTICE_TEXT[m.kind]) notice(NOTICE_TEXT[m.kind]); break;
+        }
+      }
+      return;
+    }
+    if (src !== window.parent && src !== window.top) return; // a child takes orders from above only
+    switch (m.type) {
+      case "welcome": onWelcome(m); break;
+      case "mode": if (Object.values(Mode).includes(m.mode)) setMode(m.mode); break;
+      case "hidden": setHidden(!!m.hidden); break;
+      case "settings": applySettings(m.settings); broadcastSettings(); break;
+      case "undo": undo(); break;
+      case "redo": redo(); break;
+      case "clear": clearAll(); break;
+    }
+  }
 
   // ── Storage ────────────────────────────────────────────────────────────
 
@@ -92,6 +204,7 @@
   function flushSave() {
     clearTimeout(saveTimer);
     saveTimer = 0;
+    if (!state.pageKey) return; // a frame before its welcome has nowhere to save
     const payload = { v: STORAGE_VERSION, strokes: state.strokes };
     Promise.resolve(api.storage.local.set({ [inkKey(state.pageKey)]: payload })).catch(() => {
       if (saveFailedNoticed) return;
@@ -101,7 +214,9 @@
   }
 
   function saveSettings() {
+    if (!IS_TOP) return; // frames.md rule 2: the top owns settings
     Promise.resolve(api.storage.local.set({ settings: state.settings })).catch(() => {});
+    broadcastSettings();
   }
 
   async function loadInk(key) {
@@ -168,7 +283,7 @@
     inkCtx = inkCanvas.getContext("2d");
     fxCtx = fxCanvas.getContext("2d");
     document.documentElement.append(inkCanvas, fxCanvas);
-    buildToolbar();
+    if (IS_TOP) buildToolbar(); // frames.md rule 2: one toolbar, in the top frame
     applyFullscreen();
     readViewport();
     layoutCanvases();
@@ -215,13 +330,14 @@
       trail.length = 0;
       pageTouches.clear();
       removeDom();
-      return;
+    } else {
+      if (prev === Mode.Off) { ensureDom(); ui.collapsed = false; }
+      // Unlocked and Locked share the overlay; a stroke in progress survives an Unlock tapped by a finger.
+      updateToolbar();
+      requestRender();
+      requestFx();
     }
-    if (prev === Mode.Off) { ensureDom(); ui.collapsed = false; }
-    // Unlocked and Locked share the overlay; a stroke in progress survives an Unlock tapped by a finger.
-    updateToolbar();
-    requestRender();
-    requestFx();
+    toLiveFrames({ type: "mode", mode: next }); // frames.md rule 2: every frame follows, down the tree
   }
 
   function toggleFromButton() { // modes-and-lock.md rule 8
@@ -317,12 +433,16 @@
     const ae = document.activeElement;
     if (ae && ae !== document.body && ae !== document.documentElement && ae !== host) return;
     if (e.key === "Escape") { // modes-and-lock.md rule 9
-      if (state.mode === Mode.Locked) { e.preventDefault(); toggleLock(); }
+      if (state.mode === Mode.Locked) {
+        e.preventDefault();
+        if (IS_TOP) toggleLock(); else toTop({ type: "activity", what: "unlock" }); // frames.md rule 10
+      }
       return;
     }
     if ((e.metaKey || e.ctrlKey) && !e.altKey && e.key.toLowerCase() === "z") {
       e.preventDefault();
-      if (e.shiftKey) redo(); else undo();
+      if (IS_TOP) { if (e.shiftKey) redoAny(); else undoAny(); }
+      else toTop({ type: "activity", what: e.shiftKey ? "redo" : "undo" }); // frames.md rule 10
     }
   }
 
@@ -339,6 +459,7 @@
     let i = 0;
     for (const f of document.querySelectorAll("iframe, embed, object")) {
       const r = f.getBoundingClientRect();
+      if (f.tagName === "IFRAME" && liveFrameEls.has(f)) continue; // frames.md rule 4: it captures for itself
       if (r.width === 0 || r.height === 0) continue;
       if (r.bottom < 0 || r.right < 0 || r.top > window.innerHeight || r.left > window.innerWidth) continue;
       let sh = shields[i];
@@ -792,6 +913,7 @@
   }
 
   function pushUndo(entry) { // undo-redo.md rules 1, 3, 4
+    entry.at = Date.now(); // frames.md rule 6: the top orders entries across frames by time
     state.undo.push(entry);
     if (state.undo.length > LIMITS.undo) state.undo.shift();
     state.redo.length = 0;
@@ -819,6 +941,7 @@
     const e = state.undo.pop();
     if (!e) return;
     applyEntry(e, false);
+    e.at = Date.now();
     state.redo.push(e);
     updateToolbar();
   }
@@ -827,6 +950,7 @@
     const e = state.redo.pop();
     if (!e) return;
     applyEntry(e, true);
+    e.at = Date.now();
     state.undo.push(e);
     updateToolbar();
   }
@@ -840,10 +964,15 @@
     flushSave(); // clear.md rule 1
   }
 
-  function toggleHidden() { // hide-ink.md rule 1
-    state.hidden = !state.hidden;
+  function toggleHidden() { setHidden(!state.hidden); } // hide-ink.md rule 1
+
+  function setHidden(v) { // frames.md rule 8: hidden reaches every frame
+    v = !!v;
+    if (v === state.hidden) return;
+    state.hidden = v;
     requestRender();
     updateToolbar();
+    toLiveFrames({ type: "hidden", hidden: v });
   }
 
   // ── Live stroke ────────────────────────────────────────────────────────
@@ -858,7 +987,7 @@
     const p = pressureOf(e);
     live = { tool, points: [], pSmooth: p, hold: null, holdTimer: 0, snapped: null, scr: null, marked: null, erased: [], anchorEl: null, screen: [sx, sy], spotY: sy, t0: performance.now(), x0: x, y0: y, maxDist: 0 };
     if (tool === Tool.Pen || tool === Tool.Highlighter) {
-      if (state.hidden) { state.hidden = false; requestRender(); updateToolbar(); } // hide-ink.md rule 4
+      if (state.hidden) { setHidden(false); toTop({ type: "activity", what: "unhide" }); } // hide-ink.md rule 4; frames.md rule 8
       live.anchorEl = findAnchor(e.clientX, e.clientY);
       if (tool === Tool.Pen) live.scr = newScribbleTracker(x, y);
       live.hold = { x, y, travel: 0 };
@@ -974,7 +1103,7 @@
         }
       }
       lastTap = null;
-      toggleEraser();
+      if (IS_TOP) toggleEraser(); else toTop({ type: "activity", what: "toggle-eraser" }); // frames.md rule 12
       requestRender();
       requestFx();
       return;
@@ -1350,10 +1479,10 @@
     if (btn.dataset.pref) { s[btn.dataset.pref] = !s[btn.dataset.pref]; saveSettings(); updateToolbar(); return; } // preferences.md
     switch (btn.dataset.act) {
       case "lock": toggleLock(); break; // toolbar.md rule 7
-      case "undo": undo(); break;
-      case "redo": redo(); break;
+      case "undo": undoAny(); break;   // frames.md rules 6 and 7: the buttons act across frames
+      case "redo": redoAny(); break;
       case "hide": toggleHidden(); break;
-      case "clear": clearPage(); break;
+      case "clear": clearAll(); break;
       case "prefs": ui.panelOpen = !ui.panelOpen; updateToolbar(); break;
       case "reset": resetPreferences(); break;
     }
@@ -1374,7 +1503,7 @@
     setColor(hex, false);
     paintColors();
     previewWidth();
-    if (save) saveSettings();
+    if (save) saveSettings(); else broadcastSettings(); // frames draw in the live colour too
   }
 
   function paintColors() { // active rings and the custom swatch, updated in place
@@ -1525,7 +1654,7 @@
   }
 
   function updateToolbar() {
-    if (!ui.root) return;
+    if (!ui.root) { reportState(); return; } // a frame has no toolbar; it tells the top what the buttons need to know
     const s = state.settings;
     const isLocked = state.mode === Mode.Locked;
     ui.pill.hidden = ui.collapsed;
@@ -1571,10 +1700,11 @@
     }
     ui.root.querySelector("#sepColors").hidden = !palette && !spec;
 
-    ui.buttons.undo.disabled = !state.undo.length; // toolbar.md rule 15
-    ui.buttons.redo.disabled = !state.redo.length;
-    ui.buttons.clear.disabled = !state.strokes.length;
-    ui.buttons.hide.disabled = !state.strokes.length && !state.hidden;
+    const anyInk = state.strokes.length > 0 || anyFrame((f) => f.strokes > 0); // frames.md rules 6 to 8
+    ui.buttons.undo.disabled = !state.undo.length && !anyFrame((f) => f.undoAt > 0); // toolbar.md rule 15
+    ui.buttons.redo.disabled = !state.redo.length && !anyFrame((f) => f.redoAt > 0);
+    ui.buttons.clear.disabled = !anyInk;
+    ui.buttons.hide.disabled = !anyInk && !state.hidden;
     ui.buttons.hide.innerHTML = svg(state.hidden ? "eyeOff" : "eye") + "<small>" + (state.hidden ? "Show" : "Hide") + "</small>"; // hide-ink.md rule 7
     ui.buttons.hide.classList.toggle("active", state.hidden);
 
@@ -1591,6 +1721,7 @@
   }
 
   function notice(text) { // toolbar.md rule 12
+    if (!IS_TOP) { const kind = NOTICE_KIND[text]; if (kind) toTop({ type: "activity", what: "notice", kind }); return; } // frames.md rule 11
     if (!ui.noticeEl) return;
     ui.noticeEl.textContent = text;
     ui.noticeEl.classList.add("show");
@@ -1600,9 +1731,7 @@
 
   // ── Page key changes ───────────────────────────────────────────────────
 
-  async function checkPageKey() { // persistence.md rule 6
-    const key = pageKey();
-    if (key === state.pageKey) return;
+  async function switchPageKey(key) {
     if (saveTimer) flushSave();
     cancelLive();
     state.pageKey = key;
@@ -1610,9 +1739,20 @@
     state.redo.length = 0;
     geoCache.clear();
     invalidateResolutions();
-    state.strokes = await loadInk(key);
+    state.strokes = key ? await loadInk(key) : [];
+    requestRender();
+  }
+
+  async function checkPageKey() { // persistence.md rule 6
+    const key = pageKey();
+    if (key === null || key === state.pageKey) return;
+    await switchPageKey(key);
+    if (!IS_TOP) { reportState(); return; } // a frame's key only changes through welcome; the top decides the mode
+    state.toggleAt = 0;
     if (isOn()) setMode(Mode.Off);
     if (state.strokes.length) setMode(Mode.Unlocked); // modes-and-lock.md rule 8
+    frameStates.clear();
+    welcomeAll(); // frames.md edge case: every frame follows the new key
   }
 
   // ── Wiring ─────────────────────────────────────────────────────────────
@@ -1630,7 +1770,9 @@
   async function init() {
     readViewport();
     let stored = {};
-    try { stored = (await api.storage.local.get(["settings", inkKey(state.pageKey)])) || {}; } catch (_) { stored = {}; }
+    const keys = ["settings"];
+    if (state.pageKey) keys.push(inkKey(state.pageKey)); // a frame has no key yet; its ink loads on welcome
+    try { stored = (await api.storage.local.get(keys)) || {}; } catch (_) { stored = {}; }
     if (stored.settings && typeof stored.settings === "object") {
       const d = defaultSettings();
       const s = stored.settings;
@@ -1652,7 +1794,7 @@
         toolbar: s.toolbar && ["top", "bottom", "left", "right"].includes(s.toolbar.edge) ? { edge: s.toolbar.edge, along: Math.min(1, Math.max(0, +s.toolbar.along || 0)) } : d.toolbar,
       };
     }
-    const data = stored[inkKey(state.pageKey)];
+    const data = state.pageKey ? stored[inkKey(state.pageKey)] : null;
     if (data && data.v === STORAGE_VERSION && Array.isArray(data.strokes)) state.strokes = data.strokes.filter(validStroke).map(normalizeStroke);
     else if (data && data.v !== STORAGE_VERSION) setTimeout(() => notice("Ink on this page was saved by a newer Inkover."), 0);
 
@@ -1677,15 +1819,17 @@
     window.addEventListener("popstate", checkPageKey);
     window.addEventListener("hashchange", checkPageKey);
     setInterval(checkPageKey, 500);
-    setInterval(() => { if (state.mode === Mode.Off) return; bumpEpoch(); for (const [id, el] of resolveCache) if (!el) resolveCache.delete(id); requestRender(); }, 1000); // safety net
+    setInterval(() => { if (IS_TOP) pruneFrames(); if (state.mode === Mode.Off) return; bumpEpoch(); for (const [id, el] of resolveCache) if (!el) resolveCache.delete(id); requestRender(); }, 1000); // safety net
+    window.addEventListener("message", onFrameMessage); // frames.md
     mo.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ["class", "style", "hidden", "aria-hidden", "aria-selected", "aria-expanded", "open"] });
 
     api.runtime.onMessage.addListener((msg) => {
-      if (msg && msg.type === "inkover:toggle") toggleFromButton();
+      if (IS_TOP && msg && msg.type === "inkover:toggle") toggleFromButton(); // the button reaches every frame; only the top acts (D0016)
     });
 
-    if (state.strokes.length) setMode(Mode.Unlocked); // modes-and-lock.md rule 8
-    if (DEV) window.__inkoverDebug = { state, Mode, setMode, toggleLock, placeStroke, resolveAnchor, findAnchor, locatorFor, geoCache, resolveCache, vp, holdCheck, flushSave, renderInk, renderFx, readViewport, trail, undo, redo, clearPage, toggleHidden, checkPageKey, updateToolbar, updateShields, hitStrokes, ui, get live() { return live; } };
+    if (IS_TOP && state.strokes.length) setMode(Mode.Unlocked); // modes-and-lock.md rule 8
+    announce(); // frames.md: a child asks its parent for a key and the mode
+    if (DEV) window.__inkoverDebug = { IS_TOP, frameStates, liveFrameEls, state, Mode, setMode, toggleLock, placeStroke, resolveAnchor, findAnchor, locatorFor, geoCache, resolveCache, vp, holdCheck, flushSave, renderInk, renderFx, readViewport, trail, undo, redo, clearPage, toggleHidden, checkPageKey, updateToolbar, updateShields, hitStrokes, ui, get live() { return live; } };
   }
 
   init();
