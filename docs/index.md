@@ -13,7 +13,7 @@ Features: 17 built.
 | Feature | Id | Status | Updated |
 |---|---|---|---|
 | [Modes and lock](features/modes-and-lock.md) | F01 | `built` | 2026-09-06 |
-| [Pencil input](features/pencil-input.md) | F02 | `built` | 2026-09-05 |
+| [Pencil input](features/pencil-input.md) | F02 | `built` | 2026-09-06 |
 | [Pen](features/pen.md) | F03 | `built` | 2026-09-05 |
 | [Highlighter](features/highlighter.md) | F04 | `built` | 2026-09-05 |
 | [Eraser](features/eraser.md) | F05 | `built` | 2026-09-05 |
@@ -22,11 +22,11 @@ Features: 17 built.
 | [Clear](features/clear.md) | F08 | `built` | 2026-09-05 |
 | [Persistence](features/persistence.md) | F09 | `built` | 2026-09-05 |
 | [Anchoring](features/anchoring.md) | F10 | `built` | 2026-09-05 |
-| [Toolbar](features/toolbar.md) | F11 | `built` | 2026-09-05 |
+| [Toolbar](features/toolbar.md) | F11 | `built` | 2026-09-06 |
 | [Reading spotlight](features/reading-spotlight.md) | F12 | `built` | 2026-09-05 |
 | [Shape snap](features/shape-snap.md) | F13 | `built` | 2026-09-05 |
 | [Scribble to erase](features/scribble-to-erase.md) | F14 | `built` | 2026-09-05 |
-| [Hide ink](features/hide-ink.md) | F15 | `built` | 2026-09-05 |
+| [Hide ink](features/hide-ink.md) | F15 | `built` | 2026-09-06 |
 | [Tip double-tap](features/tip-double-tap.md) | F16 | `built` | 2026-09-06 |
 | [Preferences](features/preferences.md) | F17 | `built` | 2026-09-06 |
 
@@ -35,7 +35,7 @@ Features: 17 built.
 | Decision | Id | Status | Updated |
 |---|---|---|---|
 | [D0001: iPad only](decisions/D0001-ipad-only.md) | D0001 | `accepted` | 2026-09-05 |
-| [D0002: Pencil draws, finger browses](decisions/D0002-pencil-draws-finger-browses.md) | D0002 | `accepted` | 2026-09-05 |
+| [D0002: Pencil draws, finger browses](decisions/D0002-pencil-draws-finger-browses.md) | D0002 | `superseded` | 2026-09-05 |
 | [D0003: Ink persists per URL until cleared](decisions/D0003-persist-per-url.md) | D0003 | `accepted` | 2026-09-05 |
 | [D0004: Stroke eraser only](decisions/D0004-stroke-eraser.md) | D0004 | `accepted` | 2026-09-05 |
 | [D0005: Trail on Pencil contact, as a tool](decisions/D0005-trail-on-contact.md) | D0005 | `accepted` | 2026-09-05 |
@@ -47,3 +47,4 @@ Features: 17 built.
 | [D0011: Free at launch, then paid up front at $5.99](decisions/D0011-paid-up-front.md) | D0011 | `accepted` | 2026-09-05 |
 | [D0012: Keep the name Inkover](decisions/D0012-keep-the-name.md) | D0012 | `accepted` | 2026-09-05 |
 | [D0013: The system colour picker, not a custom one](decisions/D0013-system-colour-picker.md) | D0013 | `accepted` | 2026-09-06 |
+| [D0014: Pencil locks on contact, Unlock frees the hand](decisions/D0014-pencil-locks-on-contact.md) | D0014 | `accepted` | 2026-09-06 |

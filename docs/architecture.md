@@ -1,6 +1,6 @@
 ---
 type: architecture
-updated: 2026-09-05
+updated: 2026-09-06
 ---
 # Architecture
 
@@ -23,21 +23,21 @@ The harness sets `window.__inkoverDev` before the script loads. With that flag, 
 
 ## Mode state machine
 
-Two states, per tab: Off and Draw, plus a one-shot pass-through flag that Unlock arms. Transitions and their triggers are the behaviour rules in [[modes-and-lock]]. There is no state in which Safari has the Pencil while Inkover is on: a pass-through tap is delivered by the script, which looks up the element under the tip with `elementsFromPoint`, skips Inkover's own nodes, focuses it, and dispatches pointer, mouse and click events at that point while a flag keeps Inkover's own capture listeners from reacting to them. The state lives in one variable; every other section reads it and never writes it. Entering Off removes the canvases and toolbar host from the DOM. Entering Draw creates them if absent.
+Three states, per tab: Off, Unlocked and Locked. Transitions and their triggers are the behaviour rules in [[modes-and-lock]]. There is no state in which Safari has the Pencil while Inkover is on. The state lives in one variable; every other section reads it, and only the mode section and the pen `pointerdown` handler write it. Entering Off removes the canvases and toolbar host from the DOM. Leaving Off creates them. Moving between Unlocked and Locked touches nothing but the toolbar, so a stroke in progress survives an Unlock tapped by a finger.
 
 ## Input routing
 
 The overlay canvases always have `pointer-events: none`. Nothing is ever blocked by the canvas itself. Capture is done with listeners on `window` in the capture phase:
 
-- `pointerdown`, `pointermove`, `pointerup`, `pointercancel`: when the mode is Draw and `pointerType === "pen"`, call `preventDefault()` and `stopImmediatePropagation()`, then feed the active tool. Otherwise do nothing and let the event through.
-- `touchstart`, `touchmove`, `touchend`, registered with `passive: false`: when the mode is Draw and any changed touch has `touchType === "stylus"`, call `preventDefault()`. This is what stops Safari from scrolling, selecting text or starting Scribble from a Pencil contact. Finger touches are never touched.
+- `pointerdown`, `pointermove`, `pointerup`, `pointercancel`: when Inkover is on and `pointerType === "pen"`, call `preventDefault()` and `stopImmediatePropagation()`, then feed the active tool. A pen `pointerdown` while Unlocked sets Locked first. When Locked and `pointerType === "touch"`, cancel and stop the event the same way so page scripts see nothing. Otherwise do nothing and let the event through.
+- `touchstart`, `touchmove`, `touchend`, registered with `passive: false`: when Inkover is on and any changed touch has `touchType === "stylus"`, call `preventDefault()`. This is what stops Safari from scrolling, selecting text or starting Scribble from a Pencil contact. When Locked, every touch event is cancelled and stopped, which keeps a palm from scrolling and keeps page scripts from seeing it. While Unlocked, finger touches are never touched.
 - Events whose `composedPath()` includes the toolbar host are always let through, in every mode.
 - `keydown` for Escape, Cmd+Z and Shift+Cmd+Z, only when `document.activeElement` is body or null.
-- `click` in the capture phase: cancelled when the click comes from a pen, or within 1.5 s of a captured pointerdown. On iPad the cancelled stylus `touchstart` already prevents the click; this closes the same gap on desktop, where the dev harness has no touch events.
+- `click` in the capture phase: cancelled when the click comes from a pen, within 1.5 s of a captured pointerdown, or while Locked. On iPad the cancelled `touchstart` already prevents the click; this closes the same gap on desktop, where the dev harness has no touch events.
 
 Use `getCoalescedEvents()` on `pointermove` when present. Pressure comes from `event.pressure`.
 
-Iframes do not bubble events to the parent, so in Draw mode a shield `div` with `pointer-events: auto` is placed over the bounding rect of every visible iframe, re-measured on every render. Shields carry the same pen listeners; finger touches on a shield scroll the parent page because the shield does not prevent them.
+Iframes do not bubble events to the parent, so while Inkover is on a shield `div` with `pointer-events: auto` is placed over the bounding rect of every visible iframe, re-measured on every render. Shields carry the same pen listeners; while Unlocked, finger touches on a shield scroll the parent page because the shield does not prevent them.
 
 ## Coordinates and rendering
 

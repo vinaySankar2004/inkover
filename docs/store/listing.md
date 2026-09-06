@@ -52,7 +52,7 @@ INK THAT STAYS PUT
 Most drawing extensions paint on a spot on the screen. Inkover attaches every stroke to the text or image it was drawn on. Switch a tab on the page, expand a section, rotate the iPad, reload: the ink moves with its content and hides while that content is hidden.
 
 THE PENCIL IS THE ONLY PEN
-Turn Inkover on and the Pencil is a pen from that moment. It never taps a link by accident, and there is nothing to lock first. Your finger still does everything it normally does. Palms are ignored. When you do want the Pencil to tap something, one tap on Unlock hands it to the page for that tap, and it comes back on its own.
+Turn Inkover on and the Pencil is a pen from that moment. It never taps a link or scrolls by accident. Your finger browses as normal until the Pencil touches the page; that touch locks the page, so you can rest your hand and write without anything moving under it. One tap on Unlock and your finger browses again.
 
 PRIVATE BY DESIGN
 Ink is saved on your iPad, per page, until you clear it. There is no account, no sync, no server and no analytics. Inkover collects nothing.

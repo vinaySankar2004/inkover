@@ -4,7 +4,7 @@ id: F11
 status: built
 depends: ["[[modes-and-lock]]"]
 decisions: []
-updated: 2026-09-05
+updated: 2026-09-06
 ---
 # Toolbar
 
@@ -17,7 +17,7 @@ The only visible UI. A floating pill with every control, operated by finger or P
 3. Default position bottom-right, 16 px inside the visual viewport. Drag by its handle to move; on release it snaps to the nearest screen edge.
 4. Position is remembered globally, not per page.
 5. It stays inside the visual viewport during pinch-zoom, rotation and while the keyboard is up.
-6. Two states. Collapsed: one circle showing the current tool and colour. Expanded: the full pill. Tap toggles. Turning Inkover on expands it; Unlock leaves it as it is.
+6. Two states. Collapsed: one circle showing the current tool and colour. Expanded: the full pill. Tap toggles. Turning Inkover on expands it; Lock and Unlock leave it as it is.
 7. Expanded contents, in groups: the grip; Lock, Pen, Highlight; Eraser, Trail, Spotlight; the colour swatches; the width slider; Undo, Redo; Hide, Clear; More. On a side edge each group is its own row of up to three, centred, so the column has no orphan cells.
 8. Colour swatches: six pen colours for Pen and Trail, four highlighter colours for Highlighter, none for Eraser and Spotlight. Pen colours: black, white, red, orange, blue, green. Highlighter colours: yellow, green, pink, blue.
 9. After the presets come up to three remembered custom colours, most recent first, then a rainbow swatch that opens the system colour picker. A picked colour applies at once and, on confirming, is remembered for that tool. Pen and Highlighter each remember their own three. A preset colour is never added to the remembered list.
@@ -35,7 +35,8 @@ The only visible UI. A floating pill with every control, operated by finger or P
 | Page uses the maximum z-index on something | Ties resolve by DOM order. The host is last in body, so the toolbar wins. |
 | Page re-renders body and drops the host | The host is re-appended on the next mutation batch. |
 | Safari Reader view | A different document. The extension does not run there. Accepted. |
-| Pencil taps a toolbar button with Pen active | The button acts. No ink. |
+| Pencil taps a toolbar button with Pen active | The button acts. No ink, and the mode does not change. |
+| Finger taps a toolbar button while Locked | The button acts. The lock applies to the page, not the toolbar. |
 | Toolbar dragged half off-screen | Snaps back fully inside on release. |
 | Split View or Slide Over makes the page narrower than the pill | The row wraps again as needed. Every button stays on screen. |
 | Page sends a Content-Security-Policy that forbids inline styles | The toolbar, colours and sizes render anyway. Styles are applied through the CSSOM, which the policy does not govern. |

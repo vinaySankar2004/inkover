@@ -14,7 +14,7 @@ Pre-alpha. Every v1 feature is specified and implemented, and the mechanics pass
 - Trail: ink that follows the Pencil and fades in under a second, for tracing while reading.
 - Ink is anchored to the element it was drawn on, so it moves with the content and hides when a tab or section hides.
 - Ink persists per page until cleared. Nothing leaves the device.
-- The Pencil is captured only in Draw mode. A finger scrolls, pinches and taps links in every mode.
+- A finger browses until the Pencil touches the page. That touch locks the page for writing; Unlock hands it back to the finger. The Pencil never scrolls.
 - Undo, redo, clear.
 
 Deliberately not included: export, print, sync, Mac, finger drawing. The reasons are in [docs/decisions](docs/decisions/D0009-non-goals.md).

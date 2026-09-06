@@ -12,7 +12,7 @@ supersedes: []
 Pencil hover is only available on M2 and later iPads with Pencil 2 or Pro, and Safari's hover events are less reliable than contact. Finger-driven trail conflicts with scrolling. Contact-only works on every iPad and Pencil.
 
 ## Decision
-Trail is a tool selected on the toolbar. It draws only while the Pencil is touching the glass in Draw mode.
+Trail is a tool selected on the toolbar. It draws only while the Pencil is touching the glass with Inkover on.
 
 ## Consequences
 - No hover handling anywhere in the code.

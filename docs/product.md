@@ -1,6 +1,6 @@
 ---
 type: product
-updated: 2026-09-05
+updated: 2026-09-06
 ---
 # Inkover
 
@@ -29,8 +29,8 @@ Use these words exactly, in docs and in code identifiers.
 | Ink | Everything stored for one page: all of its strokes. |
 | Stroke | One continuous Pencil-down to Pencil-up path with its tool, colour, size and points. |
 | Trail | Transient ink that fades in under a second and is never stored. |
-| Mode | Off or Draw. See [[modes-and-lock]]. |
-| Lock | The Pencil is captured by Inkover and never reaches the page. Unlock passes one Pencil tap through. |
+| Mode | Off, Unlocked or Locked. See [[modes-and-lock]]. |
+| Lock | The page takes no finger input; only the Pencil, and only as ink. Entered by the Pencil's first contact; left by tapping Unlock. |
 | Tool | Pen, Highlighter, Eraser, Trail or Spotlight. Exactly one is active. |
 | Anchor | The DOM element a stroke is attached to, so it moves and hides with its content. See [[anchoring]]. |
 | Page key | The URL without its fragment. Ink is stored per page key. See [[D0010-page-key]]. |

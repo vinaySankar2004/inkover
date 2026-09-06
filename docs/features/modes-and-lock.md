@@ -3,51 +3,53 @@ type: feature
 id: F01
 status: built
 depends: []
-decisions: ["[[D0002-pencil-draws-finger-browses]]"]
+decisions: ["[[D0014-pencil-locks-on-contact]]"]
 updated: 2026-09-06
 ---
 # Modes and lock
 
 ## Purpose
-Inkover must never get in the way of reading, and it must never need to be locked before use. The Pencil and the finger are told apart on every event, so when Inkover is on the Pencil draws and the finger browses, with nothing to switch. Safari never gets the Pencil back while Inkover is on, which is what keeps the Pencil from scrolling. When the Pencil needs to tap something on the page, Unlock passes exactly one tap through, delivered by Inkover itself.
+Reading and writing alternate without a switch. The hand browses until the Pencil touches the page; from that contact the page is locked so a resting palm cannot scroll or tap anything while writing. One tap on Unlock gives the page back to the hand. The Pencil is never handed to Safari while Inkover is on, so it can never scroll.
 
 ## Behaviour
-1. Modes are Off and Draw. Exactly one is active per tab at any time.
+1. Modes are Off, Unlocked and Locked. Exactly one is active per tab at any time.
 2. Off: no overlay, no toolbar, no ink drawn. The page behaves as if Inkover were not installed.
-3. Draw: the Pencil is captured. Every Pencil contact goes to the active tool and never reaches the page or Safari's own gestures. Nothing the Pencil does scrolls the page; scrolling is the finger's.
-4. In Draw, finger input is untouched: scroll, pinch, tap, long press all work exactly as without Inkover. The one exception is while the Pencil is down and for 1.5 s after, per [[pencil-input]] rule 9.
-5. The Safari toolbar button toggles Off and Draw.
-6. Unlock arms a pass-through. The next Pencil tap on the page, shorter than 250 ms and moving less than 6 px, is delivered by Inkover to the element under the tip: the element gets focus, then pointer, mouse and click events at that point. The tap leaves no ink and the pass-through is spent.
-7. While a pass-through is armed, Pencil drags still draw, and the Unlock button shows an open lock labelled Tap page. Tapping it again cancels the pass-through.
-8. On page load, a page with stored ink opens in Draw. A page without ink opens in Off.
-9. With a hardware keyboard, Escape arms the pass-through, the same as Unlock.
-10. Mode is not remembered across navigation. Rule 8 applies to every load.
+3. Unlocked: finger input is untouched. Scroll, pinch, tap and long press work exactly as without Inkover.
+4. Unlocked: the Pencil is captured. Its first contact with the page switches to Locked, and that contact is the start of a stroke with the active tool.
+5. Locked: the Pencil is captured and every contact goes to the active tool. Nothing the Pencil does reaches the page or Safari's own gestures.
+6. Locked: finger and palm touches on the page do nothing. No scroll, pinch, tap, long press or text selection. The toolbar still answers to both.
+7. Unlock, on the toolbar, switches Locked to Unlocked. Lock, the same button, switches Unlocked to Locked without a Pencil contact.
+8. The Safari toolbar button toggles between Off and Unlocked.
+9. On page load, a page with stored ink opens Unlocked. A page without ink opens in Off.
+10. With a hardware keyboard, Escape unlocks. It does nothing while Unlocked.
+11. Mode is not remembered across navigation. Rule 9 applies to every load.
 
 ## Edge cases
 | Situation | Expected |
 |---|---|
-| Pencil taps a link in Draw with no pass-through armed | Nothing happens on the page. With Pen active, a dot is drawn. |
-| Unlock, then the Pencil taps a link | The link opens. On the new page, rule 8 applies. |
-| Unlock, then the Pencil drags | The drag draws as usual. The pass-through stays armed for the next tap. |
-| Unlock, then the Pencil taps a text field | The field gets focus and the keyboard appears. Typing is the keyboard's. Scribble needs a native Pencil, which the page never gets while Inkover is on. |
-| Unlock, then the Pencil taps inside a cross-origin iframe | Nothing. A tap cannot be delivered into another origin. Use a finger. |
-| Unlock, then the Pencil taps a control that listens only for touch events | Inkover sends pointer, mouse and click events. A control that ignores all three does not respond. Use a finger. |
-| Unlock with the Eraser active, then tap | The tap goes to the page and erases nothing. |
-| Finger taps a link in Draw | Page navigates. Rule 8 applies on the new page. |
-| Pencil touches inside an iframe in Draw | Captured; ink is drawn. A finger on that iframe scrolls the outer page, not the iframe, while Inkover is on. |
+| Pencil taps a link, in either on mode | Nothing happens on the page. With Pen active, a dot is drawn and the mode is Locked. |
+| Finger taps a link while Unlocked | Page navigates. Rule 9 applies on the new page. |
+| Finger taps a link while Locked | Nothing. Tap Unlock first. |
+| Palm lands beside the Pencil while Locked | Ignored. |
+| Palm lands and drifts before the Pencil touches, while Unlocked | The page may scroll until the Pencil lands, then it locks. iPadOS drops most palm touches once the Pencil is near. |
+| Finger is mid-scroll when the Pencil lands | The scroll already under way finishes. No new finger gesture starts until Unlock. |
+| Pencil is drawing when a finger taps Unlock on the toolbar | The stroke continues and ends normally. The mode is Unlocked from then on. |
+| Pencil touches inside an iframe | Captured; ink is drawn. While Unlocked a finger on that iframe scrolls the outer page, not the iframe. |
 | Site has its own Pencil handling, for example a drawing canvas | Inkover wins while it is on. Turn Inkover off from Safari's button to use the site's canvas. |
+| Trackpad or mouse on a Magic Keyboard while Locked | Not a hand. Unaffected. |
 | Page enters fullscreen video | Overlay and toolbar hide until fullscreen exits. Mode is preserved. |
-| Palm rests on the glass in Draw | Ignored. A palm is a touch, not a pen. |
 | System gesture interrupts a stroke, for example a Control Centre swipe | pointercancel ends the stroke as drawn so far. |
-| Two toggles within 300 ms | The second is ignored. |
+| Two Safari button toggles within 300 ms | The second is ignored. |
 | Page is a PDF opened in Safari | Safari's PDF view is not a web page; the extension does not run. Accepted. |
-| Selecting text with the Pencil | Not possible while Inkover is on. Use a finger. |
+| Selecting text or tapping a field with the Pencil | Not possible while Inkover is on. Use a finger while Unlocked. |
 
 ## Acceptance
-- [ ] In Draw, Pencil on a link draws and does not navigate.
-- [ ] In Draw, finger scrolls, pinches and taps links.
-- [ ] Reload a page with ink: it opens in Draw with the ink visible, and the Pencil draws at once.
-- [ ] Tap Unlock, then tap a link with the Pencil: the link opens and the lock closes by itself.
-- [ ] Tap Unlock, then drag the Pencil across the page: it draws and nothing scrolls. Then tap: the tap goes through.
-- [ ] Escape on a Magic Keyboard arms Unlock.
-- [ ] On a page with a YouTube embed, Pencil over the embed draws and finger outside it scrolls.
+- [ ] Turn Inkover on: the toolbar shows an open lock. Scroll with a finger: the page scrolls.
+- [ ] Touch the page with the Pencil: ink appears from that first contact and the lock closes.
+- [ ] While Locked, scroll and tap links with a finger: nothing happens.
+- [ ] While Locked, rest the palm and write: the page stays still and the strokes are unbroken.
+- [ ] Tap Unlock: a finger scrolls and taps again. Touch with the Pencil: it locks and draws.
+- [ ] Drag the Pencil while Unlocked: it draws and nothing scrolls.
+- [ ] Reload a page with ink: it opens Unlocked with the ink visible.
+- [ ] Escape on a Magic Keyboard unlocks.
+- [ ] On a page with a YouTube embed, Pencil over the embed draws and, while Unlocked, a finger outside it scrolls.
