@@ -15,7 +15,7 @@ Built on ICM: the docs are the source of truth, the code implements them, and th
 | `docs/decisions/` | One file per decision, numbered, with the why. |
 | `docs/index.md` | GENERATED status board. Rebuild with the script, never edit. |
 | `docs/store/` | App Store: the exact listing text and the screenshots. |
-| `private/` | Owner-only: market notes, pricing decisions, the release procedure and script. Gitignored; exists only on the owner's Mac. If it is missing, you are not on that Mac. |
+| `private/` | Owner-only: market notes, pricing decisions, the release procedure and script, and `store/status.md`, the log of every build sent to Apple and where it stands. Gitignored; exists only on the owner's Mac. If it is missing, you are not on that Mac. |
 | `docs/privacy.md` | The privacy policy the App Store links to. Published by GitHub Pages. |
 | `index.md`, `support.md`, `_layouts/`, `assets/` | The public site: landing page, support page, shared layout and styles. GitHub Pages builds it from `main`. |
 | `_meta/` | Schema, writing rules, templates. The factory. |
@@ -35,7 +35,8 @@ Built on ICM: the docs are the source of truth, the code implements them, and th
 | Verifying a feature | The spec's Acceptance list | Run it on the iPad, tick the boxes, set `status: verified`. |
 | Changing behaviour | The spec first | Edit the spec, run `python3 scripts/build-index.py --blast <slug> <words>` and fix every file it lists, then the code. One commit. |
 | Asked for status | Run `python3 scripts/build-index.py` | Read `docs/index.md` and report. |
-| Shipping a release | `private/store/release.md` | Follow it top to bottom. Listing text comes from `docs/store/listing.md`, never retyped. |
+| Shipping a release | `private/store/release.md` | Follow it top to bottom. Listing text comes from `docs/store/listing.md`, never retyped. Log every upload and status change in `private/store/status.md` the same day. |
+| Asked about App Store or TestFlight state | `private/store/status.md` | Read it and report. Update it first if App Store Connect disagrees. |
 | Changing price or store copy | `docs/store/listing.md` first | Then App Store Connect, same day. |
 | Changing a screenshot | The Screenshots table in `docs/store/listing.md` | Then `node scripts/screenshots.js` and commit the PNGs it writes. Never edit a PNG by hand. |
 | Writing any doc | `_meta/writing-rules.md` | Follow it. |
