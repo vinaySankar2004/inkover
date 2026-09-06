@@ -20,6 +20,7 @@ A fidget. Ink that follows the Pencil and fades away, for tracing along a senten
 6. Trail lives in screen space. It does not scroll with the page; it fades where it was drawn.
 7. Trail renders on its own canvas in a frame loop that runs only while segments exist.
 8. Lifting the Pencil ends input. The tail keeps fading.
+9. Each Pencil-down starts a new tail. Nothing ever connects the end of one stroke to the start of the next, even while the previous tail is still fading.
 
 ## Edge cases
 | Situation | Expected |
@@ -30,6 +31,7 @@ A fidget. Ink that follows the Pencil and fades away, for tracing along a senten
 | Finger scrolls while trailing | The tail stays put on screen and fades. Not a bug. |
 | Continuous trail for 30 s | Only the last 800 ms of segments ever exist. Memory is bounded. |
 | Pressure varies | Ignored. Trail width is by age only. |
+| Writing letters quickly, one stroke after another | Each letter has its own tail. No straight line jumps from one letter to the next. |
 
 ## Acceptance
 - [ ] Trace a sentence: the tail visibly follows and is gone within about a second.

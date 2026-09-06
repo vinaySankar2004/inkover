@@ -92,3 +92,8 @@ Undo entries are `{ type: "add" | "remove" | "clear", strokes: [...] }`. The era
 ## Toolbar host
 
 One `div` appended last in `body`, `position: fixed`, maximum z-index, holding an open shadow root with the toolbar markup and its own stylesheet. The host is re-appended if a mutation batch finds it disconnected. Its position is stored relative to the visual viewport edge it is snapped to, so it survives rotation.
+
+Two things about the page can break an overlay, and both were met on claude.ai:
+
+- The page's Content-Security-Policy applies to style attributes and `<style>` elements the extension inserts. So the toolbar stylesheet is a constructed `CSSStyleSheet` adopted by the shadow root, and colours and sizes are set through `element.style`, both of which are CSSOM and outside the policy's reach. A `<style>` element is the fallback only where constructed sheets do not exist.
+- The host, the canvases and the shields are elements in the page's DOM, so page selectors like `body > div` match them. Every property in `content.css` is `!important`, and the transforms and sizes set from script use `setProperty` with the important flag.

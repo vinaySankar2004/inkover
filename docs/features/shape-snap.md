@@ -12,7 +12,7 @@ updated: 2026-09-05
 Circling things is the main use. Holding still at the end of a Pen stroke turns a rough loop into a clean ellipse or rectangle, and a near-straight stroke into a straight line. It is the same hold gesture as the highlighter. Freehand stays the default.
 
 ## Behaviour
-1. Applies to the Pen only. The hold gesture and thresholds are those of [[highlighter]] rules 7 and 9: at least 20 px travelled, then within 6 px for 400 ms.
+1. Applies to the Pen only. The hold gesture and thresholds are those of [[highlighter]] rules 7 and 9: at least 20 px travelled, then within 6 px for 500 ms.
 2. When the hold arms, the stroke is classified as line, ellipse, rectangle or none.
 3. Line: the bounding box is at least 5 times longer than wide, and every point lies within 8 percent of the long side from the line between the first and last points.
 4. Closed: the distance from first to last point is at most 20 percent of the bounding box perimeter. Ellipse and rectangle require closed.

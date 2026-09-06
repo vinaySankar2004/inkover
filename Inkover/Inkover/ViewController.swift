@@ -3,7 +3,7 @@
 //  Inkover
 //
 //  The wrapper app has one screen: how to turn the extension on, how it works, and the privacy links.
-//  All content lives in Resources/Base.lproj/Main.html. This controller only opens Settings and URLs.
+//  All content lives in Resources/Base.lproj/Main.html. This controller only opens URLs.
 //
 
 import UIKit
@@ -31,11 +31,9 @@ class ViewController: UIViewController, WKNavigationDelegate, WKScriptMessageHan
 
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
         guard let body = message.body as? [String: Any], let action = body["action"] as? String else { return }
+        // There is no public way to open Safari's Extensions screen. The app-settings URL lands on
+        // Inkover's own page, which has no extension toggle, so the page gives written steps instead.
         switch action {
-        case "openSettings":
-            if let url = URL(string: UIApplication.openSettingsURLString) {
-                UIApplication.shared.open(url)
-            }
         case "openURL":
             if let string = body["url"] as? String, let url = URL(string: string), url.scheme == "https" {
                 UIApplication.shared.open(url)

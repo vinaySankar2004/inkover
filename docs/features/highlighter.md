@@ -18,7 +18,7 @@ Wide translucent ink for marking lines of text. Text shows through, and a stroke
 4. Two different highlighter strokes that overlap do stack darker. Matches paper.
 5. Colours are the four highlighter colours in [[toolbar]]. The highlighter colour is remembered separately from the pen colour.
 6. Caps are square, so a snapped line is a clean bar.
-7. Straight-line snap arms when the Pencil has travelled at least 20 px and then stays within 6 px for 400 ms.
+7. Straight-line snap arms when the Pencil has travelled at least 20 px and then stays within 6 px for 500 ms.
 8. Snap applies only if the stroke's bounding box is at least 5 times wider than tall, or 5 times taller than wide.
 9. When snap arms, the live stroke redraws as a straight line from first point to current point. Lifting confirms it; moving more than 6 px cancels it and freehand resumes.
 10. A snapped stroke stores `straight: true` and only its first and last points.

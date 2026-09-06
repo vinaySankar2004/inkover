@@ -26,21 +26,23 @@
   const SPOT_DIM = 0.7;                          // reading-spotlight.md rule 2
   const SPOT_FEATHER = 16;                       // reading-spotlight.md rule 4
   const LIMITS = { strokes: 2000, points: 5000, undo: 200 };
-  const HOLD = { travel: 20, jitter: 6, ms: 400 }; // highlighter.md rule 7
+  const HOLD = { travel: 20, jitter: 6, ms: 500 }; // highlighter.md rule 7
   const ERASER_REACH = 12;                       // eraser.md rule 2
   const TRAIL_TTL = 800;                         // trail.md rule 2
-  const SCRIBBLE = { step: 8, reversals: 4, ratio: 2.5 }; // scribble-to-erase.md rules 2 and 3
+  const SCRIBBLE = { step: 8, reversals: 5, swing: 0.6, ratio: 2.5, cover: 0.4 }; // scribble-to-erase.md rules 2 to 4
   const MARK_ALPHA = 0.3;                        // scribble-to-erase.md rule 4
   const STORAGE_VERSION = 1;
   const SAVE_DEBOUNCE = 500;                     // persistence.md rule 2
   const REPAIR_INTERVAL = 100;                   // anchoring.md edge case: re-resolution limit
   const TOGGLE_GUARD = 300;                      // modes-and-lock.md edge case
+  const TAP = { ms: 250, move: 6, gap: 350, apart: 30 }; // tip-double-tap.md rule 1
+  const PALM_MS = 1500;                          // pencil-input.md rule 9
   const MEDIA_TAGS = new Set(["IMG", "VIDEO", "CANVAS", "SVG", "PICTURE", "IFRAME", "OBJECT", "EMBED"]);
   const TAU = Math.PI * 2;
 
   // ── State ──────────────────────────────────────────────────────────────
 
-  const defaultSettings = () => ({ tool: Tool.Pen, penColor: "black", hlColor: "yellow", size: "m", toolbar: { edge: "bottom", along: 1 } });
+  const defaultSettings = () => ({ tool: Tool.Pen, prevTool: Tool.Pen, penColor: "black", hlColor: "yellow", size: "m", toolbar: { edge: "bottom", along: 1 } });
 
   const state = {
     mode: Mode.Off,
@@ -159,9 +161,9 @@
     let resized = false;
     for (const c of [inkCanvas, fxCanvas]) {
       if (c.width !== W || c.height !== H) { c.width = W; c.height = H; resized = true; }
-      c.style.width = vp.w + "px";
-      c.style.height = vp.h + "px";
-      c.style.transform = `translate(${vp.ox}px, ${vp.oy}px)`;
+      c.style.setProperty("width", vp.w + "px", "important");
+      c.style.setProperty("height", vp.h + "px", "important");
+      c.style.setProperty("transform", `translate(${vp.ox}px, ${vp.oy}px)`, "important");
     }
     return resized;
   }
@@ -213,6 +215,7 @@
     e.preventDefault();
     e.stopImmediatePropagation();
     suppressClickUntil = performance.now() + 1500;
+    lastPenContact = performance.now();
     if (activePointer !== null) return; // pen.md edge case: first pointer only
     activePointer = e.pointerId;
     beginStroke(e);
@@ -233,12 +236,14 @@
     e.preventDefault();
     e.stopImmediatePropagation();
     activePointer = null;
+    lastPenContact = performance.now();
     endStroke(e, false);
   }
 
   function onPointerCancel(e) {
     if (activePointer === null || e.pointerId !== activePointer) return;
     activePointer = null;
+    lastPenContact = performance.now();
     endStroke(e, true); // pencil-input.md rule 6
   }
 
@@ -252,12 +257,17 @@
     }
   }
 
-  function onTouch(e) { // pencil-input.md rule 8
+  let lastPenContact = -Infinity;
+
+  function onTouch(e) { // pencil-input.md rules 8 and 9
     if (state.mode !== Mode.Draw || state.fullscreen) return;
     if (host && e.composedPath().includes(host)) return;
     for (const t of e.changedTouches) {
       if (t.touchType === "stylus") { e.preventDefault(); return; }
     }
+    // A palm resting beside the Pencil is a touch. If it drifts, Safari would start a scroll and
+    // cancel the Pencil stroke. So while the Pencil is down, or shortly after, touches do nothing.
+    if (activePointer !== null || performance.now() - lastPenContact < PALM_MS) e.preventDefault();
   }
 
   function onKey(e) { // modes-and-lock.md rule 9, undo-redo.md rule 2
@@ -296,10 +306,10 @@
         document.documentElement.appendChild(sh);
         shields[i] = sh;
       }
-      sh.style.left = r.left + "px";
-      sh.style.top = r.top + "px";
-      sh.style.width = r.width + "px";
-      sh.style.height = r.height + "px";
+      sh.style.setProperty("left", r.left + "px", "important");
+      sh.style.setProperty("top", r.top + "px", "important");
+      sh.style.setProperty("width", r.width + "px", "important");
+      sh.style.setProperty("height", r.height + "px", "important");
       i++;
     }
     for (let j = i; j < shields.length; j++) shields[j].remove();
@@ -313,7 +323,7 @@
 
   // ── Stroke geometry ────────────────────────────────────────────────────
 
-  function penWidth(size, p) { return PEN_BASE[size] * (0.4 + 1.2 * p); } // pen.md rule 2
+  function penWidth(size, p) { return PEN_BASE[size] * (0.55 + 1.0 * p); } // pen.md rule 2
 
   function strokeWidth(s) {
     if (s.tool === Tool.Highlighter) return HL_WIDTH[s.size];
@@ -495,15 +505,17 @@
   // scribble-to-erase.md rules 2 and 3.
 
   function newScribbleTracker(x, y) {
-    return { x0: x, y0: y, x1: x, y1: y, len: 0, lx: x, ly: y, dirX: 0, dirY: 0, extX: x, extY: y, revX: 0, revY: 0, detected: false };
+    return { x0: x, y0: y, x1: x, y1: y, len: 0, lx: x, ly: y, dirX: 0, dirY: 0, extX: x, extY: y, fromX: x, fromY: y, swingsX: [], swingsY: [], detected: false };
   }
 
+  // A swing is the travel along one axis between two reversals. Handwriting has swings too,
+  // but they are short compared to the letter's width; a scribble-out sweeps the whole width every time.
   function scribbleStep(t, x, y) {
     t.len += Math.hypot(x - t.lx, y - t.ly);
     t.lx = x; t.ly = y;
     if (x < t.x0) t.x0 = x; if (x > t.x1) t.x1 = x;
     if (y < t.y0) t.y0 = y; if (y > t.y1) t.y1 = y;
-    const axis = (v, dirKey, extKey, revKey) => {
+    const axis = (v, dirKey, extKey, fromKey, swings) => {
       const dir = t[dirKey], ext = t[extKey];
       if (dir === 0) {
         if (Math.abs(v - ext) >= SCRIBBLE.step) { t[dirKey] = v > ext ? 1 : -1; t[extKey] = v; }
@@ -511,18 +523,19 @@
       }
       if (dir > 0) {
         if (v > ext) t[extKey] = v;
-        else if (ext - v >= SCRIBBLE.step) { t[dirKey] = -1; t[extKey] = v; t[revKey]++; }
+        else if (ext - v >= SCRIBBLE.step) { swings.push(Math.abs(ext - t[fromKey])); t[fromKey] = ext; t[dirKey] = -1; t[extKey] = v; }
       } else {
         if (v < ext) t[extKey] = v;
-        else if (v - ext >= SCRIBBLE.step) { t[dirKey] = 1; t[extKey] = v; t[revKey]++; }
+        else if (v - ext >= SCRIBBLE.step) { swings.push(Math.abs(ext - t[fromKey])); t[fromKey] = ext; t[dirKey] = 1; t[extKey] = v; }
       }
     };
-    axis(x, "dirX", "extX", "revX");
-    axis(y, "dirY", "extY", "revY");
+    axis(x, "dirX", "extX", "fromX", t.swingsX);
+    axis(y, "dirY", "extY", "fromY", t.swingsY);
     if (!t.detected) {
-      const reversals = Math.max(t.revX, t.revY);
-      const extent = (t.x1 - t.x0) + (t.y1 - t.y0);
-      if (reversals >= SCRIBBLE.reversals && t.len >= SCRIBBLE.ratio * Math.max(extent, 1)) t.detected = true;
+      const w = t.x1 - t.x0, h = t.y1 - t.y0;
+      const fullX = t.swingsX.filter((s) => s >= SCRIBBLE.swing * w).length;
+      const fullY = t.swingsY.filter((s) => s >= SCRIBBLE.swing * h).length;
+      if (Math.max(fullX, fullY) >= SCRIBBLE.reversals && t.len >= SCRIBBLE.ratio * Math.max(w + h, 1)) t.detected = true;
     }
     return t.detected;
   }
@@ -801,7 +814,7 @@
     const [x, y] = clientToDoc(e.clientX, e.clientY);
     const [sx, sy] = clientToScreen(e.clientX, e.clientY);
     const p = pressureOf(e);
-    live = { tool, points: [], pSmooth: p, hold: null, holdTimer: 0, snapped: null, scr: null, marked: null, erased: [], anchorEl: null, screen: [sx, sy], spotY: sy };
+    live = { tool, points: [], pSmooth: p, hold: null, holdTimer: 0, snapped: null, scr: null, marked: null, erased: [], anchorEl: null, screen: [sx, sy], spotY: sy, t0: performance.now(), x0: x, y0: y, maxDist: 0 };
     if (tool === Tool.Pen || tool === Tool.Highlighter) {
       if (state.hidden) { state.hidden = false; requestRender(); updateToolbar(); } // hide-ink.md rule 4
       live.anchorEl = findAnchor(e.clientX, e.clientY);
@@ -812,7 +825,7 @@
     } else if (tool === Tool.Eraser) {
       eraseAt(x, y);
     } else if (tool === Tool.Trail) {
-      trail.push({ x: sx, y: sy, t: performance.now() });
+      trail.push({ x: sx, y: sy, t: performance.now(), start: true }); // trail.md rule 9: no segment joins two strokes
     }
     requestFx();
   }
@@ -823,6 +836,8 @@
     const [sx, sy] = clientToScreen(e.clientX, e.clientY);
     live.screen = [sx, sy];
     const tool = live.tool;
+    const fromStart = Math.hypot(x - live.x0, y - live.y0);
+    if (fromStart > live.maxDist) live.maxDist = fromStart;
     if (tool === Tool.Pen || tool === Tool.Highlighter) {
       if (live.points.length >= LIMITS.points) return; // pen.md rule 10
       live.pSmooth = live.pSmooth * 0.65 + pressureOf(e) * 0.35;
@@ -869,8 +884,20 @@
 
   function markAt(x, y) { // scribble-to-erase.md rule 4
     let changed = false;
+    const t = live.scr;
+    const pad = ERASER_REACH / vp.scale;
+    const sb = { x: t.x0 - pad, y: t.y0 - pad, w: t.x1 - t.x0 + pad * 2, h: t.y1 - t.y0 + pad * 2 };
     for (const s of hitStrokes(x, y)) {
-      if (!live.marked.has(s.id)) { live.marked.add(s.id); changed = true; }
+      if (live.marked.has(s.id)) continue;
+      const g = geoCache.get(s.id);
+      if (!g) continue;
+      // Only strokes the scribble mostly covers. Writing a word across an old underline must not erase it.
+      const ix = Math.max(0, Math.min(sb.x + sb.w, g.box.x + g.box.w) - Math.max(sb.x, g.box.x));
+      const iy = Math.max(0, Math.min(sb.y + sb.h, g.box.y + g.box.h) - Math.max(sb.y, g.box.y));
+      const covered = (ix * iy) / Math.max(1, g.box.w * g.box.h);
+      if (covered < SCRIBBLE.cover) continue;
+      live.marked.add(s.id);
+      changed = true;
     }
     if (changed) requestRender();
   }
@@ -883,11 +910,33 @@
     inkChanged();
   }
 
+  let lastTap = null; // tip-double-tap.md: { t, x, y, strokeId }
+
   function endStroke(e, cancelled) {
     const L = live;
     if (!L) return;
     live = null;
     clearTimeout(L.holdTimer);
+    const now = performance.now();
+    const tapTool = L.tool === Tool.Pen || L.tool === Tool.Highlighter || L.tool === Tool.Eraser;
+    const isTap = tapTool && !cancelled && now - L.t0 < TAP.ms && L.maxDist < TAP.move; // tip-double-tap.md rule 1
+    if (isTap && lastTap && now - lastTap.t < TAP.gap && Math.hypot(L.x0 - lastTap.x, L.y0 - lastTap.y) < TAP.apart) {
+      if (lastTap.strokeId) { // the first tap's dot never meant to be ink
+        const first = state.strokes.find((s) => s.id === lastTap.strokeId);
+        if (first) {
+          removeStrokes([first]);
+          const top = state.undo[state.undo.length - 1];
+          if (top && top.type === "add" && top.strokes.length === 1 && top.strokes[0] === first) state.undo.pop();
+          inkChanged();
+        }
+      }
+      lastTap = null;
+      toggleEraser();
+      requestRender();
+      requestFx();
+      return;
+    }
+    let committedId = null;
     if (L.tool === Tool.Pen || L.tool === Tool.Highlighter) {
       if (L.marked && L.marked.size) { // scribble-to-erase.md rule 5
         const list = state.strokes.filter((s) => L.marked.has(s.id));
@@ -901,17 +950,18 @@
           shape = L.snapped.kind;
           straight = shape === "line";
         }
-        commitStroke(L, pts, straight, shape);
+        committedId = commitStroke(L, pts, straight, shape);
       }
     } else if (L.tool === Tool.Eraser) {
       if (L.erased.length) { pushUndo({ type: "remove", strokes: L.erased }); updateToolbar(); } // eraser.md rule 4
     }
+    lastTap = isTap ? { t: now, x: L.x0, y: L.y0, strokeId: committedId } : null;
     requestRender();
     requestFx();
   }
 
   function commitStroke(L, docPts, straight, shape) {
-    if (state.strokes.length >= LIMITS.strokes) { notice("Page is full. Clear to continue."); return; } // persistence.md rule 4
+    if (state.strokes.length >= LIMITS.strokes) { notice("Page is full. Clear to continue."); return null; } // persistence.md rule 4
     const placed = anchorFor(L.anchorEl, docPts);
     const s = {
       id: uuid(),
@@ -927,6 +977,7 @@
     state.strokes.push(s);
     pushUndo({ type: "add", strokes: [s] });
     inkChanged();
+    return s.id;
   }
 
   function cancelLive() {
@@ -1056,6 +1107,7 @@
       ctx.strokeStyle = PEN_COLORS[state.settings.penColor];
       for (let i = 1; i < trail.length; i++) {
         const a = trail[i - 1], b = trail[i];
+        if (b.start) continue; // a new stroke; nothing connects it to the previous one
         const life = 1 - (now - b.t) / TRAIL_TTL;
         if (life <= 0) continue;
         ctx.globalAlpha = life;
@@ -1099,20 +1151,23 @@
     #root { position: relative; font: 13px/1 -apple-system, system-ui, sans-serif; color: #fff; -webkit-user-select: none; user-select: none; }
     .pill, .dot { background: rgba(28,28,30,0.86); -webkit-backdrop-filter: blur(24px); backdrop-filter: blur(24px); box-shadow: 0 8px 28px rgba(0,0,0,0.30), 0 0 0 0.5px rgba(255,255,255,0.12) inset; }
     .pill { display: flex; flex-direction: row; flex-wrap: wrap; justify-content: center; align-items: center; gap: 0; padding: 4px; border-radius: 30px; box-sizing: border-box; }
-    .pill.vertical { display: grid; grid-template-columns: 44px 44px; justify-items: center; max-width: none; }
-    .btn { width: 44px; height: 44px; border: 0; margin: 0; padding: 0; background: transparent; color: #fff; border-radius: 22px; display: flex; align-items: center; justify-content: center; cursor: pointer; touch-action: none; }
+    .pill.vertical { display: grid; grid-template-columns: 54px 54px; justify-items: center; max-width: none; }
+    .btn { width: 54px; height: 54px; border: 0; margin: 0; padding: 0; background: transparent; color: #fff; border-radius: 14px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; cursor: pointer; touch-action: none; font: 600 9.5px/1 -apple-system, system-ui, sans-serif; }
+    .btn small { font-size: 9.5px; font-weight: 600; opacity: 0.8; white-space: nowrap; }
     .btn.active { background: rgba(255,255,255,0.22); }
+    .btn.active small { opacity: 1; }
     .btn:disabled { opacity: 0.32; cursor: default; }
-    .btn.grip { color: rgba(255,255,255,0.55); cursor: grab; }
-    .sep { width: 1px; height: 26px; background: rgba(255,255,255,0.16); margin: 0 3px; flex: none; }
-    .vertical .sep { grid-column: 1 / -1; width: 60px; height: 1px; margin: 3px 0; }
+    .btn.grip { width: 28px; color: rgba(255,255,255,0.55); cursor: grab; }
+    .vertical .btn.grip { width: 54px; height: 28px; grid-column: 1 / -1; }
+    .sep { width: 1px; height: 34px; background: rgba(255,255,255,0.16); margin: 0 3px; flex: none; }
+    .vertical .sep { grid-column: 1 / -1; width: 70px; height: 1px; margin: 3px 0; }
     .row { display: contents; }
-    .swatch span { display: block; width: 22px; height: 22px; border-radius: 50%; box-shadow: 0 0 0 1px rgba(255,255,255,0.25); }
-    .swatch.active span { box-shadow: 0 0 0 2.5px #fff; }
+    .swatch span { display: block; width: 26px; height: 26px; border-radius: 50%; box-shadow: 0 0 0 1px rgba(255,255,255,0.25); }
+    .swatch.active span { box-shadow: 0 0 0 3px #fff; }
     .size span { display: block; border-radius: 50%; background: #fff; }
     .size.active { background: rgba(255,255,255,0.22); }
-    .dot { width: 52px; height: 52px; border: 0; margin: 0; padding: 0; border-radius: 26px; display: flex; align-items: center; justify-content: center; color: #fff; cursor: pointer; touch-action: none; }
-    .dot .tint { position: absolute; width: 10px; height: 10px; border-radius: 50%; right: 4px; bottom: 4px; box-shadow: 0 0 0 1.5px rgba(28,28,30,0.9); }
+    .dot { width: 56px; height: 56px; border: 0; margin: 0; padding: 0; border-radius: 28px; display: flex; align-items: center; justify-content: center; color: #fff; cursor: pointer; touch-action: none; }
+    .dot .tint { position: absolute; width: 12px; height: 12px; border-radius: 50%; right: 4px; bottom: 4px; box-shadow: 0 0 0 1.5px rgba(28,28,30,0.9); }
     .dot { position: relative; }
     .notice { position: absolute; left: 50%; transform: translateX(-50%); bottom: calc(100% + 10px); white-space: nowrap; background: rgba(28,28,30,0.92); color: #fff; padding: 8px 12px; border-radius: 10px; font-size: 13px; opacity: 0; transition: opacity 160ms ease; pointer-events: none; }
     #root[data-edge="top"] .notice { bottom: auto; top: calc(100% + 10px); }
@@ -1124,33 +1179,45 @@
     host = document.createElement("div");
     host.className = "inkover-host";
     const shadow = host.attachShadow({ mode: "open" });
-    const style = document.createElement("style");
-    style.textContent = TOOLBAR_CSS;
+    // A constructed stylesheet is CSSOM, so a page's Content-Security-Policy cannot block it.
+    // A <style> element could be. Fall back to one only where constructed sheets do not exist.
+    let styled = false;
+    try {
+      const sheet = new CSSStyleSheet();
+      sheet.replaceSync(TOOLBAR_CSS);
+      shadow.adoptedStyleSheets = [sheet];
+      styled = true;
+    } catch (_) { styled = false; }
+    if (!styled) {
+      const style = document.createElement("style");
+      style.textContent = TOOLBAR_CSS;
+      shadow.appendChild(style);
+    }
     const root = document.createElement("div");
     root.id = "root";
     root.innerHTML = `
       <div class="pill" id="pill">
         <button class="btn grip" data-act="collapse" aria-label="Collapse toolbar">${svg("grip")}</button>
-        <button class="btn" data-act="lock" aria-label="Lock">${svg("unlock")}</button>
+        <button class="btn" data-act="lock" aria-label="Lock">${svg("unlock")}<small>Lock</small></button>
         <div class="sep"></div>
-        <button class="btn" data-tool="pen" aria-label="Pen">${svg("pen")}</button>
-        <button class="btn" data-tool="highlighter" aria-label="Highlighter">${svg("highlighter")}</button>
-        <button class="btn" data-tool="eraser" aria-label="Eraser">${svg("eraser")}</button>
-        <button class="btn" data-tool="trail" aria-label="Trail">${svg("trail")}</button>
-        <button class="btn" data-tool="spotlight" aria-label="Reading spotlight">${svg("spotlight")}</button>
+        <button class="btn" data-tool="pen" aria-label="Pen">${svg("pen")}<small>Pen</small></button>
+        <button class="btn" data-tool="highlighter" aria-label="Highlighter">${svg("highlighter")}<small>Highlight</small></button>
+        <button class="btn" data-tool="eraser" aria-label="Eraser">${svg("eraser")}<small>Eraser</small></button>
+        <button class="btn" data-tool="trail" aria-label="Trail">${svg("trail")}<small>Trail</small></button>
+        <button class="btn" data-tool="spotlight" aria-label="Reading spotlight">${svg("spotlight")}<small>Spotlight</small></button>
         <div class="sep" id="sepColors"></div>
         <div class="row" id="colors"></div>
         <div class="row" id="sizes"></div>
         <div class="sep"></div>
-        <button class="btn" data-act="undo" aria-label="Undo">${svg("undo")}</button>
-        <button class="btn" data-act="redo" aria-label="Redo">${svg("redo")}</button>
-        <button class="btn" data-act="hide" aria-label="Hide ink">${svg("eye")}</button>
-        <button class="btn" data-act="clear" aria-label="Clear page">${svg("trash")}</button>
+        <button class="btn" data-act="undo" aria-label="Undo">${svg("undo")}<small>Undo</small></button>
+        <button class="btn" data-act="redo" aria-label="Redo">${svg("redo")}<small>Redo</small></button>
+        <button class="btn" data-act="hide" aria-label="Hide ink">${svg("eye")}<small>Hide</small></button>
+        <button class="btn" data-act="clear" aria-label="Clear page">${svg("trash")}<small>Clear</small></button>
       </div>
       <button class="dot" id="dot" aria-label="Expand Inkover toolbar">${svg("pen")}<span class="tint"></span></button>
       <div class="notice" id="notice"></div>
     `;
-    shadow.append(style, root);
+    shadow.appendChild(root);
     document.body.appendChild(host);
 
     ui.root = root;
@@ -1172,7 +1239,7 @@
     const btn = e.target.closest("button");
     if (!btn || btn.disabled) return;
     const s = state.settings;
-    if (btn.dataset.tool) { s.tool = btn.dataset.tool; saveSettings(); updateToolbar(); return; }
+    if (btn.dataset.tool) { selectTool(btn.dataset.tool); return; }
     if (btn.dataset.color) {
       if (s.tool === Tool.Highlighter) s.hlColor = btn.dataset.color; else s.penColor = btn.dataset.color;
       saveSettings(); updateToolbar(); return;
@@ -1185,6 +1252,24 @@
       case "hide": toggleHidden(); break;
       case "clear": clearPage(); break;
     }
+  }
+
+  const TOOL_LABEL = { pen: "Pen", highlighter: "Highlighter", eraser: "Eraser", trail: "Trail", spotlight: "Spotlight" };
+
+  function selectTool(tool) {
+    const s = state.settings;
+    if (tool === s.tool) return;
+    if (tool === Tool.Eraser) s.prevTool = s.tool; // tip-double-tap.md rule 3
+    s.tool = tool;
+    saveSettings();
+    updateToolbar();
+  }
+
+  function toggleEraser() { // tip-double-tap.md rules 2 and 3
+    const s = state.settings;
+    if (s.tool !== Tool.Eraser) selectTool(Tool.Eraser);
+    else selectTool(s.prevTool && s.prevTool !== Tool.Eraser ? s.prevTool : Tool.Pen);
+    notice(TOOL_LABEL[s.tool]);
   }
 
   function installDrag(el, onTap) { // toolbar.md rules 3, 4, 14
@@ -1202,7 +1287,7 @@
       if (!start.moved && Math.hypot(e.clientX - start.x, e.clientY - start.y) < 6) return;
       start.moved = true;
       ui.dragging = true;
-      host.style.transform = `translate(${e.clientX - start.gx}px, ${e.clientY - start.gy}px) scale(${1 / vp.scale})`;
+      host.style.setProperty("transform", `translate(${e.clientX - start.gx}px, ${e.clientY - start.gy}px) scale(${1 / vp.scale})`, "important");
     });
     const finish = (e) => {
       if (!start || e.pointerId !== start.id) return;
@@ -1258,7 +1343,7 @@
       y = tb.edge === "top" ? inset : vp.h - h - inset;
       x = inset + tb.along * Math.max(0, vp.w - w - inset * 2);
     }
-    host.style.transform = `translate(${vp.ox + x}px, ${vp.oy + y}px) scale(${1 / vp.scale})`;
+    host.style.setProperty("transform", `translate(${vp.ox + x}px, ${vp.oy + y}px) scale(${1 / vp.scale})`, "important");
   }
 
   function updateToolbar() {
@@ -1267,7 +1352,7 @@
     const draw = state.mode === Mode.Draw;
     ui.pill.hidden = ui.collapsed;
     ui.dot.hidden = !ui.collapsed;
-    ui.buttons.lock.innerHTML = svg(draw ? "lock" : "unlock");
+    ui.buttons.lock.innerHTML = svg(draw ? "lock" : "unlock") + "<small>" + (draw ? "Unlock" : "Lock") + "</small>";
     ui.buttons.lock.classList.toggle("active", draw);
     ui.buttons.lock.setAttribute("aria-label", draw ? "Unlock: hand the Pencil back to the page" : "Lock: capture the Pencil for drawing");
     for (const t of Object.values(Tool)) ui.buttons[t].classList.toggle("active", s.tool === t);
@@ -1276,24 +1361,31 @@
     const current = s.tool === Tool.Highlighter ? s.hlColor : s.penColor;
     ui.colors.innerHTML = "";
     if (palette) {
+      // Colours and sizes are set through the CSSOM, never as style attributes: a page's
+      // Content-Security-Policy can block inline style attributes, and did on claude.ai.
       for (const [name, hex] of Object.entries(palette)) {
         const b = document.createElement("button");
         b.className = "btn swatch" + (name === current ? " active" : "");
         b.dataset.color = name;
         b.setAttribute("aria-label", name);
-        b.innerHTML = `<span style="background:${hex}"></span>`;
+        const dot = document.createElement("span");
+        dot.style.background = hex;
+        b.appendChild(dot);
         ui.colors.appendChild(b);
       }
     }
     const showSizes = s.tool === Tool.Pen || s.tool === Tool.Highlighter || s.tool === Tool.Spotlight; // toolbar.md rule 10
     ui.sizes.innerHTML = "";
     if (showSizes) {
-      for (const [name, px] of Object.entries({ s: 6, m: 10, l: 16 })) {
+      for (const [name, px] of Object.entries({ s: 7, m: 12, l: 19 })) {
         const b = document.createElement("button");
         b.className = "btn size" + (name === s.size ? " active" : "");
         b.dataset.size = name;
         b.setAttribute("aria-label", "Size " + name.toUpperCase());
-        b.innerHTML = `<span style="width:${px}px;height:${px}px"></span>`;
+        const dot = document.createElement("span");
+        dot.style.width = px + "px";
+        dot.style.height = px + "px";
+        b.appendChild(dot);
         ui.sizes.appendChild(b);
       }
     }
@@ -1303,7 +1395,7 @@
     ui.buttons.redo.disabled = !state.redo.length;
     ui.buttons.clear.disabled = !state.strokes.length;
     ui.buttons.hide.disabled = !state.strokes.length && !state.hidden;
-    ui.buttons.hide.innerHTML = svg(state.hidden ? "eyeOff" : "eye"); // hide-ink.md rule 7
+    ui.buttons.hide.innerHTML = svg(state.hidden ? "eyeOff" : "eye") + "<small>" + (state.hidden ? "Show" : "Hide") + "</small>"; // hide-ink.md rule 7
     ui.buttons.hide.classList.toggle("active", state.hidden);
 
     const dotTint = ui.dot.querySelector(".tint");
@@ -1359,6 +1451,7 @@
       const s = stored.settings;
       state.settings = {
         tool: Object.values(Tool).includes(s.tool) ? s.tool : d.tool,
+        prevTool: Object.values(Tool).includes(s.prevTool) && s.prevTool !== Tool.Eraser ? s.prevTool : d.prevTool,
         penColor: PEN_COLORS[s.penColor] ? s.penColor : d.penColor,
         hlColor: HL_COLORS[s.hlColor] ? s.hlColor : d.hlColor,
         size: PEN_BASE[s.size] ? s.size : d.size,

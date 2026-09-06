@@ -20,6 +20,7 @@ Everything Inkover knows about the Pencil as a device: what is read from it and 
 6. Pencil double-tap does nothing. Safari does not expose it to web content. See [[D0007-pencil-double-tap]].
 7. A stroke ends on pointerup or pointercancel. A stroke with a single point is kept as a dot.
 8. In Draw, stylus touch events are cancelled at capture, so Safari does not scroll, select text or start Scribble from a Pencil contact.
+9. In Draw, while the Pencil is down and for 1.5 s after it lifts, finger and palm touches do nothing to the page. A resting palm that drifts would otherwise start a scroll, and Safari cancels the Pencil stroke when a scroll starts.
 
 ## Edge cases
 | Situation | Expected |
@@ -32,6 +33,9 @@ Everything Inkover knows about the Pencil as a device: what is read from it and 
 | Very fast flick | No visible gaps per rule 4. |
 | Two strokes in quick succession | Two separate strokes. There is no join threshold. |
 | Pencil Pro squeeze | Ignored. Not exposed to web content. |
+| Palm rests on the page, then the hand drifts while writing | The page does not scroll and the stroke continues. |
+| Finger scrolls right after a stroke | Scrolling resumes 1.5 s after the Pencil lifts. |
+| Finger scrolls while the Pencil is up for longer than that | Scrolls as normal. |
 
 ## Acceptance
 - [ ] Light and hard presses visibly differ in width with the Pen tool.

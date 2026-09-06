@@ -16,7 +16,7 @@ Inkover must never get in the way of reading. Three modes make it explicit wheth
 2. Off: no overlay, no toolbar, no ink drawn. The page behaves as if Inkover were not installed.
 3. View: ink is drawn over the page. Pencil and finger both behave natively. The toolbar shows collapsed.
 4. Draw: the Pencil is captured. Every Pencil contact goes to the active tool and never reaches the page.
-5. In Draw, finger input is untouched: scroll, pinch, tap, long press all work exactly as without Inkover.
+5. In Draw, finger input is untouched: scroll, pinch, tap, long press all work exactly as without Inkover. The one exception is while the Pencil is down and for 1.5 s after, per [[pencil-input]] rule 9.
 6. The Safari toolbar button toggles Off and on. Turning on enters View if the page has ink, otherwise Draw.
 7. The lock button on the Inkover toolbar toggles View and Draw.
 8. On page load, a page with stored ink opens in View. A page without ink opens in Off.

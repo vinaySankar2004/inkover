@@ -3,7 +3,7 @@ type: decision
 id: D0007
 status: blocked
 date: 2026-09-05
-affects: ["[[pencil-input]]", "[[scribble-to-erase]]"]
+affects: ["[[pencil-input]]", "[[scribble-to-erase]]", "[[tip-double-tap]]"]
 supersedes: []
 ---
 # D0007: Pencil double-tap cannot toggle the eraser
@@ -17,4 +17,5 @@ Double-tap does nothing. Blocked by the platform, not by choice. Revisit if WebK
 ## Consequences
 - Tool switching is on the toolbar only.
 - Scribble to erase is the no-toolbar way to erase.
+- Tip double-tap gives the same toggle on the Pencil tip instead of the barrel. See tip-double-tap.
 - The toolbar's Eraser button is placed where a thumb reaches it while the Pencil hand keeps drawing.

@@ -24,7 +24,7 @@ The only visible UI. A floating pill with every control, operated by finger or P
 10. Size row: S, M, L for Pen, Highlighter and Spotlight. Hidden for Eraser and Trail.
 11. Tool, both colours, size and position persist globally across pages.
 12. Notices appear beside the toolbar for 3 s. Only [[persistence]] raises them in v1.
-13. Every tap target is at least 44 × 44 pt.
+13. Every tap target is 54 × 54 pt. Tool and action buttons carry a one-word label under the icon: Lock or Unlock, Pen, Highlight, Eraser, Trail, Spotlight, Undo, Redo, Hide or Show, Clear.
 14. The pill is a row when snapped to the top or bottom edge and wraps to a second row when the screen is too narrow for one, as on an 11-inch iPad in portrait. On the left or right edge it is two columns wide so it fits a landscape iPad.
 15. Undo, Redo, Hide and Clear are disabled when they have nothing to act on.
 
@@ -38,6 +38,11 @@ The only visible UI. A floating pill with every control, operated by finger or P
 | Pencil taps a toolbar button with Pen active | The button acts. No ink. |
 | Toolbar dragged half off-screen | Snaps back fully inside on release. |
 | Split View or Slide Over makes the page narrower than the pill | The row wraps again as needed. Every button stays on screen. |
+| Page sends a Content-Security-Policy that forbids inline styles | The toolbar, colours and sizes render anyway. Styles are applied through the CSSOM, which the policy does not govern. |
+| Page stylesheet has rules like `body > div { width: 280px }` | The toolbar keeps its size and position. Every property on the host is declared important. |
+
+## Acceptance
+- [ ] On claude.ai, which sends a strict policy, the colour swatches show their colours and the toolbar sits bottom right at full width.
 
 ## Acceptance
 - [ ] Drag the toolbar to the left edge, open another site: it is on the left.
