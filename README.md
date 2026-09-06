@@ -52,6 +52,10 @@ The docs are the source of truth and the code implements them. Every feature has
 - [docs/features/](docs/features/): one spec per feature.
 - [docs/decisions/](docs/decisions/): why things are the way they are.
 
+## App Store
+
+Inkover is headed for the App Store as a free download, with a one-time price planned later. The listing text, the market notes and the release procedure live in [docs/store](docs/store/). The privacy policy is [docs/privacy.md](docs/privacy.md): the app collects nothing.
+
 ## Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md). The short version: change the spec first, then the code, in the same pull request.

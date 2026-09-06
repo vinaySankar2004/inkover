@@ -1,0 +1,11 @@
+title: Inkover
+description: Draw on any web page in Safari on iPad with Apple Pencil.
+theme: jekyll-theme-primer
+exclude:
+  - Inkover/
+  - extension/
+  - dev/
+  - scripts/
+  - CLAUDE.md
+  - CONTEXT.md
+  - CONTRIBUTING.md

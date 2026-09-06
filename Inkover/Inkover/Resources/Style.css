@@ -1,29 +1,137 @@
 * {
     -webkit-user-select: none;
     -webkit-user-drag: none;
-    cursor: default;
+    box-sizing: border-box;
 }
 
 :root {
     color-scheme: light dark;
-
+    --bg: #f2f2f7;
+    --card: #ffffff;
+    --text: #1c1c1e;
+    --muted: #6e6e73;
+    --accent: #ff9500;
+    --accent-text: #1c1c1e;
+    --rule: rgba(60, 60, 67, 0.16);
     --spacing: 20px;
 }
 
-html {
-    height: 100%;
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg: #000000;
+        --card: #1c1c1e;
+        --text: #f2f2f7;
+        --muted: #98989d;
+        --rule: rgba(84, 84, 88, 0.5);
+    }
 }
 
-body {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
+html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--text);
+    font: -apple-system-body;
+    font-size: 17px;
+    line-height: 1.45;
+}
 
-    gap: var(--spacing);
-    margin: 0 calc(var(--spacing) * 2);
-    height: 100%;
+main {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: calc(env(safe-area-inset-top) + 40px) var(--spacing) calc(env(safe-area-inset-bottom) + 40px);
+}
 
-    font: -apple-system-short-body;
+header {
     text-align: center;
+    margin-bottom: 32px;
+}
+
+header img {
+    border-radius: 22px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+}
+
+h1 {
+    font-size: 34px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    margin: 16px 0 6px;
+}
+
+.lead {
+    color: var(--muted);
+    margin: 0 auto;
+    max-width: 420px;
+}
+
+section {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 18px var(--spacing);
+    margin-bottom: 16px;
+}
+
+h2 {
+    font-size: 20px;
+    font-weight: 600;
+    margin: 0 0 10px;
+}
+
+ol, ul {
+    margin: 0;
+    padding-left: 22px;
+}
+
+li {
+    margin: 6px 0;
+}
+
+li + li {
+    border-top: 0;
+}
+
+button {
+    display: block;
+    width: 100%;
+    margin: 16px 0 8px;
+    padding: 14px;
+    border: 0;
+    border-radius: 12px;
+    background: var(--accent);
+    color: var(--accent-text);
+    font: inherit;
+    font-size: 17px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+button:active {
+    opacity: 0.8;
+}
+
+.hint {
+    color: var(--muted);
+    font-size: 15px;
+    margin: 0;
+}
+
+.links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 20px;
+    margin: 12px 0 0;
+}
+
+.links a {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+footer {
+    text-align: center;
+    color: var(--muted);
+    font-size: 15px;
+    margin-top: 8px;
 }

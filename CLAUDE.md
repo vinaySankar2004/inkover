@@ -14,6 +14,8 @@ Built on ICM: the docs are the source of truth, the code implements them, and th
 | `docs/features/` | One spec per feature: behaviour, edge cases, acceptance. |
 | `docs/decisions/` | One file per decision, numbered, with the why. |
 | `docs/index.md` | GENERATED status board. Rebuild with the script, never edit. |
+| `docs/store/` | App Store: market analysis, the exact listing text, the release procedure. |
+| `docs/privacy.md` | The privacy policy the App Store links to. Published by GitHub Pages. |
 | `_meta/` | Schema, writing rules, templates. The factory. |
 | `extension/` | The web extension source. The only home for code. |
 | `dev/` | Harness page that runs the content script in a desktop browser, mouse as Pencil. Serve the repo root and open `dev/harness.html`. |
@@ -31,6 +33,8 @@ Built on ICM: the docs are the source of truth, the code implements them, and th
 | Verifying a feature | The spec's Acceptance list | Run it on the iPad, tick the boxes, set `status: verified`. |
 | Changing behaviour | The spec first | Edit the spec, then the code, in the same commit. |
 | Asked for status | Run `python3 scripts/build-index.py` | Read `docs/index.md` and report. |
+| Shipping a release | `docs/store/release.md` | Follow it top to bottom. Listing text comes from `docs/store/listing.md`, never retyped. |
+| Changing price or store copy | `docs/store/listing.md` first | Then App Store Connect, same day. |
 | Writing any doc | `_meta/writing-rules.md` | Follow it. |
 
 ## The rules that matter most

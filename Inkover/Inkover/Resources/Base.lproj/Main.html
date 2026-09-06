@@ -1,15 +1,56 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'">
-
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, viewport-fit=cover">
+    <title>Inkover</title>
     <link rel="stylesheet" href="../Style.css">
 </head>
 <body>
-    <img src="../Icon.png" width="128" height="128" alt="Inkover Icon">
-    <p>You can turn on Inkover’s Safari extension in Settings.</p>
+    <main>
+        <header>
+            <img src="../Icon.png" width="96" height="96" alt="">
+            <h1>Inkover</h1>
+            <p class="lead">Draw on any web page in Safari with Apple Pencil. Your finger keeps browsing.</p>
+        </header>
+
+        <section>
+            <h2>Turn it on</h2>
+            <ol>
+                <li>Open <strong>Settings</strong>.</li>
+                <li>Go to <strong>Apps</strong>, then <strong>Safari</strong>, then <strong>Extensions</strong>.</li>
+                <li>Tap <strong>Inkover</strong> and turn on <strong>Allow Extension</strong>.</li>
+                <li>Under Permissions, set <strong>All Websites</strong> to <strong>Allow</strong>, so it works on every page without asking.</li>
+            </ol>
+            <button id="openSettings" type="button">Open Settings</button>
+            <p class="hint">Then, in Safari, tap the Inkover button in the address bar on any page.</p>
+        </section>
+
+        <section>
+            <h2>How it works</h2>
+            <ul>
+                <li><strong>Lock</strong> captures the Pencil. While locked, the Pencil only draws and never taps a link. Your finger still scrolls, pinches and taps as normal. Tap the lock again to hand the Pencil back to the page.</li>
+                <li><strong>Pen, Highlighter, Eraser.</strong> Hold still before lifting to turn a rough circle into a clean ellipse, a box into a rectangle, or a wobbly line into a straight one. Scribble over ink to erase it.</li>
+                <li><strong>Trail</strong> follows the Pencil and fades in under a second. <strong>Spotlight</strong> dims everything but the line under the Pencil.</li>
+                <li>Ink stays attached to the words it was drawn on. It moves when the page reflows and hides when its section is hidden. It is saved per page until you clear it.</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Privacy</h2>
+            <p>Ink is stored on this iPad and never leaves it. Inkover has no account, no sync, no server and no analytics. It collects nothing.</p>
+            <p class="links">
+                <a href="#" data-url="https://vinaysankar2004.github.io/inkover/docs/privacy">Privacy policy</a>
+                <a href="#" data-url="https://github.com/vinaySankar2004/inkover/issues">Support</a>
+                <a href="#" data-url="https://github.com/vinaySankar2004/inkover">Source code</a>
+            </p>
+        </section>
+
+        <footer>
+            <p>Inkover requires an Apple Pencil. A finger never draws, by design.</p>
+        </footer>
+    </main>
+    <script src="../Script.js"></script>
 </body>
 </html>

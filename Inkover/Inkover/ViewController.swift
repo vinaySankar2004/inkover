@@ -2,7 +2,8 @@
 //  ViewController.swift
 //  Inkover
 //
-//  Created by Vinayak Sankaranarayanan on 2026-09-05.
+//  The wrapper app has one screen: how to turn the extension on, how it works, and the privacy links.
+//  All content lives in Resources/Base.lproj/Main.html. This controller only opens Settings and URLs.
 //
 
 import UIKit
@@ -16,7 +17,9 @@ class ViewController: UIViewController, WKNavigationDelegate, WKScriptMessageHan
         super.viewDidLoad()
 
         self.webView.navigationDelegate = self
-        self.webView.scrollView.isScrollEnabled = false
+        self.webView.scrollView.isScrollEnabled = true
+        self.webView.isOpaque = false
+        self.webView.backgroundColor = .systemGroupedBackground
 
         self.webView.configuration.userContentController.add(self, name: "controller")
 
@@ -24,11 +27,22 @@ class ViewController: UIViewController, WKNavigationDelegate, WKScriptMessageHan
     }
 
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-        // Override point for customization.
     }
 
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
-        // Override point for customization.
+        guard let body = message.body as? [String: Any], let action = body["action"] as? String else { return }
+        switch action {
+        case "openSettings":
+            if let url = URL(string: UIApplication.openSettingsURLString) {
+                UIApplication.shared.open(url)
+            }
+        case "openURL":
+            if let string = body["url"] as? String, let url = URL(string: string), url.scheme == "https" {
+                UIApplication.shared.open(url)
+            }
+        default:
+            break
+        }
     }
 
 }

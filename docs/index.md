@@ -42,3 +42,5 @@ Features: 15 built.
 | [D0008: Anchor ink to DOM elements in v1](decisions/D0008-anchor-to-dom.md) | D0008 | `accepted` | 2026-09-05 |
 | [D0009: Non-goals](decisions/D0009-non-goals.md) | D0009 | `accepted` | 2026-09-05 |
 | [D0010: Page key is the URL without its fragment](decisions/D0010-page-key.md) | D0010 | `accepted` | 2026-09-05 |
+| [D0011: Free at launch, then paid up front at $5.99](decisions/D0011-paid-up-front.md) | D0011 | `accepted` | 2026-09-05 |
+| [D0012: Keep the name Inkover](decisions/D0012-keep-the-name.md) | D0012 | `accepted` | 2026-09-05 |
