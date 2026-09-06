@@ -6,6 +6,12 @@
 <!-- A strict policy like claude.ai's: no inline style attributes, no unlisted style elements. Inkover must still render. -->
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'nonce-harness'; script-src 'self' 'unsafe-inline'; img-src 'self' data:; frame-src 'self' data: about:">
 <title>Inkover dev harness</title>
+<script>
+  // Name anything the policy blocks, so a violation can be traced to its element.
+  document.addEventListener("securitypolicyviolation", (e) => {
+    console.warn("CSP blocked", e.violatedDirective, "sample:", e.sample, "at", e.sourceFile, e.lineNumber);
+  });
+</script>
 <link rel="stylesheet" href="../extension/content.css">
 <style nonce="harness">
   /* Hostile page rules, like a real app shell. Inkover's nodes must not be affected. */
