@@ -1,7 +1,7 @@
 ---
 type: feature
 id: F08
-status: specified
+status: built
 depends: ["[[undo-redo]]", "[[persistence]]"]
 decisions: []
 updated: 2026-09-05

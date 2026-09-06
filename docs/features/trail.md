@@ -1,7 +1,7 @@
 ---
 type: feature
 id: F06
-status: specified
+status: built
 depends: ["[[pencil-input]]"]
 decisions: ["[[D0005-trail-on-contact]]"]
 updated: 2026-09-05

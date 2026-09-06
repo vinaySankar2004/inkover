@@ -1,7 +1,7 @@
 ---
 type: feature
 id: F02
-status: specified
+status: built
 depends: ["[[modes-and-lock]]"]
 decisions: ["[[D0001-ipad-only]]", "[[D0007-pencil-double-tap]]"]
 updated: 2026-09-05

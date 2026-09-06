@@ -16,5 +16,5 @@ Double-tap does nothing. Blocked by the platform, not by choice. Revisit if WebK
 
 ## Consequences
 - Tool switching is on the toolbar only.
-- Scribble to erase is proposed as the no-toolbar way to erase.
+- Scribble to erase is the no-toolbar way to erase.
 - The toolbar's Eraser button is placed where a thumb reaches it while the Pencil hand keeps drawing.

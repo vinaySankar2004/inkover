@@ -1,7 +1,7 @@
 ---
 type: feature
 id: F11
-status: specified
+status: built
 depends: ["[[modes-and-lock]]"]
 decisions: []
 updated: 2026-09-05
@@ -18,13 +18,15 @@ The only visible UI. A floating pill with every control, operated by finger or P
 4. Position is remembered globally, not per page.
 5. It stays inside the visual viewport during pinch-zoom, rotation and while the keyboard is up.
 6. Two states. Collapsed: one circle showing the current tool and colour. Expanded: the full pill. Tap toggles. In View it starts collapsed.
-7. Expanded contents in order: Lock, Pen, Highlighter, Eraser, Trail, colour row, size row, Undo, Redo, Clear.
-8. Colour row: six pen colours for Pen and Trail, four highlighter colours for Highlighter, none for Eraser.
+7. Expanded contents in order: Lock, Pen, Highlighter, Eraser, Trail, Spotlight, colour row, size row, Undo, Redo, Hide, Clear, Collapse.
+8. Colour row: six pen colours for Pen and Trail, four highlighter colours for Highlighter, none for Eraser and Spotlight.
 9. Pen colours: black, white, red, orange, blue, green. Highlighter colours: yellow, green, pink, blue.
-10. Size row: S, M, L for Pen and Highlighter. Hidden for Eraser and Trail.
+10. Size row: S, M, L for Pen, Highlighter and Spotlight. Hidden for Eraser and Trail.
 11. Tool, both colours, size and position persist globally across pages.
 12. Notices appear beside the toolbar for 3 s. Only [[persistence]] raises them in v1.
 13. Every tap target is at least 44 × 44 pt.
+14. The pill is a single row when snapped to the top or bottom edge, and two columns wide when snapped to the left or right edge so it fits a landscape iPad.
+15. Undo, Redo, Hide and Clear are disabled when they have nothing to act on.
 
 ## Edge cases
 | Situation | Expected |

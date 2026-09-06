@@ -1,8 +1,8 @@
 ---
 type: feature
 id: F03
-status: specified
-depends: ["[[pencil-input]]", "[[anchoring]]", "[[undo-redo]]", "[[persistence]]"]
+status: built
+depends: ["[[pencil-input]]", "[[anchoring]]", "[[undo-redo]]", "[[persistence]]", "[[shape-snap]]", "[[scribble-to-erase]]"]
 decisions: []
 updated: 2026-09-05
 ---
@@ -19,8 +19,9 @@ The default tool. Freehand ink for circling, underlining, arrows and doodles.
 5. Opacity is 1. Colour is one of the six pen colours in [[toolbar]].
 6. Caps and joins are round.
 7. On Pencil-up the stroke is anchored, pushed to the undo stack and scheduled for save.
-8. Pen has no snapping. Holding still does nothing.
-9. A stroke is capped at 5,000 points. The stroke ends there and further movement is ignored until Pencil-up.
+8. Holding still before lifting may snap the stroke to a line, ellipse or rectangle. See [[shape-snap]].
+9. A fast zig-zag over existing ink erases it instead of drawing. See [[scribble-to-erase]].
+10. A stroke is capped at 5,000 points. The stroke ends there and further movement is ignored until Pencil-up.
 
 ## Edge cases
 | Situation | Expected |
@@ -30,6 +31,7 @@ The default tool. Freehand ink for circling, underlining, arrows and doodles.
 | Content shifts under the Pencil during page load | The stroke is anchored on Pencil-up to wherever its first point landed. |
 | Finger taps a colour on the toolbar mid-stroke | The colour applies to the next stroke. The current stroke keeps its colour. |
 | Two Pencils, or a second pen pointer | Only the first active pointer id is tracked until it lifts. |
+| First point scrolled off screen before Pencil-up | The anchor was chosen at Pencil-down, so the stroke still attaches to the element it started on. |
 
 ## Acceptance
 - [ ] Circle a paragraph, scroll away and back: the circle is exactly where it was.

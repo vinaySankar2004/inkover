@@ -1,7 +1,7 @@
 ---
 type: feature
 id: F05
-status: specified
+status: built
 depends: ["[[pen]]", "[[highlighter]]", "[[undo-redo]]"]
 decisions: ["[[D0004-stroke-eraser]]"]
 updated: 2026-09-05

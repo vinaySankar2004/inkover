@@ -31,7 +31,7 @@ Use these words exactly, in docs and in code identifiers.
 | Trail | Transient ink that fades in under a second and is never stored. |
 | Mode | Off, View or Draw. See [[modes-and-lock]]. |
 | Lock | Draw mode. The Pencil is captured by Inkover and never reaches the page. |
-| Tool | Pen, Highlighter, Eraser or Trail. Exactly one is active. |
+| Tool | Pen, Highlighter, Eraser, Trail or Spotlight. Exactly one is active. |
 | Anchor | The DOM element a stroke is attached to, so it moves and hides with its content. See [[anchoring]]. |
 | Page key | The URL without its fragment. Ink is stored per page key. See [[D0010-page-key]]. |
 | Toolbar | The floating control pill Inkover adds to the page. See [[toolbar]]. |

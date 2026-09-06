@@ -6,7 +6,7 @@ Inkover exists because reading on a screen has no margins. Circling a sentence, 
 
 ## Status
 
-Pre-alpha. Every v1 feature is specified and none is built yet. The live list is in [docs/index.md](docs/index.md).
+Pre-alpha. Every v1 feature is specified and implemented, and the mechanics pass in a desktop harness. None has been verified on an iPad with a Pencil yet. The live list is in [docs/index.md](docs/index.md).
 
 ## What it does
 
@@ -33,6 +33,14 @@ Deliberately not included: export, print, sync, Mac, finger drawing. The reasons
 5. In Safari, tap the extensions button in the address bar and choose Inkover to start drawing.
 
 The web extension itself is the `extension/` folder. The Xcode project references it in place; there is no build step and no dependencies.
+
+To try the mechanics on a Mac without an iPad, serve the repository root and open the harness page. The mouse stands in for the Pencil there. It cannot show pressure or palm rejection.
+
+```bash
+python3 -m http.server 8765
+```
+
+Then open http://localhost:8765/dev/harness.html.
 
 ## How the repository works
 

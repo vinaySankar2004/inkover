@@ -1,7 +1,7 @@
 ---
 type: feature
 id: F10
-status: specified
+status: built
 depends: []
 decisions: ["[[D0008-anchor-to-dom]]"]
 updated: 2026-09-05
@@ -30,7 +30,7 @@ Ink belongs to content, not to a spot on the page. When a site swaps a tab, expa
 | Infinite-scroll feed removes old posts from the DOM | Their ink hides. If a post returns with the same text, its ink returns. |
 | Two elements with identical tag and text | Repair picks the first in document order. Accepted. |
 | Stroke spans two elements | Follows the first only. |
-| Site re-renders on every keystroke | Each mutation batch is one frame. Re-resolution is limited to once per 100 ms. |
+| Site re-renders on every keystroke | Each mutation batch is one frame. Repair scans get 3 ms per 100 ms window; strokes that miss the budget retry in the next window. |
 | Element under the first point is a 1 px spacer or invisible overlay | Skipped. Candidates need 16 px of height and text or media. |
 | Dark-mode toggle changes classes on every element | One re-render. Nothing moves. |
 | Page uses random ids on every load | Id lookup fails; text repair finds the element. |

@@ -1,7 +1,7 @@
 ---
 type: feature
 id: F04
-status: specified
+status: built
 depends: ["[[pen]]"]
 decisions: ["[[D0006-hold-still-snap]]"]
 updated: 2026-09-05

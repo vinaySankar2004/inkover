@@ -1,10 +1,11 @@
-/* Inkover overlay. Only the canvases and the toolbar host live here.
+/* Inkover overlay. Only the canvases, the iframe shields and the toolbar host live here.
    Toolbar styles are inside its shadow root in content.js. */
 
 .inkover-canvas {
   position: fixed;
   top: 0;
   left: 0;
+  display: block;
   pointer-events: none; /* architecture: Input routing. The canvas never blocks. */
   z-index: 2147483646;
 }
@@ -19,5 +20,12 @@
 
 .inkover-host {
   position: fixed;
+  top: 0;
+  left: 0;
+  transform-origin: 0 0;
   z-index: 2147483647;
+}
+
+.inkover-hidden {
+  display: none !important;
 }

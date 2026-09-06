@@ -1,7 +1,7 @@
 ---
 type: feature
 id: F09
-status: specified
+status: built
 depends: []
 decisions: ["[[D0003-persist-per-url]]", "[[D0010-page-key]]"]
 updated: 2026-09-05

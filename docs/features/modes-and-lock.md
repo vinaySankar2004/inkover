@@ -1,7 +1,7 @@
 ---
 type: feature
 id: F01
-status: specified
+status: built
 depends: []
 decisions: ["[[D0002-pencil-draws-finger-browses]]"]
 updated: 2026-09-05

@@ -17,4 +17,4 @@ Snapping is triggered by holding the Pencil still for 400 ms before lifting. The
 ## Consequences
 - The gesture is one rule shared across tools; thresholds live in the highlighter spec and are reused.
 - Slow, deliberate drawers may trigger it by accident. The aspect-ratio rule limits false positives.
-- Pen has no snap in v1. Shape snap is a proposed feature.
+- The Pen uses the same hold for lines, ellipses and rectangles. See shape-snap.

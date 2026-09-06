@@ -1,7 +1,7 @@
 ---
 type: feature
 id: F07
-status: specified
+status: built
 depends: ["[[persistence]]"]
 decisions: []
 updated: 2026-09-05
