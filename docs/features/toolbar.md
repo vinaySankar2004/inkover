@@ -25,7 +25,7 @@ The only visible UI. A floating pill with every control, operated by finger or P
 11. Tool, both colours, size and position persist globally across pages.
 12. Notices appear beside the toolbar for 3 s. Only [[persistence]] raises them in v1.
 13. Every tap target is at least 44 × 44 pt.
-14. The pill is a single row when snapped to the top or bottom edge, and two columns wide when snapped to the left or right edge so it fits a landscape iPad.
+14. The pill is a row when snapped to the top or bottom edge and wraps to a second row when the screen is too narrow for one, as on an 11-inch iPad in portrait. On the left or right edge it is two columns wide so it fits a landscape iPad.
 15. Undo, Redo, Hide and Clear are disabled when they have nothing to act on.
 
 ## Edge cases
@@ -37,6 +37,7 @@ The only visible UI. A floating pill with every control, operated by finger or P
 | Safari Reader view | A different document. The extension does not run there. Accepted. |
 | Pencil taps a toolbar button with Pen active | The button acts. No ink. |
 | Toolbar dragged half off-screen | Snaps back fully inside on release. |
+| Split View or Slide Over makes the page narrower than the pill | The row wraps again as needed. Every button stays on screen. |
 
 ## Acceptance
 - [ ] Drag the toolbar to the left edge, open another site: it is on the left.

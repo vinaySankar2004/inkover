@@ -1098,16 +1098,15 @@
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
     #root { position: relative; font: 13px/1 -apple-system, system-ui, sans-serif; color: #fff; -webkit-user-select: none; user-select: none; }
     .pill, .dot { background: rgba(28,28,30,0.86); -webkit-backdrop-filter: blur(24px); backdrop-filter: blur(24px); box-shadow: 0 8px 28px rgba(0,0,0,0.30), 0 0 0 0.5px rgba(255,255,255,0.12) inset; }
-    .pill { display: flex; flex-direction: row; align-items: center; gap: 0; padding: 4px; border-radius: 30px; }
-    .pill.vertical { display: grid; grid-template-columns: 44px 44px; justify-items: center; }
+    .pill { display: flex; flex-direction: row; flex-wrap: wrap; justify-content: center; align-items: center; gap: 0; padding: 4px; border-radius: 30px; box-sizing: border-box; }
+    .pill.vertical { display: grid; grid-template-columns: 44px 44px; justify-items: center; max-width: none; }
     .btn { width: 44px; height: 44px; border: 0; margin: 0; padding: 0; background: transparent; color: #fff; border-radius: 22px; display: flex; align-items: center; justify-content: center; cursor: pointer; touch-action: none; }
     .btn.active { background: rgba(255,255,255,0.22); }
     .btn:disabled { opacity: 0.32; cursor: default; }
     .btn.grip { color: rgba(255,255,255,0.55); cursor: grab; }
     .sep { width: 1px; height: 26px; background: rgba(255,255,255,0.16); margin: 0 3px; flex: none; }
     .vertical .sep { grid-column: 1 / -1; width: 60px; height: 1px; margin: 3px 0; }
-    .row { display: flex; flex-direction: row; align-items: center; }
-    .vertical .row { display: contents; }
+    .row { display: contents; }
     .swatch span { display: block; width: 22px; height: 22px; border-radius: 50%; box-shadow: 0 0 0 1px rgba(255,255,255,0.25); }
     .swatch.active span { box-shadow: 0 0 0 2.5px #fff; }
     .size span { display: block; border-radius: 50%; background: #fff; }
@@ -1246,6 +1245,7 @@
     ui.posKey = key;
     const vertical = tb.edge === "left" || tb.edge === "right";
     ui.pill.classList.toggle("vertical", vertical);
+    ui.pill.style.maxWidth = vertical ? "" : Math.floor(vp.w * vp.scale - 32) + "px"; // toolbar.md rule 14: wrap when the row does not fit
     ui.root.dataset.edge = tb.edge;
     const el = activeEl();
     const w = el.offsetWidth / vp.scale, h = el.offsetHeight / vp.scale;

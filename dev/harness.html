@@ -100,7 +100,16 @@
     long.appendChild(p);
   }
 </script>
-<script src="shim.js"></script>
-<script src="../extension/content.js"></script>
+<script>
+  // With ?noshim the page loads no script of its own, so the real extension can be tested on it.
+  if (!location.search.includes("noshim")) {
+    for (const src of ["shim.js", "../extension/content.js"]) {
+      const s = document.createElement("script");
+      s.src = src;
+      s.async = false;
+      document.body.appendChild(s);
+    }
+  }
+</script>
 </body>
 </html>
