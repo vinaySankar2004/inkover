@@ -1,0 +1,618 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		8A8177C8304D33CD00C5332D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A8177C7304D33CD00C5332D /* AppDelegate.swift */; };
+		8A8177CC304D33CD00C5332D /* Main.html in Resources */ = {isa = PBXBuildFile; fileRef = 8A8177CA304D33CD00C5332D /* Main.html */; };
+		8A8177CE304D33CD00C5332D /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 8A8177CD304D33CD00C5332D /* Icon.png */; };
+		8A8177D0304D33CD00C5332D /* Style.css in Resources */ = {isa = PBXBuildFile; fileRef = 8A8177CF304D33CD00C5332D /* Style.css */; };
+		8A8177D2304D33CD00C5332D /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A8177D1304D33CD00C5332D /* SceneDelegate.swift */; };
+		8A8177D4304D33CD00C5332D /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A8177D3304D33CD00C5332D /* ViewController.swift */; };
+		8A8177D7304D33CD00C5332D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8A8177D5304D33CD00C5332D /* LaunchScreen.storyboard */; };
+		8A8177DA304D33CD00C5332D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8A8177D8304D33CD00C5332D /* Main.storyboard */; };
+		8A8177E2304D33CE00C5332D /* Inkover Extension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 8A8177E1304D33CE00C5332D /* Inkover Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		8A8177E7304D33CE00C5332D /* SafariWebExtensionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A8177E6304D33CE00C5332D /* SafariWebExtensionHandler.swift */; };
+		8A8177E9304D33CE00C5332D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8A8177DB304D33CE00C5332D /* Assets.xcassets */; };
+		8A8177F9304D33CE00C5332D /* content.css in Resources */ = {isa = PBXBuildFile; fileRef = 8A8177F4304D33CE00C5332D /* content.css */; };
+		8A8177FA304D33CE00C5332D /* background.js in Resources */ = {isa = PBXBuildFile; fileRef = 8A8177F5304D33CE00C5332D /* background.js */; };
+		8A8177FB304D33CE00C5332D /* icons in Resources */ = {isa = PBXBuildFile; fileRef = 8A8177F6304D33CE00C5332D /* icons */; };
+		8A8177FC304D33CE00C5332D /* manifest.json in Resources */ = {isa = PBXBuildFile; fileRef = 8A8177F7304D33CE00C5332D /* manifest.json */; };
+		8A8177FD304D33CE00C5332D /* content.js in Resources */ = {isa = PBXBuildFile; fileRef = 8A8177F8304D33CE00C5332D /* content.js */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		8A8177E3304D33CE00C5332D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8A8177BC304D33CD00C5332D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8A8177E0304D33CE00C5332D;
+			remoteInfo = "Inkover Extension";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		8A8177EF304D33CE00C5332D /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				8A8177E2304D33CE00C5332D /* Inkover Extension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		8A8177C4304D33CD00C5332D /* Inkover.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Inkover.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		8A8177C7304D33CD00C5332D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		8A8177CB304D33CD00C5332D /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.html; name = Base; path = Base.lproj/Main.html; sourceTree = "<group>"; };
+		8A8177CD304D33CD00C5332D /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
+		8A8177CF304D33CD00C5332D /* Style.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = Style.css; sourceTree = "<group>"; };
+		8A8177D1304D33CD00C5332D /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
+		8A8177D3304D33CD00C5332D /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		8A8177D6304D33CD00C5332D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		8A8177D9304D33CD00C5332D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		8A8177DB304D33CE00C5332D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		8A8177DC304D33CE00C5332D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		8A8177E1304D33CE00C5332D /* Inkover Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Inkover Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		8A8177E6304D33CE00C5332D /* SafariWebExtensionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafariWebExtensionHandler.swift; sourceTree = "<group>"; };
+		8A8177E8304D33CE00C5332D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		8A8177F4304D33CE00C5332D /* content.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; name = content.css; path = ../../extension/content.css; sourceTree = "<group>"; };
+		8A8177F5304D33CE00C5332D /* background.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; name = background.js; path = ../../extension/background.js; sourceTree = "<group>"; };
+		8A8177F6304D33CE00C5332D /* icons */ = {isa = PBXFileReference; lastKnownFileType = folder; name = icons; path = ../../extension/icons; sourceTree = "<group>"; };
+		8A8177F7304D33CE00C5332D /* manifest.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = manifest.json; path = ../../extension/manifest.json; sourceTree = "<group>"; };
+		8A8177F8304D33CE00C5332D /* content.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; name = content.js; path = ../../extension/content.js; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		8A8177C1304D33CD00C5332D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8A8177DE304D33CE00C5332D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		8A8177BB304D33CD00C5332D = {
+			isa = PBXGroup;
+			children = (
+				8A8177C6304D33CD00C5332D /* Inkover */,
+				8A8177E5304D33CE00C5332D /* Inkover Extension */,
+				8A8177C5304D33CD00C5332D /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		8A8177C5304D33CD00C5332D /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				8A8177C4304D33CD00C5332D /* Inkover.app */,
+				8A8177E1304D33CE00C5332D /* Inkover Extension.appex */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		8A8177C6304D33CD00C5332D /* Inkover */ = {
+			isa = PBXGroup;
+			children = (
+				8A8177C7304D33CD00C5332D /* AppDelegate.swift */,
+				8A8177D1304D33CD00C5332D /* SceneDelegate.swift */,
+				8A8177D3304D33CD00C5332D /* ViewController.swift */,
+				8A8177D5304D33CD00C5332D /* LaunchScreen.storyboard */,
+				8A8177D8304D33CD00C5332D /* Main.storyboard */,
+				8A8177DB304D33CE00C5332D /* Assets.xcassets */,
+				8A8177DC304D33CE00C5332D /* Info.plist */,
+				8A8177C9304D33CD00C5332D /* Resources */,
+			);
+			path = Inkover;
+			sourceTree = "<group>";
+		};
+		8A8177C9304D33CD00C5332D /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				8A8177CA304D33CD00C5332D /* Main.html */,
+				8A8177CD304D33CD00C5332D /* Icon.png */,
+				8A8177CF304D33CD00C5332D /* Style.css */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		8A8177E5304D33CE00C5332D /* Inkover Extension */ = {
+			isa = PBXGroup;
+			children = (
+				8A8177F3304D33CE00C5332D /* Resources */,
+				8A8177E6304D33CE00C5332D /* SafariWebExtensionHandler.swift */,
+				8A8177E8304D33CE00C5332D /* Info.plist */,
+			);
+			path = "Inkover Extension";
+			sourceTree = "<group>";
+		};
+		8A8177F3304D33CE00C5332D /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				8A8177F4304D33CE00C5332D /* content.css */,
+				8A8177F5304D33CE00C5332D /* background.js */,
+				8A8177F6304D33CE00C5332D /* icons */,
+				8A8177F7304D33CE00C5332D /* manifest.json */,
+				8A8177F8304D33CE00C5332D /* content.js */,
+			);
+			name = Resources;
+			path = "Inkover Extension";
+			sourceTree = SOURCE_ROOT;
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		8A8177C3304D33CD00C5332D /* Inkover */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8A8177F0304D33CE00C5332D /* Build configuration list for PBXNativeTarget "Inkover" */;
+			buildPhases = (
+				8A8177C0304D33CD00C5332D /* Sources */,
+				8A8177C1304D33CD00C5332D /* Frameworks */,
+				8A8177C2304D33CD00C5332D /* Resources */,
+				8A8177EF304D33CE00C5332D /* Embed Foundation Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				8A8177E4304D33CE00C5332D /* PBXTargetDependency */,
+			);
+			name = Inkover;
+			packageProductDependencies = (
+			);
+			productName = Inkover;
+			productReference = 8A8177C4304D33CD00C5332D /* Inkover.app */;
+			productType = "com.apple.product-type.application";
+		};
+		8A8177E0304D33CE00C5332D /* Inkover Extension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8A8177EC304D33CE00C5332D /* Build configuration list for PBXNativeTarget "Inkover Extension" */;
+			buildPhases = (
+				8A8177DD304D33CE00C5332D /* Sources */,
+				8A8177DE304D33CE00C5332D /* Frameworks */,
+				8A8177DF304D33CE00C5332D /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Inkover Extension";
+			packageProductDependencies = (
+			);
+			productName = "Inkover Extension";
+			productReference = 8A8177E1304D33CE00C5332D /* Inkover Extension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		8A8177BC304D33CD00C5332D /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 2650;
+				LastUpgradeCheck = 2650;
+				TargetAttributes = {
+					8A8177C3304D33CD00C5332D = {
+						CreatedOnToolsVersion = 26.5;
+					};
+					8A8177E0304D33CE00C5332D = {
+						CreatedOnToolsVersion = 26.5;
+					};
+				};
+			};
+			buildConfigurationList = 8A8177BF304D33CD00C5332D /* Build configuration list for PBXProject "Inkover" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 8A8177BB304D33CD00C5332D;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 8A8177C5304D33CD00C5332D /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				8A8177C3304D33CD00C5332D /* Inkover */,
+				8A8177E0304D33CE00C5332D /* Inkover Extension */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		8A8177C2304D33CD00C5332D /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8A8177CE304D33CD00C5332D /* Icon.png in Resources */,
+				8A8177DA304D33CD00C5332D /* Main.storyboard in Resources */,
+				8A8177D7304D33CD00C5332D /* LaunchScreen.storyboard in Resources */,
+				8A8177CC304D33CD00C5332D /* Main.html in Resources */,
+				8A8177E9304D33CE00C5332D /* Assets.xcassets in Resources */,
+				8A8177D0304D33CD00C5332D /* Style.css in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8A8177DF304D33CE00C5332D /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8A8177FC304D33CE00C5332D /* manifest.json in Resources */,
+				8A8177FB304D33CE00C5332D /* icons in Resources */,
+				8A8177FA304D33CE00C5332D /* background.js in Resources */,
+				8A8177F9304D33CE00C5332D /* content.css in Resources */,
+				8A8177FD304D33CE00C5332D /* content.js in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		8A8177C0304D33CD00C5332D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8A8177D4304D33CD00C5332D /* ViewController.swift in Sources */,
+				8A8177C8304D33CD00C5332D /* AppDelegate.swift in Sources */,
+				8A8177D2304D33CD00C5332D /* SceneDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8A8177DD304D33CE00C5332D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8A8177E7304D33CE00C5332D /* SafariWebExtensionHandler.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		8A8177E4304D33CE00C5332D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8A8177E0304D33CE00C5332D /* Inkover Extension */;
+			targetProxy = 8A8177E3304D33CE00C5332D /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		8A8177CA304D33CD00C5332D /* Main.html */ = {
+			isa = PBXVariantGroup;
+			children = (
+				8A8177CB304D33CD00C5332D /* Base */,
+			);
+			name = Main.html;
+			sourceTree = "<group>";
+		};
+		8A8177D5304D33CD00C5332D /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				8A8177D6304D33CD00C5332D /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+		8A8177D8304D33CD00C5332D /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				8A8177D9304D33CD00C5332D /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		8A8177EA304D33CE00C5332D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.5;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		8A8177EB304D33CE00C5332D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.5;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		8A8177ED304D33CE00C5332D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Inkover Extension/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Inkover Extension";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SafariServices,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.inkover.Inkover.Extension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		8A8177EE304D33CE00C5332D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Inkover Extension/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Inkover Extension";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SafariServices,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.inkover.Inkover.Extension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		8A8177F1304D33CE00C5332D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Inkover/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Inkover;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SafariServices,
+					"-framework",
+					WebKit,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.inkover.Inkover;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		8A8177F2304D33CE00C5332D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Inkover/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Inkover;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SafariServices,
+					"-framework",
+					WebKit,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.inkover.Inkover;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		8A8177BF304D33CD00C5332D /* Build configuration list for PBXProject "Inkover" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8A8177EA304D33CE00C5332D /* Debug */,
+				8A8177EB304D33CE00C5332D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		8A8177EC304D33CE00C5332D /* Build configuration list for PBXNativeTarget "Inkover Extension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8A8177ED304D33CE00C5332D /* Debug */,
+				8A8177EE304D33CE00C5332D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		8A8177F0304D33CE00C5332D /* Build configuration list for PBXNativeTarget "Inkover" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8A8177F1304D33CE00C5332D /* Debug */,
+				8A8177F2304D33CE00C5332D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 8A8177BC304D33CD00C5332D /* Project object */;
+}
