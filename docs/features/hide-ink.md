@@ -12,7 +12,7 @@ updated: 2026-09-05
 A toolbar toggle that hides all ink on the page without clearing it, for rereading clean, then shows it again.
 
 ## Behaviour
-1. Hide is a toolbar button available in View and Draw. It toggles hidden on and off.
+1. Hide is a toolbar button. It toggles hidden on and off.
 2. While hidden the ink canvas draws nothing. Strokes stay in memory and in storage.
 3. Hidden is per tab session. A reload shows ink again.
 4. Drawing a new stroke while hidden turns hidden off first, so the new stroke and the old ink appear together.
@@ -26,7 +26,7 @@ A toolbar toggle that hides all ink on the page without clearing it, for rereadi
 |---|---|
 | Hide, then Clear, then show | Nothing to show. Undo restores the ink. |
 | Hide, close the tab, reopen | Ink shows. Hidden is not stored. |
-| Hide in View, then lock to Draw | Still hidden until a stroke is drawn or the button is tapped. |
+| Hide, then Unlock and tap a link with the Pencil | The tap goes through. Ink stays hidden. |
 | Hide on a page with no ink | The button is disabled. |
 
 ## Acceptance

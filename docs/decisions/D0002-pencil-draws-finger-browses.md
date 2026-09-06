@@ -19,4 +19,4 @@ Draw mode captures pen pointer events only. Touch is never intercepted, in any m
 - Scrolling, pinching and tapping links all work while locked.
 - Iframes need a shield overlay in Draw, because their events do not reach the parent.
 - Users without a Pencil get nothing from Inkover. Accepted.
-- Because the two are told apart on every event, there is no reason to make the user lock before drawing. Since 2026-09-06, on means Draw, and Unlock is a one-tap pass-through that locks itself again. See modes-and-lock rule 11.
+- Because the two are told apart on every event, there is no reason to make the user lock before drawing. Since 2026-09-06, on means Draw, and Unlock is a one-tap pass-through. Handing the Pencil back to Safari for that tap was tried and let the Pencil scroll, so Inkover keeps the Pencil and delivers the tap itself. See modes-and-lock rules 6 and 7.

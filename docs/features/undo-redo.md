@@ -13,7 +13,7 @@ Every change to ink can be taken back and put back again.
 
 ## Behaviour
 1. Undo entries are: add a stroke, remove strokes, clear the page. One gesture is one entry.
-2. Undo and Redo are toolbar buttons. Cmd+Z and Shift+Cmd+Z work with a hardware keyboard in View and Draw.
+2. Undo and Redo are toolbar buttons. Cmd+Z and Shift+Cmd+Z work with a hardware keyboard whenever Inkover is on.
 3. A new entry after an undo discards the redo stack.
 4. The stack holds the last 200 entries per page per tab session. It is not persisted. Reload empties it.
 5. Each button is disabled when its stack is empty.

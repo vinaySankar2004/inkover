@@ -23,7 +23,7 @@ The harness sets `window.__inkoverDev` before the script loads. With that flag, 
 
 ## Mode state machine
 
-Three states, per tab: Off, View, Draw. Transitions and their triggers are the behaviour rules in [[modes-and-lock]]. The state lives in one variable; every other section reads it and never writes it. Entering Off removes the canvases and toolbar host from the DOM. Entering View or Draw creates them if absent.
+Two states, per tab: Off and Draw, plus a one-shot pass-through flag that Unlock arms. Transitions and their triggers are the behaviour rules in [[modes-and-lock]]. There is no state in which Safari has the Pencil while Inkover is on: a pass-through tap is delivered by the script, which looks up the element under the tip with `elementsFromPoint`, skips Inkover's own nodes, focuses it, and dispatches pointer, mouse and click events at that point while a flag keeps Inkover's own capture listeners from reacting to them. The state lives in one variable; every other section reads it and never writes it. Entering Off removes the canvases and toolbar host from the DOM. Entering Draw creates them if absent.
 
 ## Input routing
 

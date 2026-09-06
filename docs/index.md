@@ -12,7 +12,7 @@ Features: 17 built.
 
 | Feature | Id | Status | Updated |
 |---|---|---|---|
-| [Modes and lock](features/modes-and-lock.md) | F01 | `built` | 2026-09-05 |
+| [Modes and lock](features/modes-and-lock.md) | F01 | `built` | 2026-09-06 |
 | [Pencil input](features/pencil-input.md) | F02 | `built` | 2026-09-05 |
 | [Pen](features/pen.md) | F03 | `built` | 2026-09-05 |
 | [Highlighter](features/highlighter.md) | F04 | `built` | 2026-09-05 |

@@ -28,7 +28,7 @@ Everything Inkover knows about the Pencil as a device: what is read from it and 
 | First-generation Pencil | Works identically. Hover is unused on every Pencil. |
 | Pencil battery dies mid-stroke | pointercancel; the stroke is kept as drawn. |
 | Pencil down on a text field in Draw | No keyboard, no Scribble. Ink is drawn. |
-| Pencil down on a text field in View | The tap focuses the field. Scribble cannot write, since View swallows Pencil drags. |
+| Unlock, then the Pencil taps a text field | The field gets focus and the keyboard appears. Scribble needs a native Pencil, which the page never gets while Inkover is on. |
 | Pressure reported as 0 for a whole stroke | Stroke drawn at mid pressure per rule 3. |
 | Very fast flick | No visible gaps per rule 4. |
 | Two strokes in quick succession | Two separate strokes. There is no join threshold. |

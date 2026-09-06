@@ -14,7 +14,7 @@
 
   // ── Constants ──────────────────────────────────────────────────────────
 
-  const Mode = Object.freeze({ Off: "off", View: "view", Draw: "draw" });
+  const Mode = Object.freeze({ Off: "off", Draw: "draw" });
   const Tool = Object.freeze({ Pen: "pen", Highlighter: "highlighter", Eraser: "eraser", Trail: "trail", Spotlight: "spotlight" });
 
   const PEN_COLORS = { black: "#1c1c1e", white: "#ffffff", red: "#ff3b30", orange: "#ff9500", blue: "#007aff", green: "#34c759" }; // toolbar.md rule 9
@@ -52,7 +52,6 @@
   const TOGGLE_GUARD = 300;                      // modes-and-lock.md edge case
   const TAP = { ms: 250, move: 6, gap: 350, apart: 30 }; // tip-double-tap.md rule 1
   const PALM_MS = 1500;                          // pencil-input.md rule 9
-  const RELOCK_MS = 300;                         // modes-and-lock.md rule 11: long enough for the page's tap to land
   const MEDIA_TAGS = new Set(["IMG", "VIDEO", "CANVAS", "SVG", "PICTURE", "IFRAME", "OBJECT", "EMBED"]);
   const TAU = Math.PI * 2;
 
@@ -69,6 +68,7 @@
 
   const state = {
     mode: Mode.Off,
+    passThrough: false,     // modes-and-lock.md rule 6: the next Pencil tap goes to the page
     hidden: false,          // hide-ink.md
     strokes: [],
     undo: [],
@@ -233,11 +233,31 @@
     else setMode(Mode.Draw);
   }
 
-  let relockTimer = 0;
+  function armPassThrough() { // modes-and-lock.md rules 6 and 7
+    if (state.mode !== Mode.Draw) return;
+    state.passThrough = !state.passThrough;
+    updateToolbar();
+    notice(state.passThrough ? "Next Pencil tap goes to the page" : "Pencil captured");
+  }
 
-  function passThrough() { // modes-and-lock.md rule 11: the Pencil goes to the page for one tap, then Draw returns
-    setMode(Mode.View);
-    notice("Pencil goes to the page until its next tap");
+  // Deliver a Pencil tap to the page ourselves. Safari never gets the Pencil back, so nothing can scroll.
+  let synthesizing = false;
+  function tapThrough(clientX, clientY) {
+    let target = null;
+    for (const el of document.elementsFromPoint(clientX, clientY)) { if (!isOwn(el)) { target = el; break; } }
+    if (!target) return;
+    const opts = { bubbles: true, cancelable: true, composed: true, clientX, clientY, pointerType: "pen", isPrimary: true, button: 0, pointerId: -1 };
+    synthesizing = true;
+    try {
+      if (typeof target.focus === "function") target.focus({ preventScroll: true });
+      target.dispatchEvent(new PointerEvent("pointerdown", opts));
+      target.dispatchEvent(new MouseEvent("mousedown", opts));
+      target.dispatchEvent(new PointerEvent("pointerup", opts));
+      target.dispatchEvent(new MouseEvent("mouseup", opts));
+      target.dispatchEvent(new MouseEvent("click", opts));
+    } finally {
+      synthesizing = false;
+    }
   }
 
   // ── Input routing ──────────────────────────────────────────────────────
@@ -248,7 +268,7 @@
   function onToolbar(e) { return !!host && e.composedPath().includes(host); }
 
   function onPointerDown(e) {
-    if (state.mode !== Mode.Draw || !isPen(e) || onToolbar(e) || state.fullscreen) return;
+    if (synthesizing || state.mode !== Mode.Draw || !isPen(e) || onToolbar(e) || state.fullscreen) return;
     if (DEV && e.button !== 0) return;
     e.preventDefault();
     e.stopImmediatePropagation();
@@ -260,7 +280,7 @@
   }
 
   function onPointerMove(e) {
-    if (activePointer === null || e.pointerId !== activePointer) return;
+    if (synthesizing || activePointer === null || e.pointerId !== activePointer) return;
     e.preventDefault();
     e.stopImmediatePropagation();
     if (onToolbar(e)) { activePointer = null; endStroke(e, false); return; }
@@ -270,12 +290,7 @@
   }
 
   function onPointerUp(e) {
-    if (state.mode === Mode.View && isPen(e) && !onToolbar(e) && !state.fullscreen) { // modes-and-lock.md rule 11
-      clearTimeout(relockTimer);
-      relockTimer = setTimeout(() => { if (state.mode === Mode.View) setMode(Mode.Draw); }, RELOCK_MS);
-      return;
-    }
-    if (activePointer === null || e.pointerId !== activePointer) return;
+    if (synthesizing || activePointer === null || e.pointerId !== activePointer) return;
     e.preventDefault();
     e.stopImmediatePropagation();
     activePointer = null;
@@ -284,7 +299,7 @@
   }
 
   function onPointerCancel(e) {
-    if (activePointer === null || e.pointerId !== activePointer) return;
+    if (synthesizing || activePointer === null || e.pointerId !== activePointer) return;
     activePointer = null;
     lastPenContact = performance.now();
     endStroke(e, true); // pencil-input.md rule 6
@@ -292,8 +307,8 @@
 
   let suppressClickUntil = 0;
 
-  function onClick(e) { // modes-and-lock.md rule 4: a captured Pencil tap never reaches the page
-    if (state.mode !== Mode.Draw || onToolbar(e)) return;
+  function onClick(e) { // modes-and-lock.md rule 3: a captured Pencil tap never reaches the page
+    if (synthesizing || state.mode !== Mode.Draw || onToolbar(e)) return;
     if (isPen(e) || performance.now() < suppressClickUntil) {
       e.preventDefault();
       e.stopImmediatePropagation();
@@ -303,18 +318,8 @@
   let lastPenContact = -Infinity;
 
   function onTouch(e) { // pencil-input.md rules 8 and 9
-    if (state.fullscreen) return;
+    if (state.mode !== Mode.Draw || state.fullscreen) return;
     if (host && e.composedPath().includes(host)) return;
-    if (state.mode === Mode.View) {
-      // modes-and-lock.md rule 3: an unlocked Pencil may tap the page but never scroll it.
-      // Only the move is cancelled, so a tap still becomes the page's click.
-      if (e.type !== "touchmove") return;
-      for (const t of e.changedTouches) {
-        if (t.touchType === "stylus") { e.preventDefault(); return; }
-      }
-      return;
-    }
-    if (state.mode !== Mode.Draw) return;
     for (const t of e.changedTouches) {
       if (t.touchType === "stylus") { e.preventDefault(); return; }
     }
@@ -328,7 +333,7 @@
     const ae = document.activeElement;
     if (ae && ae !== document.body && ae !== document.documentElement && ae !== host) return;
     if (e.key === "Escape") {
-      if (state.mode === Mode.Draw) { e.preventDefault(); passThrough(); }
+      if (state.mode === Mode.Draw) { e.preventDefault(); armPassThrough(); }
       return;
     }
     if ((e.metaKey || e.ctrlKey) && !e.altKey && e.key.toLowerCase() === "z") {
@@ -867,7 +872,7 @@
     const [x, y] = clientToDoc(e.clientX, e.clientY);
     const [sx, sy] = clientToScreen(e.clientX, e.clientY);
     const p = pressureOf(e);
-    live = { tool, points: [], pSmooth: p, hold: null, holdTimer: 0, snapped: null, scr: null, marked: null, erased: [], anchorEl: null, screen: [sx, sy], spotY: sy, t0: performance.now(), x0: x, y0: y, maxDist: 0 };
+    live = { tool, points: [], pSmooth: p, hold: null, holdTimer: 0, snapped: null, scr: null, marked: null, erased: [], anchorEl: null, screen: [sx, sy], spotY: sy, t0: performance.now(), x0: x, y0: y, cx0: e.clientX, cy0: e.clientY, maxDist: 0 };
     if (tool === Tool.Pen || tool === Tool.Highlighter) {
       if (state.hidden) { state.hidden = false; requestRender(); updateToolbar(); } // hide-ink.md rule 4
       live.anchorEl = findAnchor(e.clientX, e.clientY);
@@ -876,7 +881,7 @@
       live.points.push([x, y, p]);
       armHold();
     } else if (tool === Tool.Eraser) {
-      eraseAt(x, y);
+      if (!state.passThrough) eraseAt(x, y); // an armed pass-through tap must not erase what it taps
     } else if (tool === Tool.Trail) {
       trail.push({ x: sx, y: sy, t: performance.now(), start: true }); // trail.md rule 9: no segment joins two strokes
     }
@@ -971,8 +976,17 @@
     live = null;
     clearTimeout(L.holdTimer);
     const now = performance.now();
+    const quick = !cancelled && now - L.t0 < TAP.ms && L.maxDist < TAP.move;
+    if (state.passThrough && quick) { // modes-and-lock.md rule 6: this tap belongs to the page
+      state.passThrough = false;
+      updateToolbar();
+      tapThrough(L.cx0, L.cy0);
+      requestRender();
+      requestFx();
+      return;
+    }
     const tapTool = L.tool === Tool.Pen || L.tool === Tool.Highlighter || L.tool === Tool.Eraser;
-    const isTap = tapTool && !cancelled && now - L.t0 < TAP.ms && L.maxDist < TAP.move; // tip-double-tap.md rule 1
+    const isTap = tapTool && quick; // tip-double-tap.md rule 1
     if (isTap && lastTap && now - lastTap.t < TAP.gap && Math.hypot(L.x0 - lastTap.x, L.y0 - lastTap.y) < TAP.apart) {
       if (lastTap.strokeId) { // the first tap's dot never meant to be ink
         const first = state.strokes.find((s) => s.id === lastTap.strokeId);
@@ -1346,7 +1360,7 @@
     if (btn.dataset.color) { setColor(btn.dataset.color, true); return; }
     if (btn.dataset.pref) { s[btn.dataset.pref] = !s[btn.dataset.pref]; saveSettings(); updateToolbar(); return; } // preferences.md
     switch (btn.dataset.act) {
-      case "lock": if (state.mode === Mode.Draw) passThrough(); else setMode(Mode.Draw); break; // toolbar.md rule 7
+      case "lock": armPassThrough(); break; // toolbar.md rule 7
       case "undo": undo(); break;
       case "redo": redo(); break;
       case "hide": toggleHidden(); break;
@@ -1506,15 +1520,15 @@
   function updateToolbar() {
     if (!ui.root) return;
     const s = state.settings;
-    const draw = state.mode === Mode.Draw;
+    const armed = state.passThrough;
     ui.pill.hidden = ui.collapsed;
     ui.dot.hidden = !ui.collapsed;
     ui.panel.hidden = !ui.panelOpen || ui.collapsed;
     ui.root.classList.toggle("nolabels", !s.labels);   // preferences.md rule 2
     ui.root.classList.toggle("compact", !!s.compact);   // preferences.md rule 3
-    ui.buttons.lock.innerHTML = svg(draw ? "lock" : "unlock") + "<small>" + (draw ? "Unlock" : "Lock") + "</small>";
-    ui.buttons.lock.classList.toggle("active", draw);
-    ui.buttons.lock.setAttribute("aria-label", draw ? "Unlock: hand the Pencil back to the page" : "Lock: capture the Pencil for drawing");
+    ui.buttons.lock.innerHTML = svg(armed ? "unlock" : "lock") + "<small>" + (armed ? "Tap page" : "Unlock") + "</small>"; // modes-and-lock.md rule 7
+    ui.buttons.lock.classList.toggle("active", armed);
+    ui.buttons.lock.setAttribute("aria-label", armed ? "The next Pencil tap goes to the page. Tap to cancel." : "Unlock: send the next Pencil tap to the page");
     for (const t of Object.values(Tool)) ui.buttons[t].classList.toggle("active", s.tool === t);
     ui.buttons.prefs.classList.toggle("active", ui.panelOpen);
 
