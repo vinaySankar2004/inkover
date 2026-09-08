@@ -47,6 +47,7 @@
   const MARK_ALPHA = 0.3;                        // scribble-to-erase.md rule 4
   const STORAGE_VERSION = 1;
   const SAVE_DEBOUNCE = 500;                     // persistence.md rule 2
+  const SAVE_RETRY = 1000;                       // persistence.md edge case: one retry after a failed write
   const REPAIR_INTERVAL = 100;                   // anchoring.md edge case: re-resolution limit
   const TOGGLE_GUARD = 300;                      // modes-and-lock.md edge case
   const TAP = { ms: 250, move: 6, gap: 350, apart: 30 }; // tip-double-tap.md rule 1
@@ -205,12 +206,16 @@
     clearTimeout(saveTimer);
     saveTimer = 0;
     if (!state.pageKey) return; // a frame before its welcome has nowhere to save
-    const payload = { v: STORAGE_VERSION, strokes: state.strokes };
-    Promise.resolve(api.storage.local.set({ [inkKey(state.pageKey)]: payload })).catch(() => {
-      if (saveFailedNoticed) return;
-      saveFailedNoticed = true;
-      notice("Could not save ink on this page.");
-    });
+    const key = inkKey(state.pageKey);
+    // persistence.md rule 7: an empty page has no record. Clear and the eraser remove it rather than store an empty one.
+    const write = () => state.strokes.length ? api.storage.local.set({ [key]: { v: STORAGE_VERSION, strokes: state.strokes } }) : api.storage.local.remove(key);
+    Promise.resolve().then(write)
+      .catch(() => new Promise((r) => setTimeout(r, SAVE_RETRY)).then(write)) // persistence.md edge case: one retry, with whatever the ink is by then
+      .catch(() => {
+        if (saveFailedNoticed) return;
+        saveFailedNoticed = true;
+        notice("Could not save ink on this page.");
+      });
   }
 
   function saveSettings() {

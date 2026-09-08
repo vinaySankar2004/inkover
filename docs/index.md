@@ -19,10 +19,10 @@ Features: 1 built, 17 verified.
 | [Eraser](features/eraser.md) | F05 | `verified` | 2026-09-06 |
 | [Trail](features/trail.md) | F06 | `verified` | 2026-09-06 |
 | [Undo and redo](features/undo-redo.md) | F07 | `verified` | 2026-09-06 |
-| [Clear](features/clear.md) | F08 | `verified` | 2026-09-06 |
-| [Persistence](features/persistence.md) | F09 | `verified` | 2026-09-06 |
+| [Clear](features/clear.md) | F08 | `verified` | 2026-09-07 |
+| [Persistence](features/persistence.md) | F09 | `built` | 2026-09-07 |
 | [Anchoring](features/anchoring.md) | F10 | `verified` | 2026-09-06 |
-| [Toolbar](features/toolbar.md) | F11 | `built` | 2026-09-07 |
+| [Toolbar](features/toolbar.md) | F11 | `verified` | 2026-09-07 |
 | [Reading spotlight](features/reading-spotlight.md) | F12 | `verified` | 2026-09-06 |
 | [Shape snap](features/shape-snap.md) | F13 | `verified` | 2026-09-06 |
 | [Scribble to erase](features/scribble-to-erase.md) | F14 | `verified` | 2026-09-06 |

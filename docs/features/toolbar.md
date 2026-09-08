@@ -1,7 +1,7 @@
 ---
 type: feature
 id: F11
-status: built
+status: verified
 depends: ["[[modes-and-lock]]"]
 decisions: []
 updated: 2026-09-07
@@ -54,4 +54,4 @@ The only visible UI. A floating pill with every control, operated by finger or P
 - [x] Pinch-zoom the page: the toolbar keeps its size and stays on screen.
 - [x] Every button is comfortably tappable with a finger.
 - [x] Open the colour picker and slide the hue: the picker stays open and the ink colour follows.
-- [ ] Collapse the toolbar and tap the lock circle: the lock switches and the toolbar stays collapsed. Drag it to a side edge: the circles stack; to the bottom: they sit side by side.
+- [x] Collapse the toolbar and tap the lock circle: the lock switches and the toolbar stays collapsed. Drag it to a side edge: the circles stack; to the bottom: they sit side by side.

@@ -1,6 +1,6 @@
 ---
 type: architecture
-updated: 2026-09-06
+updated: 2026-09-07
 ---
 # Architecture
 
@@ -93,7 +93,7 @@ The anchor element for a stroke is chosen at Pencil-down, not Pencil-up, so a st
 
 ## Storage
 
-`browser.storage.local`, key `ink:<page key>`, value `{ v: 1, strokes: [...] }`. The top frame's page key is [[D0010-page-key]]; a frame's is derived from its parent's, see Frames. Global settings live under key `settings`: tool, previous tool, pen and highlighter colours, one custom colour per tool, pen width, highlighter width, spotlight band, label and compact preferences, toolbar edge and position. Saves are debounced 500 ms and flushed on `pagehide`. Rules for limits and versions are in [[persistence]].
+`browser.storage.local`, key `ink:<page key>`, value `{ v: 1, strokes: [...] }`. The top frame's page key is [[D0010-page-key]]; a frame's is derived from its parent's, see Frames. Global settings live under key `settings`: tool, previous tool, pen and highlighter colours, one custom colour per tool, pen width, highlighter width, spotlight band, label and compact preferences, toolbar edge and position. Saves are debounced 500 ms and flushed on `pagehide`; a save of an empty page removes the key. Rules for limits and versions are in [[persistence]].
 
 ## Stroke model
 

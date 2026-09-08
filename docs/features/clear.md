@@ -4,7 +4,7 @@ id: F08
 status: verified
 depends: ["[[undo-redo]]", "[[persistence]]"]
 decisions: []
-updated: 2026-09-06
+updated: 2026-09-07
 ---
 # Clear
 
@@ -12,7 +12,7 @@ updated: 2026-09-06
 Ending a reading session. Wipes all ink on the page in one tap.
 
 ## Behaviour
-1. Clear removes every stroke on the page, in the top frame and in every frame, and saves the empty ink immediately. See [[frames]] rule 7.
+1. Clear removes every stroke on the page, in the top frame and in every frame, and removes each stored record at once. See [[frames]] rule 7 and [[persistence]] rule 7.
 2. There is no confirmation dialog. Clear is one undo entry.
 3. After Clear the page stays in its current mode.
 4. Clear affects only the current page and its frames. Other pages keep their ink.
