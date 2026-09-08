@@ -39,6 +39,7 @@ Built on ICM: the docs are the source of truth, the code implements them, and th
 | Asked about App Store or TestFlight state | `private/store/status.md` | Read it and report. Update it first if App Store Connect disagrees. |
 | Changing price or store copy | `docs/store/listing.md` first | Then App Store Connect, same day. |
 | Changing a screenshot | The Screenshots table in `docs/store/listing.md` | Then `node scripts/screenshots.js` and commit the PNGs it writes. Never edit a PNG by hand. |
+| Changing the icon | `scripts/make-icons.py` | Edit the drawing there, run it, commit every file it writes. Never edit a PNG by hand. |
 | Writing any doc | `_meta/writing-rules.md` | Follow it. |
 
 ## The rules that matter most

@@ -34,7 +34,7 @@ After Unlock, lift your whole hand before scrolling: a palm that was already res
 - Scribble back and forth over ink to erase it.
 - The colour row has presets and one custom swatch per tool. Tap the custom swatch to use its colour, tap it again to open the colour picker.
 - **Undo**, **Redo**, **Hide** all ink without deleting it, **Clear** the page. **More** holds labels, compact buttons and a reset.
-- Drag the toolbar by its grip to any edge. Tap the grip to collapse it to a dot.
+- Drag the toolbar by its grip to any edge. Tap the grip to collapse it to two circles: the current tool, and a lock that switches without opening the toolbar.
 </section>
 
 <section markdown="1">

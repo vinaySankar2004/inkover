@@ -1,6 +1,6 @@
 ---
 type: store
-updated: 2026-09-06
+updated: 2026-09-07
 ---
 # App Store listing
 
@@ -95,9 +95,9 @@ The files live in `docs/store/screenshots/`, numbered in upload order. They are 
 |---|---|---|---|
 | 1 | `1-draw.png` | An article with a highlighted phrase, a circled phrase and an underlined sentence, toolbar docked right, Locked | Draw on any page. Lock to draw, unlock to browse. |
 | 2 | `2-spotlight.png` | Spotlight held on one line, the rest dimmed | Hold the Pencil on a line. Everything else fades. |
-| 3 | `3-anchored.png` | Side by side: the same page on tab one with ink and tab two without | Ink stays with its words, even when the page changes. |
+| 3 | `3-anchored.png` | Side by side: the same page on tab one with ink and tab two without, toolbar collapsed in the corner | Ink stays with its words, even when the page changes. |
 | 4 | `4-trail.png` | A blue trail fading behind the Pencil along a sentence | Trace as you read. It disappears on its own. |
 | 5 | `5-snap.png` | A rough circle, and a second one snapped to a clean ellipse | Hold still, and rough becomes clean. |
 | 6 | `6-colours.png` | Highlights in four palette colours and one custom colour, the highlighter palette and width slider showing | Four highlighters, six pens, and a colour of your own. |
 
-App icon: 1024 × 1024, from `extension/icons/icon-1024.png`, already in the asset catalog.
+App icon: 1024 × 1024, written into the asset catalog by `scripts/make-icons.py` along with every other size.

@@ -6,7 +6,7 @@ Inkover exists because reading on a screen has no margins. Circling a sentence, 
 
 ## Status
 
-Pre-release. Every v1 feature is specified, implemented and in daily use on an iPad; the formal acceptance lists are being run before the first App Store build. The live list is in [docs/index.md](docs/index.md).
+Version 1.0.0 is with App Review. The status of every feature is in [docs/index.md](docs/index.md).
 
 ## What it does
 

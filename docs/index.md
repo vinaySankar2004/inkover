@@ -12,7 +12,7 @@ Features: 1 built, 17 verified.
 
 | Feature | Id | Status | Updated |
 |---|---|---|---|
-| [Modes and lock](features/modes-and-lock.md) | F01 | `verified` | 2026-09-06 |
+| [Modes and lock](features/modes-and-lock.md) | F01 | `verified` | 2026-09-07 |
 | [Pencil input](features/pencil-input.md) | F02 | `verified` | 2026-09-06 |
 | [Pen](features/pen.md) | F03 | `verified` | 2026-09-06 |
 | [Highlighter](features/highlighter.md) | F04 | `verified` | 2026-09-06 |

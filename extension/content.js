@@ -1470,7 +1470,7 @@
     ui.pickerInput.addEventListener("change", () => pickColor(ui.pickerInput.value, true));
     installDrag(ui.buttons.collapse, () => { ui.collapsed = true; ui.panelOpen = false; updateToolbar(); });
     installDrag(ui.dot, () => { ui.collapsed = false; updateToolbar(); });
-    installDrag(ui.lockdot, toggleLock); // toolbar.md rule 6: the lock circle switches without expanding, and drags the toolbar like the tool circle
+    installDrag(ui.lockdot, toggleLock); // toolbar.md rule 16: the lock circle switches without expanding, and drags the toolbar like the tool circle
     updateToolbar();
   }
 
@@ -1669,7 +1669,7 @@
     ui.pill.hidden = ui.collapsed;
     ui.collapsedEl.hidden = !ui.collapsed;
     ui.panel.hidden = !ui.panelOpen || ui.collapsed;
-    ui.lockdot.innerHTML = svg(isLocked ? "lock" : "unlock"); // toolbar.md rule 6, modes-and-lock.md rule 6: the icon shows the state
+    ui.lockdot.innerHTML = svg(isLocked ? "lock" : "unlock"); // toolbar.md rule 16: the icon shows the state
     ui.lockdot.classList.toggle("active", isLocked);
     ui.lockdot.setAttribute("aria-label", isLocked ? "Locked. Unlock to browse." : "Unlocked. Lock to draw.");
     ui.root.classList.toggle("nolabels", !s.labels);   // preferences.md rule 2

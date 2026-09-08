@@ -17,7 +17,7 @@ The only visible UI. A floating pill with every control, operated by finger or P
 3. Default position bottom-right, 16 px inside the visual viewport. Drag by its handle to move; on release it snaps to the nearest screen edge.
 4. Position is remembered globally, not per page.
 5. It stays inside the visual viewport during pinch-zoom, rotation and while the keyboard is up.
-6. Two states. Collapsed: a circle showing the current tool and colour, with a smaller lock circle beneath it that travels with it. Tapping the tool circle expands; tapping the lock circle locks or unlocks and nothing expands. The lock circle shows the state like the Lock button, orange when Locked. Expanded: the full pill; the grip collapses it. Turning Inkover on expands it; Lock and Unlock leave it as it is.
+6. Two states. Collapsed: a tool circle showing the current tool and colour. Expanded: the full pill. Tap toggles. Turning Inkover on expands it; Lock and Unlock leave it as it is.
 7. Expanded contents, in groups: the grip; Lock, Pen, Highlight; Eraser, Trail, Spotlight; the colour swatches; the width slider; Undo, Redo; Hide, Clear; More. On a side edge each group is its own row of up to three, centred, so the column has no orphan cells.
 8. Colour swatches: six pen colours for Pen and Trail, four highlighter colours for Highlighter, none for Eraser and Spotlight. Pen colours: black, white, red, orange, blue, green. Highlighter colours: yellow, green, pink, blue.
 9. After the presets comes one custom swatch. With no colour picked yet it shows a rainbow and a tap opens the system colour picker. Once a colour is picked the swatch shows it: a tap selects it, a second tap opens the picker. Every colour picked replaces the swatch's colour, live while the picker is open. Pen and Highlighter each keep their own.
@@ -27,6 +27,7 @@ The only visible UI. A floating pill with every control, operated by finger or P
 13. Every tap target is 54 × 54 pt, or 44 × 44 pt with Compact on in [[preferences]]. Tool and action buttons carry a one-word label under the icon: Lock or Unlock, Pen, Highlight, Eraser, Trail, Spotlight, Undo, Redo, Hide or Show, Clear, More. Labels can be turned off there too.
 14. The pill is a row when snapped to the top or bottom edge and wraps to a second row when the screen is too narrow for one, as on an 11-inch iPad in portrait. On the left or right edge it is two columns wide so it fits a landscape iPad.
 15. Undo, Redo, Hide and Clear are disabled when they have nothing to act on.
+16. Collapsed, a smaller lock circle sits under the tool circle and moves with it. Tapping it locks or unlocks without expanding. Its icon shows the state, orange when Locked.
 
 ## Edge cases
 | Situation | Expected |
@@ -48,10 +49,8 @@ The only visible UI. A floating pill with every control, operated by finger or P
 
 ## Acceptance
 - [x] On claude.ai, which sends a strict policy, the colour swatches show their colours and the toolbar sits bottom right at full width.
-
-## Acceptance
 - [x] Drag the toolbar to the left edge, open another site: it is on the left.
 - [x] Pinch-zoom the page: the toolbar keeps its size and stays on screen.
 - [x] Every button is comfortably tappable with a finger.
 - [x] Open the colour picker and slide the hue: the picker stays open and the ink colour follows.
-- [ ] Collapse the toolbar: a lock circle sits under the tool circle. Tap it: the lock switches, the notice shows, the toolbar stays collapsed. Drag it: the whole toolbar moves.
+- [ ] Collapse the toolbar and tap the lock circle: the lock switches and the toolbar stays collapsed. Drag it: the toolbar moves.

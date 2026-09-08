@@ -4,7 +4,7 @@ id: F01
 status: verified
 depends: []
 decisions: ["[[D0015-manual-lock]]"]
-updated: 2026-09-06
+updated: 2026-09-07
 ---
 # Modes and lock
 
@@ -17,7 +17,7 @@ One switch. Unlocked, Inkover shows the ink and the toolbar and captures nothing
 3. Unlocked: ink and toolbar are shown and no input is captured. Pencil and finger scroll, tap, pinch and select exactly as without Inkover. Nothing draws.
 4. Locked: the Pencil is captured. Every contact goes to the active tool and never reaches the page or Safari's own gestures.
 5. Locked: finger and palm touches on the page do nothing. No scroll, pinch, tap, long press or text selection. The toolbar still answers to both.
-6. The Lock button toggles Unlocked and Locked. Its icon shows the state, its label names the action. A notice names each change; after Unlock, while anything still touches the page, it says to lift the hand first.
+6. The Lock button, or the lock circle of a collapsed [[toolbar]], toggles Unlocked and Locked. Its icon shows the state, its label names the action. A notice names each change; after Unlock, while anything still touches the page, it says to lift the hand first.
 7. The Safari toolbar button toggles between Off and Locked.
 8. On page load, a page with stored ink in the top frame or in any frame opens Unlocked. A page without ink opens in Off.
 9. With a hardware keyboard, Escape unlocks. It does nothing while Unlocked.
