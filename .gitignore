@@ -10,3 +10,6 @@ build/
 
 # Owner-only plan, pricing and release logistics. Local to the owner's Mac; see CLAUDE.md.
 private/
+
+# Local Claude Code launch config
+.claude/
