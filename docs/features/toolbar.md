@@ -27,7 +27,8 @@ The only visible UI. A floating pill with every control, operated by finger or P
 13. Every tap target is 54 × 54 pt, or 44 × 44 pt with Compact on in [[preferences]]. Tool and action buttons carry a one-word label under the icon: Lock or Unlock, Pen, Highlight, Eraser, Trail, Spotlight, Undo, Redo, Hide or Show, Clear, More. Labels can be turned off there too.
 14. The pill is a row when snapped to the top or bottom edge and wraps to a second row when the screen is too narrow for one, as on an 11-inch iPad in portrait. On the left or right edge it is two columns wide so it fits a landscape iPad.
 15. Undo, Redo, Hide and Clear are disabled when they have nothing to act on.
-16. Collapsed, a smaller lock circle sits under the tool circle and moves with it. Tapping it locks or unlocks without expanding. Its icon shows the state, orange when Locked.
+16. Collapsed, a lock circle of the same size sits beside the tool circle on a top or bottom edge, under it on a side edge, and moves with it.
+17. Tapping the lock circle locks or unlocks without expanding. Its icon shows the state, orange when Locked.
 
 ## Edge cases
 | Situation | Expected |
@@ -53,4 +54,4 @@ The only visible UI. A floating pill with every control, operated by finger or P
 - [x] Pinch-zoom the page: the toolbar keeps its size and stays on screen.
 - [x] Every button is comfortably tappable with a finger.
 - [x] Open the colour picker and slide the hue: the picker stays open and the ink colour follows.
-- [ ] Collapse the toolbar and tap the lock circle: the lock switches and the toolbar stays collapsed. Drag it: the toolbar moves.
+- [ ] Collapse the toolbar and tap the lock circle: the lock switches and the toolbar stays collapsed. Drag it to a side edge: the circles stack; to the bottom: they sit side by side.

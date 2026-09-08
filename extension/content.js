@@ -1356,8 +1356,8 @@
     .vertical .width input[type=range] { width: 140px; }
     .dot { position: relative; width: 56px; height: 56px; border: 0; margin: 0; padding: 0; border-radius: 28px; display: flex; align-items: center; justify-content: center; color: #fff; cursor: pointer; touch-action: none; }
     .dot .tint { position: absolute; width: 12px; height: 12px; border-radius: 50%; right: 4px; bottom: 4px; box-shadow: 0 0 0 1.5px rgba(28,28,30,0.9); }
-    .collapsed { display: flex; flex-direction: column; align-items: center; gap: 8px; width: 56px; }
-    .dot.lockdot { width: 46px; height: 46px; border-radius: 23px; color: rgba(255,255,255,0.85); }
+    .collapsed { display: flex; flex-direction: row; align-items: center; gap: 8px; }
+    #root[data-edge="left"] .collapsed, #root[data-edge="right"] .collapsed { flex-direction: column; }
     .dot.lockdot.active { background: rgba(255,149,0,0.92); color: #1c1c1e; }
     .notice { position: absolute; left: 50%; transform: translateX(-50%); bottom: calc(100% + 10px); white-space: nowrap; background: rgba(28,28,30,0.92); color: #fff; padding: 8px 12px; border-radius: 10px; font-size: 13px; opacity: 0; transition: opacity 160ms ease; pointer-events: none; }
     #root[data-edge="top"] .notice { bottom: auto; top: calc(100% + 10px); }
@@ -1470,7 +1470,7 @@
     ui.pickerInput.addEventListener("change", () => pickColor(ui.pickerInput.value, true));
     installDrag(ui.buttons.collapse, () => { ui.collapsed = true; ui.panelOpen = false; updateToolbar(); });
     installDrag(ui.dot, () => { ui.collapsed = false; updateToolbar(); });
-    installDrag(ui.lockdot, toggleLock); // toolbar.md rule 16: the lock circle switches without expanding, and drags the toolbar like the tool circle
+    installDrag(ui.lockdot, toggleLock); // toolbar.md rule 17: the lock circle switches without expanding, and drags the toolbar like the tool circle
     updateToolbar();
   }
 
@@ -1669,7 +1669,7 @@
     ui.pill.hidden = ui.collapsed;
     ui.collapsedEl.hidden = !ui.collapsed;
     ui.panel.hidden = !ui.panelOpen || ui.collapsed;
-    ui.lockdot.innerHTML = svg(isLocked ? "lock" : "unlock"); // toolbar.md rule 16: the icon shows the state
+    ui.lockdot.innerHTML = svg(isLocked ? "lock" : "unlock"); // toolbar.md rule 17: the icon shows the state
     ui.lockdot.classList.toggle("active", isLocked);
     ui.lockdot.setAttribute("aria-label", isLocked ? "Locked. Unlock to browse." : "Unlocked. Lock to draw.");
     ui.root.classList.toggle("nolabels", !s.labels);   // preferences.md rule 2
