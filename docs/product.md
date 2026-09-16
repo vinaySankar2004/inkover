@@ -1,6 +1,6 @@
 ---
 type: product
-updated: 2026-09-06
+updated: 2026-09-15
 ---
 # Inkover
 
@@ -8,7 +8,9 @@ updated: 2026-09-06
 Draw over any web page in Safari on iPad with Apple Pencil. Lock the page to draw with the hand resting on it; unlock to browse with Pencil or finger. Ink stays attached to the content it was drawn on and survives reload until it is cleared.
 
 ## Who it is for
-One person, reading. It exists so that reading a web page can involve circling, underlining, highlighting and doodling, the way paper does.
+Anyone reading on an iPad with a Pencil. Inkover has been a free download on the App Store since 2026-09-10. The Apple ID, the store URL and the exact listing text live in [[listing]].
+
+It was built for one reader, and it is still designed as if it had one. That is the standard a change is held to: it earns its place by making reading better for a person circling a sentence, not by widening the audience. The non-goals below are what that standard has already ruled out, and being on the store does not reopen them.
 
 ## Platform
 iPadOS 17 or later, Safari, any Apple Pencil. See [[D0001-ipad-only]].

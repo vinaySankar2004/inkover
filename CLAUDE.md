@@ -1,6 +1,6 @@
 # Inkover
 
-Safari Web Extension for iPadOS. Apple Pencil draws over any web page: lock to draw, unlock to browse. A personal reading aid for one user.
+Safari Web Extension for iPadOS. Apple Pencil draws over any web page: lock to draw, unlock to browse. A reading aid, free on the App Store since 2026-09-10, still designed for one reader. See `docs/product.md`.
 
 Built on ICM: the docs are the source of truth, the code implements them, and the folder structure routes you. Anything learned goes into a file, never into memory alone.
 
