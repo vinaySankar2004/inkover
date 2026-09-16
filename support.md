@@ -8,11 +8,12 @@ description: How to turn Inkover on, how it behaves, and where to report a probl
 
 <section markdown="1">
 ## Turning it on
-1. Open the **Settings** app.
-2. Tap **Apps**, then **Safari**, then **Extensions**.
-3. Tap **Inkover** and turn on **Allow Extension**.
-4. Under Permissions, set **All Websites** to **Allow**, so it works on every page without asking.
-5. In Safari, open any page and tap the Inkover button in the address bar. If you do not see it, tap the extensions button, the puzzle piece, and choose Inkover.
+1. Get Inkover from the [App Store](https://apps.apple.com/app/inkover/id6809220044). It is free, and iPad only.
+2. Open the **Settings** app.
+3. Tap **Apps**, then **Safari**, then **Extensions**.
+4. Tap **Inkover** and turn on **Allow Extension**.
+5. Under Permissions, set **All Websites** to **Allow**, so it works on every page without asking.
+6. In Safari, open any page and tap the Inkover button in the address bar. If you do not see it, tap the extensions button, the puzzle piece, and choose Inkover.
 
 Tap the same button again to turn Inkover off on that page.
 </section>

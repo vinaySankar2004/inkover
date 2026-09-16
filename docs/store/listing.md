@@ -1,6 +1,6 @@
 ---
 type: store
-updated: 2026-09-07
+updated: 2026-09-15
 ---
 # App Store listing
 
@@ -14,6 +14,7 @@ The exact text and settings for App Store Connect. Copy from here; never retype 
 | Subtitle (30) | Draw on the web with Pencil |
 | Bundle ID | com.vinayaksankaranarayanan.inkover |
 | SKU | inkover-ios-1 |
+| Apple ID | 6809220044 |
 | Primary language | English (U.S.) |
 | Primary category | Utilities |
 | Secondary category | Productivity |
@@ -29,6 +30,8 @@ The exact text and settings for App Store Connect. Copy from here; never retype 
 | Support URL | https://vinaysankar2004.github.io/inkover/support |
 | Marketing URL | https://vinaysankar2004.github.io/inkover/ |
 | Privacy policy URL | https://vinaysankar2004.github.io/inkover/docs/privacy |
+
+The App Store page itself is https://apps.apple.com/app/inkover/id6809220044. Apple owns that URL; it is the one to link from the site, the README and anywhere else Inkover is mentioned.
 
 ## Promotional text (170)
 

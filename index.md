@@ -9,7 +9,7 @@ class: landing
 <h1>A pen for the page you are reading.</h1>
 <p class="lead">Inkover puts Apple Pencil on top of Safari. Lock the page, then circle, underline and highlight it with your hand resting on the glass. The ink stays attached to the words, survives reload, and never leaves your iPad.</p>
 <div class="actions">
-<span class="button soon">Coming to the App Store</span>
+<a class="button" href="https://apps.apple.com/app/inkover/id6809220044">Get it on the App Store</a>
 <a class="button secondary" href="https://github.com/vinaySankar2004/inkover">View the source</a>
 </div>
 </div>
@@ -47,5 +47,5 @@ Ink is saved on your iPad, per page, until you clear it. There is no account, no
 
 <section markdown="1">
 ## Requirements
-An iPad running iPadOS 17 or later and any Apple Pencil. Inkover is a Safari extension: after installing, turn it on in Settings under Apps, Safari, Extensions. The [support page]({{ '/support' | relative_url }}) has the steps.
+An iPad running iPadOS 17 or later and any Apple Pencil. Inkover is a Safari extension: after installing it from the [App Store](https://apps.apple.com/app/inkover/id6809220044), turn it on in Settings under Apps, Safari, Extensions. The [support page]({{ '/support' | relative_url }}) has the steps.
 </section>

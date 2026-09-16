@@ -172,7 +172,6 @@ code {
 
 .button.secondary { background: var(--card); color: var(--text); }
 .button:hover { text-decoration: none; opacity: 0.9; }
-.button.soon { opacity: 0.55; cursor: default; }
 
 .demo {
     background: var(--card);

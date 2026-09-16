@@ -6,7 +6,7 @@ Inkover exists because reading on a screen has no margins. Circling a sentence, 
 
 ## Status
 
-Version 1.0.0 is with App Review. The status of every feature is in [docs/index.md](docs/index.md).
+Version 1.0.0 is on the App Store: [Inkover](https://apps.apple.com/app/inkover/id6809220044), a free download for iPad. The status of every feature is in [docs/index.md](docs/index.md).
 
 ## What it does
 
@@ -22,9 +22,13 @@ Deliberately not included: export, print, sync, Mac, finger drawing. The reasons
 ## Requirements
 
 - iPad running iPadOS 17 or later, with any Apple Pencil.
-- A Mac with Xcode 16 or later to build and install.
+- A Mac with Xcode 16 or later, only if you want to build it yourself.
 
-## Build and install
+## Install
+
+Get it from the App Store: [apps.apple.com/app/inkover](https://apps.apple.com/app/inkover/id6809220044). Then open Settings, then Apps, then Safari, then Extensions, turn Inkover on, and allow it on all websites. The [support page](https://vinaysankar2004.github.io/inkover/support) has the steps in full.
+
+## Build it yourself
 
 1. Open `Inkover/Inkover.xcodeproj` in Xcode.
 2. Select the Inkover target, set your development team under Signing and Capabilities.
@@ -56,7 +60,7 @@ The docs are the source of truth and the code implements them. Every feature has
 
 ## App Store
 
-Inkover is a free download on the App Store. The listing text and screenshots live in [docs/store](docs/store/). The privacy policy is [docs/privacy.md](docs/privacy.md): the app collects nothing.
+Inkover is a free download on the [App Store](https://apps.apple.com/app/inkover/id6809220044). The listing text and screenshots live in [docs/store](docs/store/). The privacy policy is [docs/privacy.md](docs/privacy.md): the app collects nothing.
 
 ## Contributing
 
